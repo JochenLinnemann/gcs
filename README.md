@@ -1,46 +1,44 @@
-# GURPS Character Sheet
+## GURPS Character Sheet
 
-GURPS Character Sheet (GCS) is a stand-alone, interactive, character sheet editor that allows you to build characters for the [GURPS](http://www.sjgames.com/gurps) 4<sup>th</sup> Edition roleplaying game system.
+GURPS Character Sheet (GCS) is a stand-alone, interactive, character sheet
+editor that allows you to build characters for the
+[GURPS 4<sup>th</sup> Edition](http://www.sjgames.com/gurps) roleplaying game
+system.
 
-## Development Setup
+### Building from the command line
 
-GCS is composed of four source projects that I maintain:
+**NOTE**: *To build a specific version of GCS, you will need to check out the appropriate release
+tag. These directions are for the latest source, which may have experimental code or changes that
+are incompatible with the current data files. These build instructions may have also changed since
+a given release, so be sure to review them again with the version you plan to build.*
 
-- https://github.com/richardwilkes/apple_stubs
-- https://github.com/richardwilkes/toolkit
-- https://github.com/richardwilkes/gcs
-- https://github.com/richardwilkes/gcs_library
+1. Make sure you have JDK 14 installed and set to be used as your default Java compiler. You can
+   download it for your platform here: http://jdk.java.net/14/
 
-The code is compiled with Java 8. Ant is used to build the product and produce the distribution bundles, however, I use the latest Eclipse release for daily development.
+2. If you are building on macOS, you will also need to download and extract a copy of JDK 15 into
+   `~/jdk-15.jdk`. You can download it from here: http://jdk.java.net/15/
 
-## Building from the command line
-1. Clone the source repositories:
+3. If you are building on Windows, you'll need to install the WiX Toolset from here:
+   https://github.com/wixtoolset/wix3/releases/tag/wix3112rtm
 
-  ```
-  % git clone https://github.com/richardwilkes/apple_stubs.git
-  % git clone https://github.com/richardwilkes/toolkit.git
-  % git clone https://github.com/richardwilkes/gcs.git
-  % git clone https://github.com/richardwilkes/gcs_library.git
-  ```
+4. Clone the source repositories:
+   ```
+   % git clone https://github.com/richardwilkes/gcs
+   ```
+   and optionally:
+   ```
+   % git clone https://github.com/richardwilkes/gcs_library
+   ```
 
-2. Compile the code:
+5. Build and bundle the code for your platform:
 
-  ```
-  % cd apple_stubs
-  % ant
-  % cd ../toolkit
-  % ant
-  % cd ../gcs
-  % ant
-  ```
-
-  If you want to build a distribution package, you'll also need to:
-
-3. Download one (or all) of the JRE packages from Oracle. Click the button to download the JRE from the [main download page](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and put it in the toolkit/launcher folder. This will take you to a form where you can download the packages for each platform.
-
-4. Build a distribution package for your platform:
-
-  ```
-  % cd gcs
-  % ant bundle
-  ```
+   macOS and Linux:
+   ```
+   % cd gcs
+   % ./bundle.sh
+   ```
+   Windows:
+   ```
+   > cd gcs
+   > .\bundle.bat
+   ```
