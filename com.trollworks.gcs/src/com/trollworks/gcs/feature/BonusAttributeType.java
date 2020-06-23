@@ -43,6 +43,13 @@ public enum BonusAttributeType {
             return I18n.Text("HT");
         }
     },
+    /** The Mysticism attribute. */
+    MYSTICISM {
+        @Override
+        public String toString() {
+            return I18n.Text("mysticism");
+        }
+    },
     /** The Will attribute. */
     WILL {
         @Override
@@ -106,7 +113,7 @@ public enum BonusAttributeType {
             return I18n.Text("parry");
         }
     },
-    /** The Dodge attribute. */
+    /** The Block attribute. */
     BLOCK {
         @Override
         public String toString() {
@@ -130,6 +137,13 @@ public enum BonusAttributeType {
         @Override
         public String toString() {
             return I18n.Text("basic move");
+        }
+    },
+    /** The Focus attribute. */
+    FOCUS {
+        @Override
+        public String toString() {
+            return I18n.Text("focus");
         }
     },
     /** The FP attribute. */

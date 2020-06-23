@@ -91,6 +91,7 @@ public class GURPSCharacter extends DataFile {
     private static final String                              TAG_MODIFIED_DATE                    = "modified_date";
     private static final String                              TAG_HP_DAMAGE                        = "hp_damage";
     private static final String                              TAG_FP_DAMAGE                        = "fp_damage";
+    private static final String                              TAG_FOCUS_DAMAGE                     = "focus_damage";
     private static final String                              TAG_UNSPENT_POINTS                   = "unspent_points";
     private static final String                              TAG_TOTAL_POINTS                     = "total_points";
     private static final String                              TAG_INCLUDE_PUNCH                    = "include_punch";
@@ -120,6 +121,8 @@ public class GURPSCharacter extends DataFile {
     public static final  String                              ID_INTELLIGENCE                      = ATTRIBUTES_PREFIX + BonusAttributeType.IQ.name();
     /** The field ID for health (HT) changes. */
     public static final  String                              ID_HEALTH                            = ATTRIBUTES_PREFIX + BonusAttributeType.HT.name();
+    /** The field ID for mysticism (Myst) changes. */
+    public static final  String                              ID_MYSTICISM                         = ATTRIBUTES_PREFIX + BonusAttributeType.MYSTICISM.name();
     /** The field ID for perception changes. */
     public static final  String                              ID_PERCEPTION                        = ATTRIBUTES_PREFIX + BonusAttributeType.PERCEPTION.name();
     /** The field ID for vision changes. */
@@ -231,6 +234,13 @@ public class GURPSCharacter extends DataFile {
     public static final  String                              ID_UNCONSCIOUS_CHECKS_FATIGUE_POINTS = FATIGUE_POINTS_PREFIX + "UnconsciousChecks";
     /** The field ID for unconscious fatigue point changes. */
     public static final  String                              ID_UNCONSCIOUS_FATIGUE_POINTS        = FATIGUE_POINTS_PREFIX + "Unconscious";
+    private static final String                              FOCUS_POINTS_PREFIX                  = ATTRIBUTES_PREFIX + "derived_focus.";
+    /** The field ID for focus point changes. */
+    public static final  String                              ID_FOCUS_POINTS                      = ATTRIBUTES_PREFIX + BonusAttributeType.FOCUS.name();
+    /** The field ID for focus point damage changes. */
+    public static final  String                              ID_FOCUS_POINTS_DAMAGE               = FOCUS_POINTS_PREFIX + "Damage";
+    /** The field ID for current focus point changes. */
+    public static final  String                              ID_CURRENT_FOCUS                     = FOCUS_POINTS_PREFIX + "Current";
     private              long                                mModifiedOn;
     private              long                                mCreatedOn;
     private              HashMap<String, ArrayList<Feature>> mFeatureMap;
@@ -248,6 +258,9 @@ public class GURPSCharacter extends DataFile {
     private              int                                 mHealth;
     private              int                                 mHealthBonus;
     private              int                                 mHealthCostReduction;
+    private              int                                 mMysticism;
+    private              int                                 mMysticismBonus;
+    private              int                                 mMysticismCostReduction;
     private              int                                 mWill;
     private              int                                 mWillBonus;
     private              int                                 mFrightCheckBonus;
@@ -263,6 +276,9 @@ public class GURPSCharacter extends DataFile {
     private              int                                 mFatiguePoints;
     private              int                                 mFatiguePointsDamage;
     private              int                                 mFatiguePointBonus;
+    private              int                                 mFocusPoints;
+    private              int                                 mFocusPointsDamage;
+    private              int                                 mFocusPointBonus;
     private              double                              mSpeed;
     private              double                              mSpeedBonus;
     private              int                                 mMove;
@@ -333,8 +349,10 @@ public class GURPSCharacter extends DataFile {
         mDexterity = 10;
         mIntelligence = 10;
         mHealth = 10;
+        mMysticism = 10;
         mHitPointsDamage = 0;
         mFatiguePointsDamage = 0;
+        mFocusPointsDamage = 0;
         mProfile = new Profile(this, full);
         mArmor = new Armor(this);
         mCachedWeightCarried = new WeightValue(Fixed6.ZERO, mSettings.defaultWeightUnits());
@@ -373,6 +391,7 @@ public class GURPSCharacter extends DataFile {
         int    unspentPoints = 0;
         int    currentHP     = Integer.MIN_VALUE;
         int    currentFP     = Integer.MIN_VALUE;
+        int    currentFocus  = Integer.MIN_VALUE;
         characterInitialize(false);
         long modifiedOn = mModifiedOn;
         do {
@@ -411,6 +430,10 @@ public class GURPSCharacter extends DataFile {
                     mFatiguePoints = reader.readInteger(0);
                 } else if (TAG_FP_DAMAGE.equals(name)) {
                     mFatiguePointsDamage = reader.readInteger(0);
+                } else if (BonusAttributeType.FOCUS.getXMLTag().equals(name)) {
+                    mFocusPoints = reader.readInteger(0);
+                } else if (TAG_FOCUS_DAMAGE.equals(name)) {
+                    mFocusPointsDamage = reader.readInteger(0);
                 } else if (TAG_UNSPENT_POINTS.equals(name)) {
                     unspentPoints = reader.readInteger(0);
                 } else if (TAG_TOTAL_POINTS.equals(name)) {
@@ -423,6 +446,8 @@ public class GURPSCharacter extends DataFile {
                     mIntelligence = reader.readInteger(0);
                 } else if (BonusAttributeType.HT.getXMLTag().equals(name)) {
                     mHealth = reader.readInteger(0);
+                } else if (BonusAttributeType.MYSTICISM.getXMLTag().equals(name)) {
+                    mMysticism = reader.readInteger(0);
                 } else if (BonusAttributeType.WILL.getXMLTag().equals(name)) {
                     mWill = reader.readInteger(0);
                 } else if (BonusAttributeType.PERCEPTION.getXMLTag().equals(name)) {
@@ -470,6 +495,9 @@ public class GURPSCharacter extends DataFile {
             }
             if (currentFP != Integer.MIN_VALUE) {
                 mFatiguePointsDamage = -Math.min(currentFP - getFatiguePoints(), 0);
+            }
+            if (currentFocus != Integer.MIN_VALUE) {
+                mFocusPointsDamage = -Math.min(currentFocus - getFocusPoints(), 0);
             }
         }
         mModifiedOn = modifiedOn;
@@ -602,11 +630,14 @@ public class GURPSCharacter extends DataFile {
         out.simpleTagNotZero(TAG_HP_DAMAGE, mHitPointsDamage);
         out.simpleTag(BonusAttributeType.FP.getXMLTag(), mFatiguePoints);
         out.simpleTagNotZero(TAG_FP_DAMAGE, mFatiguePointsDamage);
+        out.simpleTag(BonusAttributeType.FOCUS.getXMLTag(), mFocusPoints);
+        out.simpleTagNotZero(TAG_FOCUS_DAMAGE, mFocusPointsDamage);
         out.simpleTag(TAG_TOTAL_POINTS, mTotalPoints);
         out.simpleTag(BonusAttributeType.ST.getXMLTag(), mStrength);
         out.simpleTag(BonusAttributeType.DX.getXMLTag(), mDexterity);
         out.simpleTag(BonusAttributeType.IQ.getXMLTag(), mIntelligence);
         out.simpleTag(BonusAttributeType.HT.getXMLTag(), mHealth);
+        out.simpleTag(BonusAttributeType.MYSTICISM.getXMLTag(), mMysticism);
         out.simpleTag(BonusAttributeType.WILL.getXMLTag(), mWill);
         out.simpleTag(BonusAttributeType.PERCEPTION.getXMLTag(), mPerception);
         out.simpleTag(BonusAttributeType.SPEED.getXMLTag(), mSpeed);
@@ -653,6 +684,8 @@ public class GURPSCharacter extends DataFile {
                 return Integer.valueOf(getIntelligencePoints());
             } else if (ID_HEALTH.equals(id)) {
                 return Integer.valueOf(getHealthPoints());
+            } else if (ID_MYSTICISM.equals(id)) {
+                return Integer.valueOf(getMysticismPoints());
             } else if (ID_WILL.equals(id)) {
                 return Integer.valueOf(getWillPoints());
             } else if (ID_PERCEPTION.equals(id)) {
@@ -661,6 +694,8 @@ public class GURPSCharacter extends DataFile {
                 return Integer.valueOf(getBasicSpeedPoints());
             } else if (ID_BASIC_MOVE.equals(id)) {
                 return Integer.valueOf(getBasicMovePoints());
+            } else if (ID_FOCUS_POINTS.equals(id)) {
+                return Integer.valueOf(getFocusPointPoints());
             } else if (ID_FATIGUE_POINTS.equals(id)) {
                 return Integer.valueOf(getFatiguePointPoints());
             } else if (ID_HIT_POINTS.equals(id)) {
@@ -679,6 +714,8 @@ public class GURPSCharacter extends DataFile {
             return Integer.valueOf(getIntelligence());
         } else if (ID_HEALTH.equals(id)) {
             return Integer.valueOf(getHealth());
+        } else if (ID_MYSTICISM.equals(id)) {
+            return Integer.valueOf(getMysticism());
         } else if (ID_BASIC_SPEED.equals(id)) {
             return Double.valueOf(getBasicSpeed());
         } else if (ID_BASIC_MOVE.equals(id)) {
@@ -765,6 +802,12 @@ public class GURPSCharacter extends DataFile {
             return Integer.valueOf(getUnconsciousChecksFatiguePoints());
         } else if (ID_UNCONSCIOUS_FATIGUE_POINTS.equals(id)) {
             return Integer.valueOf(getUnconsciousFatiguePoints());
+        } else if (ID_FOCUS_POINTS.equals(id)) {
+            return Integer.valueOf(getFocusPoints());
+        } else if (ID_FOCUS_POINTS_DAMAGE.equals(id)) {
+            return Integer.valueOf(getFocusPointsDamage());
+        } else if (ID_CURRENT_FOCUS.equals(id)) {
+            return Integer.valueOf(getCurrentFocusPoints());
         } else if (ID_PARRY_BONUS.equals(id)) {
             return Integer.valueOf(getParryBonus());
         } else if (ID_BLOCK_BONUS.equals(id)) {
@@ -806,6 +849,8 @@ public class GURPSCharacter extends DataFile {
                 setIntelligence(((Integer) value).intValue());
             } else if (ID_HEALTH.equals(id)) {
                 setHealth(((Integer) value).intValue());
+            } else if (ID_MYSTICISM.equals(id)) {
+                setMysticism(((Integer) value).intValue());
             } else if (ID_BASIC_SPEED.equals(id)) {
                 setBasicSpeed(((Double) value).doubleValue());
             } else if (ID_BASIC_MOVE.equals(id)) {
@@ -828,6 +873,12 @@ public class GURPSCharacter extends DataFile {
                 setFatiguePointsDamage(((Integer) value).intValue());
             } else if (ID_CURRENT_FP.equals(id)) {
                 setFatiguePointsDamage(-Math.min(((Integer) value).intValue() - getFatiguePoints(), 0));
+            } else if (ID_FOCUS_POINTS.equals(id)) {
+                setFocusPoints(((Integer) value).intValue());
+            } else if (ID_FOCUS_POINTS_DAMAGE.equals(id)) {
+                setFocusPointsDamage(((Integer) value).intValue());
+            } else if (ID_CURRENT_FOCUS.equals(id)) {
+                setFocusPointsDamage(-Math.min(((Integer) value).intValue() - getFocusPoints(), 0));
             } else if (id.startsWith(Profile.PROFILE_PREFIX)) {
                 mProfile.setValueForID(id, value);
             } else if (id.startsWith(Armor.DR_PREFIX)) {
@@ -1794,6 +1845,11 @@ public class GURPSCharacter extends DataFile {
         return mHealth + mHealthBonus;
     }
 
+    /** @return The Mysticism. */
+    public int getMysticism() {
+        return mMysticism + mMysticismBonus;
+    }
+
     /**
      * Sets the health (HT).
      *
@@ -1808,9 +1864,28 @@ public class GURPSCharacter extends DataFile {
         }
     }
 
+    /**
+     * Sets the Mysticism.
+     *
+     * @param mysticism The new mysticism.
+     */
+    public void setMysticism(int mysticism) {
+        int oldMysticism = getMysticism();
+
+        if (oldMysticism != mysticism) {
+            postUndoEdit(I18n.Text("Mysticism Change"), ID_MYSTICISM, Integer.valueOf(oldMysticism), Integer.valueOf(mysticism));
+            updateMysticismInfo(mysticism - mMysticismBonus, mMysticismBonus);
+        }
+    }
+
     /** @return The health bonus. */
     public int getHealthBonus() {
         return mHealthBonus;
+    }
+
+    /** @return The mysticism bonus. */
+    public int getMysticismBonus() {
+        return mMysticismBonus;
     }
 
     /** @param bonus The new health bonus. */
@@ -1820,10 +1895,25 @@ public class GURPSCharacter extends DataFile {
         }
     }
 
+    /** @param bonus The new mysticism bonus. */
+    public void setMysticismBonus(int bonus) {
+        if (mMysticismBonus != bonus) {
+            updateMysticismInfo(mMysticism, bonus);
+        }
+    }
+
     /** @param reduction The cost reduction for health. */
     public void setHealthCostReduction(int reduction) {
         if (mHealthCostReduction != reduction) {
             mHealthCostReduction = reduction;
+            mNeedAttributePointCalculation = true;
+        }
+    }
+
+    /** @param reduction The cost reduction for mysticism. */
+    public void setMysticismCostReduction(int reduction) {
+        if (mMysticismCostReduction != reduction) {
+            mMysticismCostReduction = reduction;
             mNeedAttributePointCalculation = true;
         }
     }
@@ -1857,9 +1947,27 @@ public class GURPSCharacter extends DataFile {
         endNotify();
     }
 
+    private void updateMysticismInfo(int mysticism, int bonus) {
+        mMysticism = mysticism;
+        mMysticismBonus = bonus;
+
+        startNotify();
+        notify(ID_MYSTICISM, Integer.valueOf(getMysticism()));
+
+        notifyOfBaseFocusPointChange();
+        updateSkills();
+        mNeedAttributePointCalculation = true;
+        endNotify();
+    }
+
     /** @return The number of points spent on health. */
     public int getHealthPoints() {
         return getPointsForAttribute(mHealth - 10, 10, mHealthCostReduction);
+    }
+
+    /** @return The number of points spent on mysticism. */
+    public int getMysticismPoints() {
+        return getPointsForAttribute(mMysticism - 10, 10, mMysticismCostReduction);
     }
 
     /** @return The total number of points this character has. */
@@ -1903,7 +2011,7 @@ public class GURPSCharacter extends DataFile {
     }
 
     private void calculateAttributePoints() {
-        mCachedAttributePoints = getStrengthPoints() + getDexterityPoints() + getIntelligencePoints() + getHealthPoints() + getWillPoints() + getPerceptionPoints() + getBasicSpeedPoints() + getBasicMovePoints() + getHitPointPoints() + getFatiguePointPoints();
+        mCachedAttributePoints = getStrengthPoints() + getDexterityPoints() + getIntelligencePoints() + getHealthPoints() + getMysticismPoints() + getWillPoints() + getPerceptionPoints() + getBasicSpeedPoints() + getBasicMovePoints() + getHitPointPoints() + getFatiguePointPoints() + getFocusPointPoints();
     }
 
     /** @return The number of points spent on a racial package. */
@@ -2353,13 +2461,22 @@ public class GURPSCharacter extends DataFile {
         return getFatiguePoints() - getFatiguePointsDamage();
     }
 
+    public int getCurrentFocusPoints() {
+        return getFocusPoints() - getFocusPointsDamage();
+    }
+
     /** @return The fatigue points (FP). */
     public int getFatiguePoints() {
         return getHealth() + mFatiguePoints + mFatiguePointBonus;
     }
 
+    /** @return The focus points. */
+    public int getFocusPoints() {
+        return getMysticism() + mFocusPoints + mFocusPointBonus;
+    }
+
     /**
-     * Sets the fatigue points (HP).
+     * Sets the fatigue points (FP).
      *
      * @param fp The new fatigue points.
      */
@@ -2375,9 +2492,31 @@ public class GURPSCharacter extends DataFile {
         }
     }
 
+    /**
+     * Sets the focus points.
+     *
+     * @param focus The new focus points.
+     */
+    public void setFocusPoints(int focus) {
+        int oldFocus = getFocusPoints();
+        if (oldFocus != focus) {
+            postUndoEdit(I18n.Text("Focus Points Change"), ID_FOCUS_POINTS, Integer.valueOf(oldFocus), Integer.valueOf(focus));
+            startNotify();
+            mFocusPoints = focus - (getMysticism() + mFocusPointBonus);
+            mNeedAttributePointCalculation = true;
+            notifyOfBaseFocusPointChange();
+            endNotify();
+        }
+    }
+
     /** @return The number of points spent on fatigue points. */
     public int getFatiguePointPoints() {
         return 3 * mFatiguePoints;
+    }
+
+    /** @return The number of points spent on focus points. */
+    public int getFocusPointPoints() {
+        return 3 * mFocusPoints;
     }
 
     /** @return The fatigue point bonus. */
@@ -2385,11 +2524,24 @@ public class GURPSCharacter extends DataFile {
         return mFatiguePointBonus;
     }
 
+    /** @return The focus point bonus. */
+    public int getFocusPointBonus() {
+        return mFocusPointBonus;
+    }
+
     /** @param bonus The fatigue point bonus. */
     public void setFatiguePointBonus(int bonus) {
         if (mFatiguePointBonus != bonus) {
             mFatiguePointBonus = bonus;
             notifyOfBaseFatiguePointChange();
+        }
+    }
+
+    /** @param bonus The focus point bonus. */
+    public void setFocusPointBonus(int bonus) {
+        if (mFocusPointBonus != bonus) {
+            mFocusPointBonus = bonus;
+            notifyOfBaseFocusPointChange();
         }
     }
 
@@ -2403,9 +2555,21 @@ public class GURPSCharacter extends DataFile {
         endNotify();
     }
 
+    private void notifyOfBaseFocusPointChange() {
+        startNotify();
+        notify(ID_FOCUS_POINTS, Integer.valueOf(getFocusPoints()));
+        notify(ID_CURRENT_FOCUS, Integer.valueOf(getFocusPoints() - mFocusPointsDamage));
+        endNotify();
+    }
+
     /** @return The fatigue points damage. */
     public int getFatiguePointsDamage() {
         return mFatiguePointsDamage;
+    }
+
+    /** @return The focus points damage. */
+    public int getFocusPointsDamage() {
+        return mFocusPointsDamage;
     }
 
     /**
@@ -2419,6 +2583,20 @@ public class GURPSCharacter extends DataFile {
             mFatiguePointsDamage = damage;
             notifySingle(ID_FATIGUE_POINTS_DAMAGE, Integer.valueOf(mFatiguePointsDamage));
             notifySingle(ID_CURRENT_FP, Integer.valueOf(getFatiguePoints() - mFatiguePointsDamage));
+        }
+    }
+
+    /**
+     * Sets the focus points damage.
+     *
+     * @param damage The damage amount.
+     */
+    public void setFocusPointsDamage(int damage) {
+        if (mFocusPointsDamage != damage) {
+            postUndoEdit(I18n.Text("Current Focus Points Change"), ID_FOCUS_POINTS_DAMAGE, Integer.valueOf(mFocusPointsDamage), Integer.valueOf(damage));
+            mFocusPointsDamage = damage;
+            notifySingle(ID_FOCUS_POINTS_DAMAGE, Integer.valueOf(mFocusPointsDamage));
+            notifySingle(ID_CURRENT_FOCUS, Integer.valueOf(getFocusPoints() - mFocusPointsDamage));
         }
     }
 
@@ -2747,6 +2925,8 @@ public class GURPSCharacter extends DataFile {
         setIntelligenceCostReduction(getCostReductionFor(ID_INTELLIGENCE));
         setHealthBonus(getIntegerBonusFor(ID_HEALTH));
         setHealthCostReduction(getCostReductionFor(ID_HEALTH));
+        setMysticismBonus(getIntegerBonusFor(ID_MYSTICISM));
+        setMysticismCostReduction(getCostReductionFor(ID_MYSTICISM));
         setWillBonus(getIntegerBonusFor(ID_WILL));
         setFrightCheckBonus(getIntegerBonusFor(ID_FRIGHT_CHECK));
         setPerceptionBonus(getIntegerBonusFor(ID_PERCEPTION));
@@ -2756,6 +2936,7 @@ public class GURPSCharacter extends DataFile {
         setTouchBonus(getIntegerBonusFor(ID_TOUCH));
         setHitPointBonus(getIntegerBonusFor(ID_HIT_POINTS));
         setFatiguePointBonus(getIntegerBonusFor(ID_FATIGUE_POINTS));
+        setFocusPointBonus(getIntegerBonusFor(ID_FOCUS_POINTS));
         mProfile.update();
         setDodgeBonus(getIntegerBonusFor(ID_DODGE_BONUS));
         setParryBonus(getIntegerBonusFor(ID_PARRY_BONUS));

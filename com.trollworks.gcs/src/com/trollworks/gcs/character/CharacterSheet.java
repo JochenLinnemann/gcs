@@ -265,6 +265,7 @@ public class CharacterSheet extends JPanel implements ChangeListener, Scrollable
         wrapper = new Wrapper(new PrecisionLayout().setColumns(4).setMargins(0).setSpacing(GAP, GAP).setFillAlignment());
         wrapper.add(new AttributesPanel(this), new PrecisionLayoutData().setGrabVerticalSpace(true).setFillAlignment());
         Wrapper wrapper2 = new Wrapper(new PrecisionLayout().setMargins(0).setSpacing(GAP, GAP).setFillAlignment());
+        wrapper2.add(new FocusPointsPanel(this), new PrecisionLayoutData().setFillAlignment().setGrabHorizontalSpace(true));
         wrapper2.add(new FatiguePointsPanel(this), new PrecisionLayoutData().setFillAlignment().setGrabHorizontalSpace(true));
         wrapper2.add(new HitPointsPanel(this), new PrecisionLayoutData().setGrabVerticalSpace(true).setFillAlignment().setGrabHorizontalSpace(true));
         wrapper.add(wrapper2, new PrecisionLayoutData().setGrabSpace(true).setFillAlignment());
