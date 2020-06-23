@@ -66,6 +66,18 @@ public enum SkillDefaultType {
             return finalLevel(skillDefault, Math.min(SkillAttribute.HT.getBaseSkillLevel(character), 20));
         }
     },
+    /** The type for Mysticism-based defaults. */
+    Myst {
+        @Override
+        public String toString() {
+            return I18n.Text("Mysticism");
+        }
+
+        @Override
+        public int getSkillLevelFast(GURPSCharacter character, SkillDefault skillDefault, boolean requirePoints, Set<String> excludes) {
+            return finalLevel(skillDefault, Math.min(SkillAttribute.Myst.getBaseSkillLevel(character), 20));
+        }
+    },
     /** The type for Will-based defaults. */
     Will {
         @Override

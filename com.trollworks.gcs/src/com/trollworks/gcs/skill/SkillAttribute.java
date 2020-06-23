@@ -64,6 +64,18 @@ public enum SkillAttribute {
             return character != null ? character.getIntelligence() : Integer.MIN_VALUE;
         }
     },
+    /** The mysticism attribute. */
+    Myst {
+        @Override
+        public String toString() {
+            return I18n.Text("Myst");
+        }
+
+        @Override
+        public int getBaseSkillLevel(GURPSCharacter character) {
+            return character != null ? character.getMysticism() : Integer.MIN_VALUE;
+        }
+    },
     /** The will attribute. */
     Will {
         @Override

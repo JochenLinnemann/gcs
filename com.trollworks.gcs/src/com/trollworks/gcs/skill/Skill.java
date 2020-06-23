@@ -31,6 +31,7 @@ import com.trollworks.gcs.weapon.RangedWeaponStats;
 import com.trollworks.gcs.weapon.WeaponStats;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import javax.swing.ListSelectionModel;
 
 /** A GURPS Skill. */
 public class Skill extends ListRow implements HasSourceReference {
@@ -580,7 +582,10 @@ public class Skill extends ListRow implements HasSourceReference {
         SkillDifficulty[] difficulty = SkillDifficulty.values();
         String            input      = text.trim();
 
-        for (SkillAttribute element : attribute) {
+        // We have to go backwards through the list to avoid the
+        // regex grabbing the "ST" in "Myst".
+        for (int i = attribute.length -1; i >= 0; i--) {
+            SkillAttribute element = attribute[i];
             // We have to go backwards through the list to avoid the
             // regex grabbing the "H" in "VH".
             for (int j = difficulty.length - 1; j >= 0; j--) {
