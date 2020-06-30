@@ -61,7 +61,7 @@ public class I18n {
         }
         base = base.normalize();
 
-        String filename = Locale.getDefault().toString();
+        String filename = "de"; //Locale.getDefault().toString();
         while (true) {
             Path path = base.resolve(filename + ".i18n");
             if (Files.isRegularFile(path) && Files.isReadable(path)) {
