@@ -312,7 +312,11 @@ public class SpellOutline extends ListOutline implements Incrementable, TechLeve
         ArrayList<ListRow> process            = new ArrayList<>();
 
         for (Row one : rows) {
-            ListRow row = one instanceof RitualMagicSpell ? new RitualMagicSpell(mDataFile, (RitualMagicSpell) one, true, forSheetOrTemplate) : new Spell(mDataFile, (Spell) one, true, forSheetOrTemplate);
+            ListRow row = one instanceof SplittermondSpell
+                    ? new SplittermondSpell(mDataFile, (SplittermondSpell) one, true, forSheetOrTemplate)
+                    : one instanceof RitualMagicSpell
+                    ? new RitualMagicSpell(mDataFile, (RitualMagicSpell) one, true, forSheetOrTemplate)
+                    : new Spell(mDataFile, (Spell) one, true, forSheetOrTemplate);
             model.collectRowsAndSetOwner(list, row, false);
             if (forSheetOrTemplate) {
                 addRowsToBeProcessed(process, row);

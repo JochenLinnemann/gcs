@@ -22,6 +22,7 @@ import com.trollworks.gcs.skill.Skill;
 import com.trollworks.gcs.skill.Technique;
 import com.trollworks.gcs.spell.RitualMagicSpell;
 import com.trollworks.gcs.spell.Spell;
+import com.trollworks.gcs.spell.SplittermondSpell;
 import com.trollworks.gcs.ui.UIUtilities;
 import com.trollworks.gcs.ui.image.Images;
 import com.trollworks.gcs.ui.scale.Scales;
@@ -299,6 +300,13 @@ public class SheetDockable extends DataFileDockable implements SearchTarget, Ret
                     map.put(outline, new StateEdit(outline.getModel(), addRows));
                 }
                 row = new Skill(getDataFile(), (Skill) row, true, true);
+                addCompleteRow(outline, row, selMap);
+            } else if (row instanceof SplittermondSpell) {
+                outline = mSheet.getSpellOutline();
+                if (!map.containsKey(outline)) {
+                    map.put(outline, new StateEdit(outline.getModel(), addRows));
+                }
+                row = new SplittermondSpell(getDataFile(), (SplittermondSpell) row, true, true);
                 addCompleteRow(outline, row, selMap);
             } else if (row instanceof RitualMagicSpell) {
                 outline = mSheet.getSpellOutline();

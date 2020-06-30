@@ -40,6 +40,7 @@ import com.trollworks.gcs.skill.Technique;
 import com.trollworks.gcs.spell.RitualMagicSpell;
 import com.trollworks.gcs.spell.Spell;
 import com.trollworks.gcs.spell.SpellList;
+import com.trollworks.gcs.spell.SplittermondSpell;
 import com.trollworks.gcs.ui.RetinaIcon;
 import com.trollworks.gcs.ui.image.Images;
 import com.trollworks.gcs.ui.print.PrintManager;
@@ -542,6 +543,8 @@ public class GURPSCharacter extends DataFile {
                     mSpells.addRow(new Spell(this, reader, state), true);
                 } else if (RitualMagicSpell.TAG_RITUAL_MAGIC_SPELL.equals(name)) {
                     mSpells.addRow(new RitualMagicSpell(this, reader, state), true);
+                } else if (SplittermondSpell.TAG_SPLITTERMOND_SPELL.equals(name)) {
+                    mSpells.addRow(new SplittermondSpell(this, reader, state), true);
                 } else {
                     reader.skipTag(name);
                 }

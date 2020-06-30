@@ -21,6 +21,7 @@ import com.trollworks.gcs.skill.Skill;
 import com.trollworks.gcs.skill.Technique;
 import com.trollworks.gcs.spell.RitualMagicSpell;
 import com.trollworks.gcs.spell.Spell;
+import com.trollworks.gcs.spell.SplittermondSpell;
 import com.trollworks.gcs.ui.Fonts;
 import com.trollworks.gcs.ui.UIUtilities;
 import com.trollworks.gcs.ui.scale.Scales;
@@ -282,6 +283,13 @@ public class TemplateDockable extends DataFileDockable implements NotifierTarget
                     map.put(outline, new StateEdit(outline.getModel(), addRowsText));
                 }
                 row = new Skill(getDataFile(), (Skill) row, true, true);
+                addCompleteRow(outline, row, selMap);
+            } else if (row instanceof SplittermondSpell) {
+                outline = mTemplate.getSpellOutline();
+                if (!map.containsKey(outline)) {
+                    map.put(outline, new StateEdit(outline.getModel(), addRowsText));
+                }
+                row = new SplittermondSpell(getDataFile(), (SplittermondSpell) row, true, true);
                 addCompleteRow(outline, row, selMap);
             } else if (row instanceof RitualMagicSpell) {
                 outline = mTemplate.getSpellOutline();

@@ -17,6 +17,7 @@ import com.trollworks.gcs.menu.Command;
 import com.trollworks.gcs.spell.RitualMagicSpell;
 import com.trollworks.gcs.spell.Spell;
 import com.trollworks.gcs.spell.SpellsDockable;
+import com.trollworks.gcs.spell.SplittermondSpell;
 import com.trollworks.gcs.template.TemplateDockable;
 import com.trollworks.gcs.ui.widget.outline.ListOutline;
 import com.trollworks.gcs.utility.I18n;
@@ -26,31 +27,41 @@ import java.awt.event.KeyEvent;
 
 /** Provides the "New Spell" command. */
 public class NewSpellCommand extends Command {
+    public enum SpellKind {
+        Spell,
+        RitualMagicSpell,
+        SplittermondSpell
+    }
+
     /** The action command this command will issue. */
     public static final String          CMD_SPELL              = "NewSpell";
     /** The action command this command will issue. */
     public static final String          CMD_SPELL_CONTAINER    = "NewSpellContainer";
     /** The action command this command will issue. */
     public static final String          CMD_RITUAL_MAGIC_SPELL = "NewRitualMagicSpell";
+    /** The action command this command will issue. */
+    public static final String          CMD_SPLITTERMOND_SPELL = "NewSplittermondSpell";
     /** The "New Spell" command. */
-    public static final NewSpellCommand INSTANCE               = new NewSpellCommand(false, false, I18n.Text("New Spell"), CMD_SPELL, KeyEvent.VK_B, COMMAND_MODIFIER);
+    public static final NewSpellCommand INSTANCE               = new NewSpellCommand(false, SpellKind.Spell, I18n.Text("New Spell"), CMD_SPELL, KeyEvent.VK_B, COMMAND_MODIFIER);
     /** The "New Spell Container" command. */
-    public static final NewSpellCommand CONTAINER_INSTANCE     = new NewSpellCommand(true, false, I18n.Text("New Spell Container"), CMD_SPELL_CONTAINER, KeyEvent.VK_B, SHIFTED_COMMAND_MODIFIER);
+    public static final NewSpellCommand CONTAINER_INSTANCE     = new NewSpellCommand(true, SpellKind.Spell, I18n.Text("New Spell Container"), CMD_SPELL_CONTAINER, KeyEvent.VK_B, SHIFTED_COMMAND_MODIFIER);
     /** The "New Technique" command. */
-    public static final NewSpellCommand RITUAL_MAGIC_INSTANCE  = new NewSpellCommand(false, true, I18n.Text("New Ritual Magic Spell"), CMD_RITUAL_MAGIC_SPELL);
+    public static final NewSpellCommand RITUAL_MAGIC_INSTANCE  = new NewSpellCommand(false, SpellKind.RitualMagicSpell, I18n.Text("New Ritual Magic Spell"), CMD_RITUAL_MAGIC_SPELL);
+    /** The "New Splittermond Spell" command. */
+    public static final NewSpellCommand SPLITTERMOND_INSTANCE  = new NewSpellCommand(false, SpellKind.SplittermondSpell, I18n.Text("New Splittermond Spell"), CMD_SPLITTERMOND_SPELL);
     private             boolean         mContainer;
-    private             boolean         mRitualMagic;
+    private             SpellKind       mSpellKind;
 
-    private NewSpellCommand(boolean container, boolean isRitualMagic, String title, String cmd) {
+    private NewSpellCommand(boolean container, SpellKind spellKind, String title, String cmd) {
         super(title, cmd);
         mContainer = container;
-        mRitualMagic = isRitualMagic;
+        mSpellKind = spellKind;
     }
 
-    private NewSpellCommand(boolean container, boolean isRitualMagic, String title, String cmd, int keyCode, int modifiers) {
+    private NewSpellCommand(boolean container, SpellKind spellKind, String title, String cmd, int keyCode, int modifiers) {
         super(title, cmd, keyCode, modifiers);
         mContainer = container;
-        mRitualMagic = isRitualMagic;
+        mSpellKind = spellKind;
     }
 
     @Override
@@ -94,7 +105,20 @@ public class NewSpellCommand extends Command {
                 }
             }
         }
-        Spell spell = mRitualMagic ? new RitualMagicSpell(dataFile) : new Spell(dataFile, mContainer);
+
+        Spell spell;
+        switch (mSpellKind) {
+        case SplittermondSpell:
+            spell = new SplittermondSpell(dataFile);
+            break;
+        case RitualMagicSpell:
+            spell = new RitualMagicSpell(dataFile);
+            break;
+        default:
+            spell = new Spell(dataFile, mContainer);
+            break;
+        }
+
         outline.addRow(spell, getTitle(), false);
         outline.getModel().select(spell, false);
         outline.scrollSelectionIntoView();
