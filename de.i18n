@@ -598,22 +598,22 @@ k:"Checking for updates to %s"
 v:"Checking for updates to %s"
 
 k:"Class"
-v:"Class"
+v:"Klasse"
 
 k:"Clear"
 v:"Clear"
 
 k:"Close"
-v:"Close"
+v:"Schließen"
 
 k:"Collapse"
-v:"Collapse"
+v:"Kollaps"
 
 k:"College"
-v:"College"
+v:"Schule"
 
 k:"Color"
-v:"Color"
+v:"Farbe"
 
 k:"Container Type"
 v:"Container Type"
@@ -658,13 +658,13 @@ k:"Create text versions of sheets specified on the command line using the specif
 v:"Create text versions of sheets specified on the command line using the specified template file."
 
 k:"Created:"
-v:"Created:"
+v:"Erstellt:"
 
 k:"Curly"
-v:"Curly"
+v:"Lockig"
 
 k:"Current"
-v:"Current"
+v:"Aktuell"
 
 k:"Current Fatigue Points Change"
 v:"Current Fatigue Points Change"
@@ -700,52 +700,52 @@ k:"Current hit points at or below this point indicate the character is reeling f
 v:"Current hit points at or below this point indicate the character is reeling from the pain, halving move, speed and dodge"
 
 k:"Cut"
-v:"Cut"
+v:"Schnitt"
 
 k:"DR"
-v:"DR"
+v:"RS"
 
 k:"DX"
-v:"DX"
+v:"GE"
 
 k:"Damage"
-v:"Damage"
+v:"Schaden"
 
 k:"Dark Brown"
-v:"Dark Brown"
+v:"Dunkelbraun"
 
 k:"Dark Tan"
-v:"Dark Tan"
+v:"Stark gebräunt"
 
 k:"Dead"
-v:"Dead"
+v:"Tot"
 
 k:"Decrease Skill Level"
-v:"Decrease Skill Level"
+v:"Fertigkeitswert senken"
 
 k:"Decrement"
-v:"Decrement"
+v:"Senken"
 
 k:"Decrement Level"
-v:"Decrement Level"
+v:"Stufe senken"
 
 k:"Decrement Points"
-v:"Decrement Points"
+v:"Punkte senken"
 
 k:"Decrement Quantity"
-v:"Decrement Quantity"
+v:"Anzahl senken"
 
 k:"Decrement Skill Level"
-v:"Decrement Skill Level"
+v:"Fertigkeitswert senken"
 
 k:"Decrement Spell Level"
-v:"Decrement Spell Level"
+v:"Zauberspruchwert senken"
 
 k:"Decrement Tech Level"
-v:"Decrement Tech Level"
+v:"Techgrad senken"
 
 k:"Decrement Uses"
-v:"Decrement Uses"
+v:"Nutzungen senken"
 
 k:"Default: "
 v:"Default: "
@@ -757,91 +757,91 @@ k:"Defaults To"
 v:"Defaults To"
 
 k:"Delete"
-v:"Delete"
+v:"Löschen"
 
 k:"Delete File"
-v:"Delete File"
+v:"Datei löschen"
 
 k:"Delete {0} Files"
-v:"Delete {0} Files"
+v:"Lösche {0} Dateien"
 
 k:"Description"
-v:"Description"
+v:"Beschreibung"
 
 k:"Description Randomization"
-v:"Description Randomization"
+v:"Beschreibungsgenerierung"
 
 k:"Description Randomizer"
-v:"Description Randomizer"
+v:"Beschreibungsgenerator"
 
 k:"Development Version"
-v:"Development Version"
+v:"Entwicklungsversion"
 
 k:"Development versions don't look for GCS updates"
-v:"Development versions don't look for GCS updates"
+v:"Entwicklungsversionen prüfen nicht auf GCS Updates"
 
 k:"Dexterity (DX)"
 v:"Geschicklichkeit (GE)"
 
 k:"Dexterity Change"
-v:"Dexterity Change"
+v:"Geschicklichkeitsänderung"
 
 k:"Diff"
-v:"Diff"
+v:"Schw"
 
 k:"Difficulty"
-v:"Difficulty"
+v:"Schwierigkeit"
 
 k:"Disadvantages"
-v:"Disadvantages"
+v:"Nachteile"
 
 k:"Display"
-v:"Display"
+v:"Anzeige"
 
 k:"Displays a description of each option."
-v:"Displays a description of each option."
+v:"Zeigt eine Beschreibung jeder Option an."
 
 k:"Displays the program version."
-v:"Displays the program version."
+v:"Zeigt die Programmversion an."
 
 k:"Dodge"
-v:"Dodge"
+v:"Ausweichen"
 
 k:"Does not have"
-v:"Does not have"
+v:"Hat nicht"
 
 k:"Downloading and installing the %s…"
-v:"Downloading and installing the %s…"
+v:"Lade und installiere %s…"
 
 k:"Draft"
-v:"Draft"
+v:"Entwurf"
 
 k:"Duplex"
 v:"Duplex"
 
 k:"Duplicate"
-v:"Duplicate"
+v:"Duplizieren"
 
 k:"Duplicate Rows"
-v:"Duplicate Rows"
+v:"Zeilen duplizieren"
 
 k:"Duration"
-v:"Duration"
+v:"Dauer"
 
 k:"Each letter represents an optional rule. A uppercase letter indicates the rule is in use while a lowercase letter indicates the rule is not in use."
-v:"Each letter represents an optional rule. A uppercase letter indicates the rule is in use while a lowercase letter indicates the rule is not in use."
+v:"Jeder Buchstabe stellt eine optionale Regel dar. Großbuchtsaben zeigen aktvierte und Kleinbuchstaben deaktivierte Regeloptionen an."
 
 k:"Edit"
-v:"Edit"
+v:"Bearbeiten"
 
 k:"Edit {0}"
-v:"Edit {0}"
+v:"{0} bearbeiten"
 
 k:"Enable Modifiers"
-v:"Enable Modifiers"
+v:"Modifikatoren aktivieren"
 
 k:"Enabled"
-v:"Enabled"
+v:"Aktiviert"
 
 k:"Encumbrance"
 v:"Belastung"
@@ -850,100 +850,100 @@ k:"Encumbrance, Move & Dodge"
 v:"Belastung, Bewegung & Ausweichen"
 
 k:"Enter a weight or percentage, e.g. \"2 lb\" or \"5%\"."
-v:"Enter a weight or percentage, e.g. \"2 lb\" or \"5%\"."
+v:"Gib ein Gewicht oder einen Prozentwert an, e.g. \"1 kg\" or \"5%\"."
 
 k:"Enter text here and press RETURN to select all matching items"
-v:"Enter text here and press RETURN to select all matching items"
+v:"Gib Text hier ein und drücke EINGABE, um alle passenden Einträge auszuwählen"
 
 k:"Enter text here to narrow the list to only those rows containing matching items"
-v:"Enter text here to narrow the list to only those rows containing matching items"
+v:"Gib Text hier ein, um die Liste auf passende Zeilen einzugrenzen"
 
 k:"Equipment"
-v:"Equipment"
+v:"Ausrüstung"
 
 k:"Equipment Library"
-v:"Equipment Library"
+v:"Ausrüstungsverzeichnis"
 
 k:"Equipment Modifiers Library"
-v:"Equipment Modifiers Library"
+v:"Verzeichnis der Ausrüstungsmodifikatoren"
 
 k:"Equipped"
-v:"Equipped"
+v:"Ausgerüstet"
 
 k:"Error"
-v:"Error"
+v:"Fehler"
 
 k:"Exit"
-v:"Exit"
+v:"Beenden"
 
 k:"Exotic"
-v:"Exotic"
+v:"Exotisch"
 
 k:"Export To…"
-v:"Export To…"
+v:"Exportieren nach…"
 
 k:"Export to GURPS Calculator was successful."
-v:"Export to GURPS Calculator was successful."
+v:"Export nach GURPS Calculator war erfolgreich."
 
 k:"Export to GURPS Calculator…"
-v:"Export to GURPS Calculator…"
+v:"Export nach GURPS Calculator…"
 
 k:"Export to PDF…"
-v:"Export to PDF…"
+v:"PDF exportieren…"
 
 k:"Export to PNG Image(s)…"
-v:"Export to PNG Image(s)…"
+v:"PNG Bild(er) exportieren…"
 
 k:"Extended Value"
-v:"Extended Value"
+v:"Erweiterter Wert"
 
 k:"Extended Weight"
-v:"Extended Weight"
+v:"Erweitertes Gewicht"
 
 k:"Extremity"
-v:"Extremity"
+v:"Extremität"
 
 k:"Eye"
-v:"Eye"
+v:"Auge"
 
 k:"Eye Color Change"
-v:"Eye Color Change"
+v:"Augenfarbenänderung"
 
 k:"Eyes:"
-v:"Eyes:"
+v:"Augen:"
 
 k:"FP"
-v:"FP"
+v:"EP"
 
 k:"Face"
-v:"Face"
+v:"Gesicht"
 
 k:"Fatigue Points"
-v:"Fatigue Points"
+v:"Erschöpungspunkte"
 
 k:"Fatigue Points Change"
-v:"Fatigue Points Change"
+v:"Änderung der Erschöpfungspunkte"
 
 k:"Features"
 v:"Features"
 
 k:"Feet"
-v:"Feet"
+v:"Fuß"
 
 k:"Feet & Inches"
-v:"Feet & Inches"
+v:"Fuß & Zoll"
 
 k:"Feet (') & Inches (\")"
-v:"Feet (') & Inches (\")"
+v:"Fuß (') & Zoll (\")"
 
 k:"Female"
-v:"Female"
+v:"Weiblich"
 
 k:"File"
-v:"File"
+v:"Datei"
 
 k:"Fin"
-v:"Fin"
+v:"Flosse"
 
 k:"Find mine"
 v:"Find mine"
@@ -952,40 +952,40 @@ k:"Focus Points"
 v:"Fokuspunkte"
 
 k:"Focus Points Change"
-v:"Focus Points Change"
+v:"Änderung der Fokuspunkte"
 
 k:"Fonts"
-v:"Fonts"
+v:"Schriften"
 
 k:"Foot"
-v:"Foot"
+v:"Fuß"
 
 k:"Foreleg"
-v:"Foreleg"
+v:"Vorderbein"
 
 k:"Fragmentation"
-v:"Fragmentation"
+v:"Fragmentierung"
 
 k:"Fragmentation Damage"
-v:"Fragmentation Damage"
+v:"Fragmentatierungsschaden"
 
 k:"Freckled"
-v:"Freckled"
+v:"Sommersprossig"
 
 k:"Fright Check"
-v:"Fright Check"
+v:"Furchtprobe"
 
 k:"GCS %s update was canceled."
-v:"GCS %s update was canceled."
+v:"GCS %s Updatw wurde abgebrochen."
 
 k:"GCS has no update available"
-v:"GCS has no update available"
+v:"GCS verfügt über kein Update"
 
 k:"GCS v%s is available!"
-v:"GCS v%s is available!"
+v:"GCS v%s ist verfügbar!"
 
 k:"GIF Files"
-v:"GIF Files"
+v:"GIF Dateien"
 
 k:"GURPS Calculator Key"
 v:"GURPS Calculator Key"
@@ -1002,61 +1002,61 @@ v:"The Trove Library is licensed under LGPL 2.1 by Eric D. Friedman and Rob Eden
 v:"The PDFBox and FontBox libraries are licensed under the Apache License v2 by the Apache Software Foundation."
 
 k:"Gender Change"
-v:"Gender Change"
+v:"Änderung des Geschlechts"
 
 k:"Gender:"
-v:"Gender:"
+v:"Geschlecht:"
 
 k:"Generate Random {0} Name"
-v:"Generate Random {0} Name"
+v:"Zufälligen {0} Namen generieren"
 
 k:"GitHub Account:"
 v:"GitHub Account:"
 
 k:"Gives a DR bonus of"
-v:"Gives a DR bonus of"
+v:"Gibt eine RS Bonus von"
 
 k:"Gives a reaction modifier of"
-v:"Gives a reaction modifier of"
+v:"Gibt einen Reaktionsmodifikator von"
 
 k:"Gives a skill level bonus of"
-v:"Gives a skill level bonus of"
+v:"Gibt einen Bonus auf den Fertigkeitswert von"
 
 k:"Gives a spell level bonus of"
-v:"Gives a spell level bonus of"
+v:"Gibt einen Bonus auf den Zauberspruchwert von"
 
 k:"Gives a weapon damage bonus of"
-v:"Gives a weapon damage bonus of"
+v:"Gibt einen Bonus auf den Waffenschaden von"
 
 k:"Gives an attribute bonus of"
-v:"Gives an attribute bonus of"
+v:"Gibt einen Bonus auf das Attribut von"
 
 k:"Grams"
-v:"Grams"
+v:"Gramm"
 
 k:"Green"
-v:"Green"
+v:"Grün"
 
 k:"Grey"
-v:"Grey"
+v:"Grau"
 
 k:"Groin"
 v:"Groin"
 
 k:"Group"
-v:"Group"
+v:"Gruppe"
 
 k:"HP"
-v:"HP"
+v:"TP"
 
 k:"HT"
-v:"HT"
+v:"KO"
 
 k:"Hair Change"
-v:"Hair Change"
+v:"Änderung des Haars"
 
 k:"Hair:"
-v:"Hair:"
+v:"Haar:"
 
 k:"Hand"
 v:"Hand"
@@ -1065,19 +1065,19 @@ k:"Hand:"
 v:"Hand:"
 
 k:"Handedness Change"
-v:"Handedness Change"
+v:"Änderung der Händigkeit"
 
 k:"Has"
-v:"Has"
+v:"Hat"
 
 k:"Has Half Levels"
-v:"Has Half Levels"
+v:"Hat halbe Stufen"
 
 k:"Has Levels"
-v:"Has Levels"
+v:"Hat Stufen"
 
 k:"Has No Levels"
-v:"Has No Levels"
+v:"Hat keine Stufen"
 
 k:"Health (HT)"
 v:"Konstitution (KO)"
@@ -1101,16 +1101,16 @@ k:"Help"
 v:"Hilfe"
 
 k:"Hexapod"
-v:"Hexapod"
+v:"Hexapode"
 
 k:"High"
 v:"Hoch"
 
 k:"Hindleg"
-v:"Hindleg"
+v:"Hinterbein"
 
 k:"Hit Locations"
-v:"Hit Locations"
+v:"Trefferzonen"
 
 k:"Hit Points"
 v:"Trefferpunkte"
@@ -1143,19 +1143,19 @@ k:"If your PDF is opening up to the wrong page when opening page references, ent
 v:"If your PDF is opening up to the wrong page when opening page references, enter an offset here to compensate."
 
 k:"Ignore"
-v:"Ignore"
+v:"Ignorieren"
 
 k:"Image Files"
-v:"Image Files"
+v:"Bilddateien"
 
 k:"Inches"
 v:"Zoll"
 
 k:"Includes Fright Check Bonus"
-v:"Includes Fright Check Bonus"
+v:"Beinhaltet Furchtprobenbonus"
 
 k:"Includes Fright Check Penalty"
-v:"Includes Fright Check Penalty"
+v:"Beinhaltet Furchprobenmalus"
 
 k:"Includes a Major Cost of Living Increase and Merchant Skill Penalty"
 v:"Includes a Major Cost of Living Increase and Merchant Skill Penalty"
@@ -1173,34 +1173,34 @@ k:"Includes modifiers from"
 v:"Includes modifiers from"
 
 k:"Increase Skill Level"
-v:"Increase Skill Level"
+v:"Fertigkeitswert erhöhen"
 
 k:"Increment"
-v:"Increment"
+v:"Erhöhen"
 
 k:"Increment Level"
-v:"Increment Level"
+v:"Stufe erhöhen"
 
 k:"Increment Points"
-v:"Increment Points"
+v:"Punkte erhöhen"
 
 k:"Increment Quantity"
-v:"Increment Quantity"
+v:"Anzahl erhöhen"
 
 k:"Increment Skill Level"
-v:"Increment Skill Level"
+v:"Fertigkeitswert erhöhen"
 
 k:"Increment Spell Level"
-v:"Increment Spell Level"
+v:"Zauberspruchwert erhöhen"
 
 k:"Increment Tech Level"
-v:"Increment Tech Level"
+v:"Techgrad erhöhen"
 
 k:"Increment Uses"
-v:"Increment Uses"
+v:"Nutzungen erhöhen"
 
 k:"Initial Points"
-v:"Initial Points"
+v:"Anfangspunkte"
 
 k:"Inline"
 v:"Inline"
@@ -1209,22 +1209,22 @@ k:"Inline & Tooltip"
 v:"Inline & Tooltip"
 
 k:"Instant"
-v:"Instant"
+v:"Sofort"
 
 k:"Intelligence (IQ)"
 v:"Intelligenz (IQ)"
 
 k:"Intelligence Change"
-v:"Intelligence Change"
+v:"Intelligenzänderung"
 
 k:"Invalid file name"
-v:"Invalid file name"
+v:"Ungültiger Dateiname"
 
 k:"Italic"
-v:"Italic"
+v:"Kursiv"
 
 k:"Item"
-v:"Item"
+v:"Gegenstand"
 
 k:"Items that are not equipped do not apply any features they may normally contribute to the character."
 v:"Items that are not equipped do not apply any features they may normally contribute to the character."
@@ -1233,7 +1233,7 @@ k:"JPEG Files"
 v:"JPEG Dateien"
 
 k:"Jump To Search"
-v:"Jump To Search"
+v:"Springe zur Suche"
 
 k:"Kilograms"
 v:"Kilogramm"
@@ -1242,25 +1242,25 @@ k:"Kilometers"
 v:"Kilometer"
 
 k:"LC"
-v:"LC"
+v:"LK"
 
 k:"LC0: Banned"
-v:"LC0: Banned"
+v:"LK0: Gebannt"
 
 k:"LC1: Military"
-v:"LC1: Military"
+v:"LK1: Militärisch"
 
 k:"LC2: Restricted"
-v:"LC2: Restricted"
+v:"LK2: Eingeschränkt"
 
 k:"LC3: Licensed"
-v:"LC3: Licensed"
+v:"LK3: Lizenziert"
 
 k:"LC4: Open"
-v:"LC4: Open"
+v:"LK4: Offen"
 
 k:"Landscape"
-v:"Landscape"
+v:"Landschaft"
 
 k:"Left"
 v:"Links"
@@ -1287,7 +1287,7 @@ k:"Leg 7-8"
 v:"Bein 7-8"
 
 k:"Legality Class"
-v:"Legality Class"
+v:"Legalitätsklasse"
 
 k:"Level"
 v:"Stufe"
@@ -1296,10 +1296,10 @@ k:"Levels"
 v:"Stufen"
 
 k:"Library"
-v:"Library"
+v:"Verzeichnis"
 
 k:"Library Explorer"
-v:"Library Explorer"
+v:"Verzeichnis-Explorer"
 
 k:"License"
 v:"Lizenz"
@@ -1311,13 +1311,13 @@ k:"Light"
 v:"Leicht"
 
 k:"Light Brown"
-v:"Light Brown"
+v:"Hellbraun"
 
 k:"Light Tan"
-v:"Light Tan"
+v:"Leicht gebräunt"
 
 k:"Loading %s... "
-v:"Loading %s... "
+v:"Lade %s... "
 
 k:"Locate"
 v:"Locate"
@@ -1332,7 +1332,7 @@ k:"Long Tons"
 v:"Long Tons"
 
 k:"Lvl"
-v:"St"
+v:"Wert"
 
 k:"MMMM d"
 v:"MMMM d"
@@ -1341,10 +1341,10 @@ k:"Mailing Lists"
 v:"Mailing Lists"
 
 k:"Maintain"
-v:"Maintain"
+v:"Erhalten"
 
 k:"Maintenance Cost"
-v:"Maintenance Cost"
+v:"Aufrechterhaltungskosten"
 
 k:"Make A Donation For GCS Development"
 v:"Make A Donation For GCS Development"
@@ -1353,25 +1353,25 @@ k:"Male"
 v:"Männlich"
 
 k:"Master Library"
-v:"Master Library"
+v:"Hauptverzeichnis"
 
 k:"Max Load"
-v:"Max Load"
+v:"Max Last"
 
 k:"Max Uses"
-v:"Max Uses"
+v:"Max Nutzungen"
 
 k:"Maximize"
-v:"Maximize"
+v:"Maximiere"
 
 k:"Medium"
-v:"Medium"
+v:"Mittel"
 
 k:"Melee Weapon"
-v:"Melee Weapon"
+v:"Nahkampfwaffe"
 
 k:"Melee Weapons"
-v:"Melee Weapons"
+v:"Nahkampfwaffen"
 
 k:"Mental"
 v:"Mental"
@@ -1380,7 +1380,7 @@ k:"Menu Keys"
 v:"Menu Keys"
 
 k:"Meta-Trait"
-v:"Meta-Trait"
+v:"Meta-Eigenschaft"
 
 k:"Meters"
 v:"Meter"
@@ -1389,7 +1389,7 @@ k:"Metric Tons"
 v:"Tonnen"
 
 k:"Midleg"
-v:"Midleg"
+v:"Mittelbein"
 
 k:"Miles"
 v:"Meilen"
@@ -1407,10 +1407,10 @@ k:"Modified:"
 v:"Geändert:"
 
 k:"Modifier"
-v:"Modifier"
+v:"Modifikator"
 
 k:"Modifiers"
-v:"Modifiers"
+v:"Modifikatoren"
 
 k:"Monochrome"
 v:"Monochrome"
@@ -1447,10 +1447,10 @@ k:"Name Change"
 v:"Namensänderung"
 
 k:"Name of Modifier"
-v:"Name of Modifier"
+v:"Name des Modifikators"
 
 k:"Name of container"
-v:"Name of container"
+v:"Name des Kontainers"
 
 k:"Name {0}"
 v:"Name {0}"
@@ -1459,103 +1459,103 @@ k:"Name:"
 v:"Name:"
 
 k:"Natural Attacks"
-v:"Natural Attacks"
+v:"Natürliche Angriffe"
 
 k:"Neck"
-v:"Neck"
+v:"Hals"
 
 k:"New Advantage"
-v:"New Advantage"
+v:"Neuer Vorteil"
 
 k:"New Advantage Container"
-v:"New Advantage Container"
+v:"Neuer Vorteilskontainer"
 
 k:"New Advantage Modifier"
-v:"New Advantage Modifier"
+v:"Neuer Vorteilsmodifikator"
 
 k:"New Advantage Modifier Container"
-v:"New Advantage Modifier Container"
+v:"Neuer Kontainer for Vorteilsmodifikatoren"
 
 k:"New Advantage Modifiers Library"
-v:"New Advantage Modifiers Library"
+v:"Neues Verzeichnis für Vorteilsmodifikatoren"
 
 k:"New Advantages Library"
-v:"New Advantages Library"
+v:"Neues Verzeichnis für Vorteile"
 
 k:"New Carried Equipment"
-v:"New Carried Equipment"
+v:"Neue getragene Ausrüstung"
 
 k:"New Carried Equipment Container"
-v:"New Carried Equipment Container"
+v:"Neuer Kontainer für getragene Ausrüstung"
 
 k:"New Character Sheet"
-v:"New Character Sheet"
+v:"Neuer Charakterbogen"
 
 k:"New Character Template"
-v:"New Character Template"
+v:"Neue Charaktervorlage"
 
 k:"New Equipment Library"
-v:"New Equipment Library"
+v:"Neues Ausrüstungsverzeichnis"
 
 k:"New Equipment Modifier"
-v:"New Equipment Modifier"
+v:"Neuer Ausrüstungsmodifikator"
 
 k:"New Equipment Modifier Container"
-v:"New Equipment Modifier Container"
+v:"Neuer Kontainer für Ausrüstungsmodifikatoren"
 
 k:"New Equipment Modifiers Library"
-v:"New Equipment Modifiers Library"
+v:"Neues Verzeichnis für Ausrüstungsmodifikatoren"
 
 k:"New File…"
 v:"Neue Datei…"
 
 k:"New Note"
-v:"New Note"
+v:"Neue Notiz"
 
 k:"New Note Container"
-v:"New Note Container"
+v:"Neuer Notizkontainer"
 
 k:"New Note Library"
-v:"New Note Library"
+v:"Neues Notizverzeichnis"
 
 k:"New Other Equipment"
-v:"New Other Equipment"
+v:"Neue andere Ausrüstung"
 
 k:"New Other Equipment Container"
-v:"New Other Equipment Container"
+v:"Neuer Kontainer für andere Ausrüstung"
 
 k:"New Ritual Magic Spell"
-v:"New Ritual Magic Spell"
+v:"Neuer Ritualmagiezauber"
 
 k:"New Skill"
-v:"New Skill"
+v:"Neue Fertigkeit"
 
 k:"New Skill Container"
-v:"New Skill Container"
+v:"Neuer Fertigkeitskontainer"
 
 k:"New Skills Library"
-v:"New Skills Library"
+v:"Neues Fertigkeitsverzeichnis"
 
 k:"New Spell"
-v:"New Spell"
+v:"Neuer Zauberspruch"
 
 k:"New Spell Container"
-v:"New Spell Container"
+v:"Neuer Kontainer für Zaubersprüche"
 
 k:"New Spells Library"
-v:"New Spells Library"
+v:"Neues Verzeichnis für Zaubersprüche"
 
 k:"New Splittermond Spell"
-v:"New Splittermond Spell"
+v:"Neuer Splittermond-Zauber"
 
 k:"New Technique"
-v:"New Technique"
+v:"Neue Technik"
 
 k:"Next Page"
-v:"Next Page"
+v:"Nächste Seite"
 
 k:"No additional modifiers"
-v:"No additional modifiers"
+v:"Keine weiteren Modifikatoren"
 
 k:"No documents may be open when setting library locations."
 v:"No documents may be open when setting library locations."
@@ -1564,7 +1564,7 @@ k:"No penalty due to encumbrance"
 v:"Keine Abzüge durch Belastung"
 
 k:"No printer is available!"
-v:"No printer is available!"
+v:"Kein Drucker verfügbar!"
 
 k:"No releases available for %s"
 v:"No releases available for %s"
@@ -1579,76 +1579,76 @@ k:"Normal"
 v:"Normal"
 
 k:"Normal (i.e. fully rested) fatigue points"
-v:"Normal (i.e. fully rested) fatigue points"
+v:"Normale (d.h völlig ausgeruht) Erschöpfungspunkte"
 
 k:"Normal (i.e. fully rested) focus points"
-v:"Normal (i.e. fully rested) focus points"
+v:"Normale (d.h völlig regeneriert) Fokuspunkte"
 
 k:"Normal (i.e. unharmed) hit points"
-v:"Normal (i.e. unharmed) hit points"
+v:"Normale (d.h. unverletzt) Trefferpunkte"
 
 k:"Not Shown"
-v:"Not Shown"
+v:"Nicht angezeigt"
 
 k:"Note"
-v:"Note"
+v:"Notiz"
 
 k:"Note Content:"
-v:"Note Content:"
+v:"Inhalt der Notiz:"
 
 k:"Notes"
-v:"Notes"
+v:"Notizen"
 
 k:"Notes Library"
-v:"Notes Library"
+v:"Notizverzeichnis"
 
 k:"Number Up"
 v:"Number Up"
 
 k:"Octopod"
-v:"Octopod"
+v:"Oktopode"
 
 k:"One-Handed Lift"
-v:"One-Handed Lift"
+v:"Einhändiges Heben"
 
 k:"Open Detail Editor"
-v:"Open Detail Editor"
+v:"Detail-Editor öffnen"
 
 k:"Open Each Page Reference"
-v:"Open Each Page Reference"
+v:"Jeden Seitenverweis öffnen"
 
 k:"Open Item"
-v:"Open Item"
+v:"Gegenstand öffnen"
 
 k:"Open Page Reference"
-v:"Open Page Reference"
+v:"Seitenverweis öffnen"
 
 k:"Opens/closes all hierarchical rows"
 v:"Opens/closes all hierarchical rows"
 
 k:"Open…"
-v:"Open…"
+v:"Öffnen…"
 
 k:"Optional Specialization"
-v:"Optional Specialization"
+v:"Optionale Spezialisierung"
 
 k:"Options:"
-v:"Options:"
+v:"Optionen:"
 
 k:"Orientation"
-v:"Orientation"
+v:"Orientierung"
 
 k:"Other Equipment"
-v:"Other Equipment"
+v:"Andere Ausrüstung"
 
 k:"Other Equipment (${0})"
-v:"Other Equipment (${0})"
+v:"Andere Ausrüstung (T{0})"
 
 k:"Ounces"
 v:"Unzen"
 
 k:"Output"
-v:"Output"
+v:"Ausgabe"
 
 k:"PDF Files"
 v:"PDF Dateien"
@@ -1675,25 +1675,25 @@ k:"Pages"
 v:"Seiten"
 
 k:"Pale"
-v:"Pale"
+v:"Blass"
 
 k:"Paper Type"
-v:"Paper Type"
+v:"Papierart"
 
 k:"Parry"
 v:"Parade"
 
 k:"Parry Modifier"
-v:"Parry Modifier"
+v:"Parademodifikator"
 
 k:"Parrying skill named"
-v:"Parrying skill named"
+v:"Paradefertigkeit namens"
 
 k:"Paste"
-v:"Paste"
+v:"Einfügen"
 
 k:"Path:"
-v:"Path:"
+v:"Pfad:"
 
 k:"Penalty equal to the current encumbrance level"
 v:"Penalty equal to the current encumbrance level"
@@ -1714,10 +1714,10 @@ k:"Perception Change"
 v:"Wahrnehmungsänderung"
 
 k:"Physical"
-v:"Physical"
+v:"Physikalisch"
 
 k:"Plain"
-v:"Plain"
+v:"Einfach"
 
 k:"Player"
 v:"Spieler"
@@ -1729,13 +1729,13 @@ k:"Player:"
 v:"Spieler:"
 
 k:"Point Cost Per Level"
-v:"Point Cost Per Level"
+v:"Punktekosten pro Stufe"
 
 k:"Points"
 v:"Punkte"
 
 k:"Points spent"
-v:"Points spent"
+v:"Eingesetzte Punkte"
 
 k:"Points that have been earned but have not yet been spent"
 v:"Points that have been earned but have not yet been spent"
@@ -1750,31 +1750,31 @@ k:"Pounds"
 v:"Pfund"
 
 k:"Power Source"
-v:"Power Source"
+v:"Kraftquelle"
 
 k:"Preferences"
-v:"Preferences"
+v:"Einstellungen"
 
 k:"Preferences…"
-v:"Preferences…"
+v:"Einstellungen…"
 
 k:"Prerequisite Count"
-v:"Prerequisite Count"
+v:"Anzahl der Voraussetzungen"
 
 k:"Prerequisites"
-v:"Prerequisites"
+v:"Voraussetzungen"
 
 k:"Previous Page"
-v:"Previous Page"
+v:"Vorherige Seite"
 
 k:"Primary Fields"
-v:"Primary Fields"
+v:"Hauptfelder"
 
 k:"Primary Footer"
-v:"Primary Footer"
+v:"Hauptfußzeile"
 
 k:"Primary Labels"
-v:"Primary Labels"
+v:"Hauptbezeichnungen"
 
 k:"Print"
 v:"Drucken"
@@ -1786,7 +1786,7 @@ k:"Printer"
 v:"Drucker"
 
 k:"Printing failed!"
-v:"Printing failed!"
+v:"Drucken schlug fehl!"
 
 k:"Print…"
 v:"Drucken…"
@@ -1798,7 +1798,7 @@ k:"Qty"
 v:"Anz"
 
 k:"Quadruped"
-v:"Quadruped"
+v:"Vierfüßer"
 
 k:"Quality"
 v:"Qualität"
@@ -1810,7 +1810,7 @@ k:"Quirks"
 v:"Marotten"
 
 k:"Quit"
-v:"Quit"
+v:"Beenden"
 
 k:"RSL"
 v:"RFW"
@@ -1819,19 +1819,19 @@ k:"Race"
 v:"Rasse"
 
 k:"Randomize"
-v:"Randomize"
+v:"Generieren"
 
 k:"Randomize Description…"
-v:"Randomize Description…"
+v:"Beschreibung generieren…"
 
 k:"Range"
 v:"Reichweite"
 
 k:"Ranged Weapon"
-v:"Fernwaffe"
+v:"Fernkampfwaffe"
 
 k:"Ranged Weapons"
-v:"Fernwaffen"
+v:"Fernkampfwaffen"
 
 k:"Rate of Fire"
 v:"Feuerrate"
@@ -1852,13 +1852,13 @@ k:"Reason:"
 v:"Grund:"
 
 k:"Recent Files"
-v:"Recent Files"
+v:"Zuletzt verwendete Dateien"
 
 k:"Recoil"
 v:"Rückschlag"
 
 k:"Redhead"
-v:"Redhead"
+v:"Rotschopf"
 
 k:"Redo "
 v:"Redo "
@@ -1885,34 +1885,34 @@ k:"Reduces the contained weight by"
 v:"Reduces the contained weight by"
 
 k:"Reeling"
-v:"Reeling"
+v:"Taumelnd"
 
 k:"Ref"
-v:"Ref"
+v:"Ver"
 
 k:"Refresh"
-v:"Refresh"
+v:"Aktualisieren"
 
 k:"Regular"
-v:"Regular"
+v:"Regulär"
 
 k:"Release Notes"
 v:"Release Notes"
 
 k:"Religion Change"
-v:"Religion Change"
+v:"Religionsänderung"
 
 k:"Religion:"
 v:"Religion:"
 
 k:"Remove"
-v:"Remove"
+v:"Entfernen"
 
 k:"Remove Rows"
-v:"Remove Rows"
+v:"Zeilen entfernen"
 
 k:"Remove the selected attacks"
-v:"Remove the selected attacks"
+v:"Ausgewählten Angriff entfernen"
 
 k:"Remove this default"
 v:"Remove this default"
@@ -1921,13 +1921,13 @@ k:"Remove this feature"
 v:"Remove this feature"
 
 k:"Remove this prerequisite"
-v:"Remove this prerequisite"
+v:"Diese Voraussetzung entfernen"
 
 k:"Remove this prerequisite list"
 v:"Remove this prerequisite list"
 
 k:"Replace"
-v:"Replace"
+v:"Ersetzen"
 
 k:"Repo:"
 v:"Repo:"
@@ -1939,7 +1939,7 @@ k:"Requires at least one of:"
 v:"Requires at least one of:"
 
 k:"Reset"
-v:"Reset"
+v:"Zurücksetzen"
 
 k:"Reset to Current Preference Values"
 v:"Reset to Current Preference Values"
@@ -1951,7 +1951,7 @@ k:"Resolution"
 v:"Resolution"
 
 k:"Restore"
-v:"Restore"
+v:"Wiederherstellen"
 
 k:"Reversed Landscape"
 v:"Reversed Landscape"
