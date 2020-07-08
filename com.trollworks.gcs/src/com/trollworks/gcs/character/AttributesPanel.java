@@ -40,7 +40,7 @@ public class AttributesPanel extends DropPanel {
         addDivider();
         addLabelAndField(sheet, GURPSCharacter.ID_MYSTICISM, I18n.Text("Mysticism"), true);
         addDivider();
-        addLabelAndField(sheet, GURPSCharacter.ID_WILL, I18n.Text("Will"), true);
+        addLabelAndField(sheet, GURPSCharacter.ID_WILL, I18n.Text("Will (Will)").replace(" (Will)", ""), true);
         addLabelAndField(sheet, GURPSCharacter.ID_FRIGHT_CHECK, I18n.Text("Fright Check"), false);
         addDivider();
         addLabelAndField(sheet, GURPSCharacter.ID_BASIC_SPEED, I18n.Text("Basic Speed"), true);
