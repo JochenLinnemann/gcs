@@ -1695,6 +1695,9 @@ v:"Einfügen"
 k:"Path:"
 v:"Pfad:"
 
+k:"Penalty"
+v:"Malus"
+
 k:"Penalty equal to the current encumbrance level"
 v:"Penalty equal to the current encumbrance level"
 
