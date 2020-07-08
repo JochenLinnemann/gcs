@@ -292,7 +292,8 @@ public class Spell extends ListRow implements HasSourceReference {
             addChild(new Spell(mDataFile, reader, state));
         } else if (!state.mForUndo && RitualMagicSpell.TAG_RITUAL_MAGIC_SPELL.equals(name)) {
             addChild(new RitualMagicSpell(mDataFile, reader, state));
-// TODO : JL
+        } else if (!state.mForUndo && SplittermondSpell.TAG_SPLITTERMOND_SPELL.equals(name)) {
+            addChild(new SplittermondSpell(mDataFile, reader, state));
         } else if (!canHaveChildren()) {
             if (TAG_COLLEGE.equals(name)) {
                 mCollege = reader.readText().replace("\n", " ").replace("/ ", "/");
