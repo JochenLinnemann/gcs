@@ -1260,7 +1260,7 @@ k:"LC4: Open"
 v:"LK4: Offen"
 
 k:"Landscape"
-v:"Landschaft"
+v:"Querformat"
 
 k:"Left"
 v:"Links"
@@ -1320,7 +1320,7 @@ k:"Loading %s... "
 v:"Lade %s... "
 
 k:"Locate"
-v:"Locate"
+v:"Finde"
 
 k:"Locate the PDF file for the prefix \"%s\""
 v:"Locate the PDF file for the prefix \"%s\""
@@ -1413,7 +1413,7 @@ k:"Modifiers"
 v:"Modifikatoren"
 
 k:"Monochrome"
-v:"Monochrom"
+v:"Schwarz-weiß"
 
 k:"Move"
 v:"Bewegung"
@@ -1636,7 +1636,7 @@ k:"Options:"
 v:"Optionen:"
 
 k:"Orientation"
-v:"Orientierung"
+v:"Ausrichtung"
 
 k:"Other Equipment"
 v:"Andere Ausrüstung"
@@ -1738,7 +1738,7 @@ k:"Points spent"
 v:"Eingesetzte Punkte"
 
 k:"Points that have been earned but have not yet been spent"
-v:"Points that have been earned but have not yet been spent"
+v:"Verdiente, aber nocht nicht ausgegebene Punkte"
 
 k:"Portrait"
 v:"Portrait"
@@ -1774,13 +1774,13 @@ k:"Primary Footer"
 v:"Hauptfußzeile"
 
 k:"Primary Labels"
-v:"Hauptbezeichnungen"
+v:"Hauptkennzeichen"
 
 k:"Print"
 v:"Drucken"
 
 k:"Print Range"
-v:"Print Range"
+v:"Druckbereich"
 
 k:"Printer"
 v:"Drucker"
@@ -1861,7 +1861,7 @@ k:"Redhead"
 v:"Rotschopf"
 
 k:"Redo "
-v:"Redo "
+v:"Wiederholen "
 
 k:"Reduce the wounding multiplier of large piercing, huge piercing, and impaling damage to x1. Any major wound (loss of over ½ HP from one blow) cripples the limb. Damage beyond that threshold is lost."
 v:"Reduce the wounding multiplier of large piercing, huge piercing, and impaling damage to x1. Any major wound (loss of over ½ HP from one blow) cripples the limb. Damage beyond that threshold is lost."
@@ -1912,19 +1912,19 @@ k:"Remove Rows"
 v:"Zeilen entfernen"
 
 k:"Remove the selected attacks"
-v:"Ausgewählten Angriff entfernen"
+v:"Die ausgewählten Angriffe entfernen"
 
 k:"Remove this default"
-v:"Remove this default"
+v:"Diesen Default entfernen"
 
 k:"Remove this feature"
-v:"Remove this feature"
+v:"Dieses Merkmal entfernen"
 
 k:"Remove this prerequisite"
 v:"Diese Voraussetzung entfernen"
 
 k:"Remove this prerequisite list"
-v:"Remove this prerequisite list"
+v:"Diese Voraussetzungsliste entfernen"
 
 k:"Replace"
 v:"Ersetzen"
@@ -1933,10 +1933,10 @@ k:"Repo:"
 v:"Repo:"
 
 k:"Requires all of:"
-v:"Requires all of:"
+v:"Erfordert alles aus:"
 
 k:"Requires at least one of:"
-v:"Requires at least one of:"
+v:"Erfordert mindestens 1 aus:"
 
 k:"Reset"
 v:"Zurücksetzen"
@@ -1954,7 +1954,7 @@ k:"Restore"
 v:"Wiederherstellen"
 
 k:"Reversed Landscape"
-v:"Umgekehrte Landschaft"
+v:"Umgekehrtes Querformat"
 
 k:"Reversed Portrait"
 v:"Umgekehrtes Hochformat"
@@ -2002,25 +2002,25 @@ k:"Save As…"
 v:"Speichern Unter…"
 
 k:"Save changes to \"{0}\"?"
-v:"Save changes to \"{0}\"?"
+v:"Änderungen speichern in \"{0}\"?"
 
 k:"Scale Document Down"
-v:"Scale Document Down"
+v:"Dokument verkleinern"
 
 k:"Scale Document Up"
-v:"Scale Document Up"
+v:"Dokument vergrößern"
 
 k:"Scorpion"
 v:"Skorpion"
 
 k:"Secondary Fields"
-v:"Secondary Fields"
+v:"Sekundäre Felder"
 
 k:"Secondary Footer"
-v:"Secondary Footer"
+v:"Sekundäre Fußzeile"
 
 k:"Secondary Labels"
-v:"Secondary Labels"
+v:"Sekundäre Kennzeichen"
 
 k:"Seconds"
 v:"Sekunden"
@@ -2041,7 +2041,7 @@ k:"Sets the width of each column to exactly fit its contents"
 v:"Sets the width of each column to exactly fit its contents"
 
 k:"Settings"
-v:"Einstellungem"
+v:"Einstellungen"
 
 k:"Sheet"
 v:"Blatt"
@@ -2062,7 +2062,7 @@ k:"Shots"
 v:"Schuss"
 
 k:"Shove & Knock Over"
-v:"Schieben & Umstoßen"
+v:"Schubsen & Umstoßen"
 
 k:"Show %s on Disk"
 v:"%s auf Festplatte anzeigen"
@@ -2119,7 +2119,7 @@ k:"Social"
 v:"Sozial"
 
 k:"Sort"
-v:"Sort"
+v:"Sortieren"
 
 k:"Specialization"
 v:"Spezialisierung"
@@ -2134,22 +2134,22 @@ k:"Spells"
 v:"Zaubersprüche"
 
 k:"Spells Library"
-v:"Spells Library"
+v:"Zauberspruchverzeichnis"
 
 k:"Splittermond Spell"
 v:"Splittermond-Zauberspruch"
 
 k:"Sponsor GCS Development"
-v:"Sponsor GCS Development"
+v:"Sponsor GCS Entwicklung"
 
 k:"Squid"
 v:"Tintenfisch"
 
 k:"State…"
-v:"State…"
+v:"Zustand…"
 
 k:"Straight"
-v:"Straight"
+v:"Glatt"
 
 k:"Strength (ST)"
 v:"Stärke (ST)"
@@ -2170,7 +2170,7 @@ k:"Supernatural"
 v:"Übernatürlich"
 
 k:"Swap Defaults"
-v:"Swap Defaults"
+v:"Defaults vertauschen"
 
 k:"Switches between allowing editing and not"
 v:"Switches between allowing editing and not"
@@ -2185,7 +2185,7 @@ k:"Tail"
 v:"Schwanz"
 
 k:"Tan"
-v:"Tan"
+v:"Bräune"
 
 k:"Taste & Smell"
 v:"Schmecken & Riechen"
@@ -2197,7 +2197,7 @@ k:"Tech Level Change"
 v:"Techgradänderung"
 
 k:"Tech Level Required"
-v:"Tech Level Required"
+v:"Erforderlicher Techgrad"
 
 k:"Technique"
 v:"Technik"
@@ -2560,64 +2560,64 @@ k:"The total weight of this quantity of equipment, plus everything contained by 
 v:"The total weight of this quantity of equipment, plus everything contained by it"
 
 k:"The type of advantage"
-v:"The type of advantage"
+v:"Die Art des Vorteils"
 
 k:"The type of advantage this is"
-v:"The type of advantage this is"
+v:"Die Art des Vorteils"
 
 k:"The type of container this is"
-v:"The type of container this is"
+v:"Die Art des Kontainers"
 
 k:"The units to use for display of generated lengths"
-v:"The units to use for display of generated lengths"
+v:"Die für die Anzeige generierte Längen zu verwendenden Einheiten"
 
 k:"The units to use for display of generated weights"
-v:"The units to use for display of generated weights"
+v:"Die für die Anzeige generierter Gewichte zu verwendenden Einheiten"
 
 k:"The usage type of the weapon (swung, thrust, thrown, fired, etc.)"
-v:"The usage type of the weapon (swung, thrust, thrown, fired, etc.)"
+v:"Die Verwendungsart der Waffe (geschwungen, gestoßen, geworfen, abgefeuert, etc.)"
 
 k:"The value of all of these pieces of equipment, plus the value of any contained equipment"
-v:"The value of all of these pieces of equipment, plus the value of any contained equipment"
+v:"Der Wert aller Stücke dieser Ausrüstung, sowie der Wert aller enthaltenen Ausrütung"
 
 k:"The value of one of these pieces of equipment"
-v:"The value of one of these pieces of equipment"
+v:"Der Wert eines Stücks dieser Ausrüstung"
 
 k:"The weight adjustment for this modifier"
-v:"The weight adjustment for this modifier"
+v:"Die Gewichtsanpassung for diesen Modifikator"
 
 k:"The weight modifier"
-v:"The weight modifier"
+v:"Der Gewichtsmodifikator"
 
 k:"The weight of all of these pieces of equipment, plus the weight of any contained equipment"
-v:"The weight of all of these pieces of equipment, plus the weight of any contained equipment"
+v:"Das Gewicht aller Stücke dieser Ausrüstung, sowie das Gewicht aller enthaltenen Ausrüstung"
 
 k:"The weight of an object the character can shift slightly on a floor"
-v:"The weight of an object the character can shift slightly on a floor"
+v:"Das Gewicht eines Objektes, das der Charakter geringfügige auf dem Boden verschieben kann"
 
 k:"The weight of an object the character can shove  and knock over with a running start"
-v:"The weight of an object the character can shove  and knock over with a running start"
+v:"Das Gewicht eines Objektes, das der Charakter mit Anlauf schubsen und umstoßen kann"
 
 k:"The weight of an object the character can shove and knock over"
-v:"The weight of an object the character can shove and knock over"
+v:"Das Gewicht eines Objektes, das der Charakter schubsen und umstoßen kann"
 
 k:"The weight of one of these pieces of equipment"
-v:"The weight of one of these pieces of equipment"
+v:"Das Gewicht eine Stücks dieser Ausrüstung"
 
 k:"The weight the character can carry slung across the back"
-v:"The weight the character can carry slung across the back"
+v:"Das Gewicht, das der Charakter auf dem Rücken "
 
 k:"The weight the character can lift overhead with both hands in four seconds"
-v:"The weight the character can lift overhead with both hands in four seconds"
+v:"Das Gewicht, das der Charakter in vier Sekunden mit beiden ändern über den Kopf heben kann"
 
 k:"The weight the character can lift overhead with one hand in one second"
-v:"The weight the character can lift overhead with one hand in one second"
+v:"Das Gewicht, das der Charakter in einer Sekunde mit einer Hand über den Kopf heben kann"
 
 k:"The weight the character can lift overhead with one hand in two seconds"
-v:"The weight the character can lift overhead with one hand in two seconds"
+v:"Das Gewicht, das der Charakter in zwei Sekunden mit einer Hand über den Kopf heben kann"
 
 k:"There is no system printer available."
-v:"There is no system printer available."
+v:"Es ist kein Systemdrucker verfügbar."
 
 k:"There was an error exporting to GURPS Calculator. Please try again later."
 v:"There was an error exporting to GURPS Calculator. Please try again later."
@@ -2646,13 +2646,13 @@ k:"Title:"
 v:"Titel:"
 
 k:"Toggle State"
-v:"Toggle State"
+v:"Zustand umschalten"
 
 k:"Tooltip"
 v:"Tooltip"
 
 k:"Tooltip Timeout"
-v:"Tooltip Timeout"
+v:"Tooltip-Zeitlimit"
 
 k:"Torso"
 v:"Torso"
@@ -2664,46 +2664,46 @@ k:"Touch"
 v:"Fühlen"
 
 k:"Tumble"
-v:"Tumble"
+v:"Straucheln"
 
 k:"Two-Handed Lift"
 v:"Zweihändiges Heben"
 
 k:"Type"
-v:"Type"
+v:"Typ"
 
 k:"Type a keystroke…"
-v:"Type a keystroke…"
+v:"Drücke eine Taste…"
 
 k:"Unable to access the %s repo"
-v:"Unable to access the %s repo"
+v:"Kann auf das %s Repo nicht zugreifen"
 
 k:"Unable to access the GCS repo"
-v:"Unable to access the GCS repo"
+v:"Kann auf das GCS Repo nicht zugreifen"
 
 k:"Unable to load\n{0}."
-v:"Unable to load\n{0}."
+v:"Kann nicht laden\n{0}."
 
 k:"Unable to load %s\n"
-v:"Unable to load %s\n"
+v:"Kann %s nicht laden\n"
 
 k:"Unable to load image."
-v:"Unable to load image."
+v:"Kann Bild nicht laden."
 
 k:"Unable to open \"{0}\"\n{1}"
-v:"Unable to open \"{0}\"\n{1}"
+v:"Kann \"{0}\" nicht öffnen\n{1}"
 
 k:"Unable to open \"{0}\"."
-v:"Unable to open \"{0}\"."
+v:"Kann \"{0}\" nicht öffnen."
 
 k:"Unable to open {0}"
-v:"Unable to open {0}"
+v:"Kann {0} nicht öffnen"
 
 k:"Unable to set a value for %s"
-v:"Unable to set a value for %s"
+v:"Kann Wert für %s nicht setzen"
 
 k:"Unable to switch printers!"
-v:"Unable to switch printers!"
+v:"Kann Drucker nicht wechseln!"
 
 k:"Unconscious"
 v:"Bewusstlos"
@@ -2718,73 +2718,73 @@ k:"Unspent"
 v:"Verfügbar"
 
 k:"Unspent Points Change"
-v:"Unspent Points Change"
+v:"Änderung der verfügbaren Punkte"
 
 k:"Untitled Advantage Modifiers"
-v:"Untitled Advantage Modifiers"
+v:"Unbenannte Vorteilsmodifikatoren"
 
 k:"Untitled Advantages"
-v:"Untitled Advantages"
+v:"Unbenannte Vorteile"
 
 k:"Untitled Equipment"
-v:"Untitled Equipment"
+v:"Unbenannte Ausrüstung"
 
 k:"Untitled Equipment Modifiers"
-v:"Untitled Equipment Modifiers"
+v:"Unbenannte Ausrüstungsmodifikatoren"
 
 k:"Untitled Notes"
-v:"Untitled Notes"
+v:"Unbenannte Notizen"
 
 k:"Untitled Sheet"
-v:"Untitled Sheet"
+v:"Unbenanntes Blatt"
 
 k:"Untitled Skills"
-v:"Untitled Skills"
+v:"Unbenannte Fertigkeiten"
 
 k:"Untitled Spells"
-v:"Untitled Spells"
+v:"Unbenannte Zaubersprüche"
 
 k:"Untitled Template"
-v:"Untitled Template"
+v:"Unbenannte Vorlage"
 
 k:"Update"
-v:"Update"
+v:"Aktualisiere"
 
 k:"Update %s"
-v:"Update %s"
+v:"Aktualisiere %s"
 
 k:"Update %s to v%s"
-v:"Update %s to v%s"
+v:"Aktualisiere %s auf v%s"
 
 k:"Usage"
-v:"Usage"
+v:"Verwendung"
 
 k:"Use"
-v:"Use"
+v:"Verwende"
 
 k:"Use Default"
-v:"Use Default"
+v:"Verwende Default"
 
 k:"Use Modifying Dice + Adds from B269"
-v:"Use Modifying Dice + Adds from B269"
+v:"Verwendet Modifying Dice + Adds von B269"
 
 k:"Use Multiplicative Modifiers from PW102 (note: changes point value)"
-v:"Use Multiplicative Modifiers from PW102 (note: changes point value)"
+v:"Verwende multiplikative Modifikatoren von PW102 (Anmerking: verändert Punktwerte)"
 
 k:"Use Thrust = Swing - 2"
-v:"Use Thrust = Swing - 2"
+v:"Verwende Stoßschaden = Schwungschaden - 2"
 
 k:"Use platform native print dialogs (settings cannot be saved)"
-v:"Use platform native print dialogs (settings cannot be saved)"
+v:"Verwende plattformspezifische Druckdialoge (Einstellungen können nicht gespeichert werden)"
 
 k:"Use strength rules from Knowing Your Own Strength (PY83)"
-v:"Use strength rules from Knowing Your Own Strength (PY83)"
+v:"Verwende Stärkeregeln aus Knowing Your Own Strength (PY83)"
 
 k:"Use the reduced swing rules from Adjusting Swing Damage in Dungeon Fantasy"
-v:"Use the reduced swing rules from Adjusting Swing Damage in Dungeon Fantasy"
+v:"Verwende die reduzierten Schwungschadenregeln aus Adjusting Swing Damage in Dungeon Fantasy"
 
 k:"Use the simple metric conversion rules from B9"
-v:"Use the simple metric conversion rules from B9"
+v:"Verwende die einfachen metrischen Umrechnungsregeln von B9"
 
 k:"User Description"
 v:"User Description"
@@ -2844,40 +2844,40 @@ k:"When generating PDF or PNG from the command line, allows you to specify the m
 v:"When generating PDF or PNG from the command line, allows you to specify the margins to use, rather than the ones embedded in the file. The top, left, bottom, and right margins must all be specified in inches, separated by colons, such as '1:1:1:1'."
 
 k:"When the Character's TL is"
-v:"When the Character's TL is"
+v:"Ist der TG des Charakters"
 
 k:"When the Character's TL is at least"
-v:"When the Character's TL is at least"
+v:"Ist der TG des Charakters mindestens"
 
 k:"When the Character's TL is at most"
-v:"When the Character's TL is at most"
+v:"Ist der TG des Charakters höchstens"
 
 k:"Where"
 v:"Wo"
 
 k:"Where to display this information"
-v:"Where to display this information"
+v:"Wo diese Information dargestellt werden soll"
 
 k:"Whether this modifier has been enabled or not"
-v:"Whether this modifier has been enabled or not"
+v:"Ob dieser Modifikator aktviert wurde nicht"
 
 k:"Whether this piece of equipment is equipped or just carried. Items that are not equipped do not apply any features they may normally contribute to the character."
-v:"Whether this piece of equipment is equipped or just carried. Items that are not equipped do not apply any features they may normally contribute to the character."
+v:"Ob dieses Ausrüstungsteil verwendet oder nur getragen wird. Gegenstände, die nicht verwendet werden, gewähren keine Merkmale auch wenn sie dies normalerweise täten."
 
 k:"Whether this skill requires tech level specialization"
-v:"Whether this skill requires tech level specialization"
+v:"Ob diese Fertigkeit eine Techgrad-Spezialisierung erfordert"
 
 k:"Whether this skill requires tech level specialization, and, if so, at what tech level it was learned"
-v:"Whether this skill requires tech level specialization, and, if so, at what tech level it was learned"
+v:"Ob diese Fertigkeit eine Techgrad-Spezialisierung erfordert und, falls dem so ist, auf welchem Techgrad sie gelernt wurde"
 
 k:"Whether this spell requires tech level specialization"
-v:"Whether this spell requires tech level specialization"
+v:"Ob dieser Zauberspruch eine Techgrad-Spezialisierung erfordert"
 
 k:"Whether this spell requires tech level specialization, and, if so, at what tech level it was learned"
-v:"Whether this spell requires tech level specialization, and, if so, at what tech level it was learned"
+v:"Ob dieser Zauberspruch eine Techgrad-Spezialisierung erfordert und, falls dem so ist, auf welchem Techgrad er gelernt wurde"
 
 k:"Whether to limit the maximum level that can be achieved or not"
-v:"Whether to limit the maximum level that can be achieved or not"
+v:"Ob die maximal erreichbare Stufe begrenzt werden soll oder nicht"
 
 k:"Will"
 v:"WI"
@@ -2919,28 +2919,28 @@ k:"and category "
 v:"und Kategorie "
 
 k:"and relative skill level "
-v:"and relative skill level "
+v:"und relativer Fertigkeitswert "
 
 k:"and specialization "
-v:"and specialization "
+v:"und Spezialisierung "
 
 k:"and usage "
-v:"and usage "
+v:"und Verwendung "
 
 k:"and whose level "
-v:"and whose level "
+v:"und wess Stufe "
 
 k:"and whose notes "
-v:"and whose notes "
+v:"und wess Notizen "
 
 k:"and whose specialization "
-v:"and whose specialization "
+v:"und wess Spezialisierung "
 
 k:"at least"
-v:"at least"
+v:"mindestens"
 
 k:"at most"
-v:"at most"
+v:"höchstens"
 
 k:"attribute"
 v:"Attribut"
@@ -2955,19 +2955,19 @@ k:"block"
 v:"Block"
 
 k:"by {0}%"
-v:"by {0}%"
+v:"von {0}%"
 
 k:"combined with {0}"
-v:"combined with {0}"
+v:"kombiniert mit {0}"
 
 k:"contained quantity of"
-v:"contained quantity of"
+v:"enthaltene Anzahl von"
 
 k:"contained weight"
-v:"contained weight"
+v:"enthaltenes Gewicht"
 
 k:"contains"
-v:"contains"
+v:"enthält"
 
 k:"die"
 v:"Würfel"
@@ -2976,61 +2976,61 @@ k:"dodge"
 v:"Ausweichen"
 
 k:"does not contain"
-v:"does not contain"
+v:"enthält nicht"
 
 k:"does not end with"
-v:"does not end with"
+v:"endet nicht mit"
 
 k:"does not start with"
-v:"does not start with"
+v:"beginnt nicht mir"
 
 k:"doesn't have"
-v:"doesn't have"
+v:"hat nicht"
 
 k:"ends with"
-v:"ends with"
+v:"endet mit"
 
 k:"exactly"
-v:"exactly"
+v:"genau"
 
 k:"focus"
-v:"focus"
+v:"Fokus"
 
 k:"for display of generated units"
-v:"for display of generated units"
+v:"zur Anzeige generierter Einheiteb"
 
 k:"for lifting only"
-v:"for lifting only"
+v:"nur zum Heben"
 
 k:"for striking only"
-v:"for striking only"
+v:"nur zum Schlagen"
 
 k:"for the initial scale when opening character sheets, templates and lists"
-v:"for the initial scale when opening character sheets, templates and lists"
+v:"für die anfängliche Skalierung wenn Charakterbögen, -vorlagen und -listen geöffnet werden"
 
 k:"fright checks"
-v:"fright checks"
+v:"Furchtproben"
 
 k:"from advantage %s"
-v:"from advantage %s"
+v:"vom Vorteil %s"
 
 k:"from different colleges"
-v:"from different colleges"
+v:"von verschiedenen Schulen"
 
 k:"from equipment %s"
-v:"from equipment %s"
+v:"von Ausrüstung %s"
 
 k:"has"
-v:"has"
+v:"hat"
 
 k:"hearing"
 v:"Hören"
 
 k:"invalid paper margins specification: "
-v:"invalid paper margins specification: "
+v:"Ungültige Seitenränderangabe: "
 
 k:"invalid paper size specification: "
-v:"invalid paper size specification: "
+v:"Ungültige Papiergrößenangabe: "
 
 k:"is"
 v:"ist"
@@ -3042,13 +3042,13 @@ k:"is anything"
 v:"is anything"
 
 k:"is at least"
-v:"is at least"
+v:"ist mindestens"
 
 k:"is at most"
-v:"is at most"
+v:"ist höchstens"
 
 k:"is not"
-v:"is not"
+v:"ist nicht"
 
 k:"level"
 v:"Stufe"
@@ -3061,28 +3061,28 @@ v:""
 v:""
 
 k:"missing argument for --margins"
-v:"missing argument for --margins"
+v:"Fehlender Parameter für --margins"
 
 k:"missing argument for --paper"
-v:"missing argument for --paper"
+v:"Fehlender Parameter für --paper"
 
 k:"missing argument for --text"
-v:"missing argument for --text"
+v:"Fehlender Parameter für --text"
 
 k:"must specify one or more sheet files to process"
-v:"must specify one or more sheet files to process"
+v:"muss ein oder mehr Blattdateien zur Verarbeitung angeben"
 
 k:"mysticism"
 v:"Mystik"
 
 k:"of any kind"
-v:"of any kind"
+v:"von jeder Art"
 
 k:"or"
-v:"or"
+v:"oder"
 
 k:"parry"
-v:"parry"
+v:"Parade"
 
 k:"per die"
 v:"pro Würfel"
@@ -3100,160 +3100,160 @@ k:"seconds"
 v:"Sekunden"
 
 k:"size modifier"
-v:"size modifier"
+v:"Größenmodifikator"
 
 k:"skill"
-v:"skill"
+v:"Fertigkeit"
 
 k:"spell"
-v:"spell"
+v:"Zauberspruch"
 
 k:"spell(s)"
-v:"spell(s)"
+v:"Zauberspru(e)ch(e)"
 
 k:"spells"
-v:"spells"
+v:"Zaubersprüche"
 
 k:"starts with"
-v:"starts with"
+v:"beginnt mit"
 
 k:"taste & smell"
-v:"taste & smell"
+v:"Schmecken & Riechen"
 
 k:"to"
-v:"to"
+v:"zu"
 
 k:"to "
-v:"to "
+v:"zu "
 
 k:"to all colleges"
-v:"to all colleges"
+v:"zu alle Schulen"
 
 k:"to base cost"
-v:"to base cost"
+v:"zu den Grundkosten"
 
 k:"to base cost only"
-v:"to base cost only"
+v:"nur zu den Grundkosten"
 
 k:"to base weight"
-v:"to base weight"
+v:"zum Grundgewicht"
 
 k:"to cost"
-v:"to cost"
+v:"zu den Kosten"
 
 k:"to final base cost"
-v:"to final base cost"
+v:"zu den Endgrundkosten"
 
 k:"to final base weight"
-v:"to final base weight"
+v:"zum Endgrundgewicht"
 
 k:"to final cost"
-v:"to final cost"
+v:"zu den Endkosten"
 
 k:"to final weight"
-v:"to final weight"
+v:"zum Endgewicht"
 
 k:"to leveled cost only"
-v:"to leveled cost only"
+v:"nur zu abgestuften Kosten"
 
 k:"to original cost"
-v:"to original cost"
+v:"zu den ursprünglichen Kosten"
 
 k:"to original weight"
-v:"to original weight"
+v:"zum ursprünglichen Gewicht"
 
 k:"to skills whose name"
-v:"to skills whose name"
+v:"zu Fertigkeiten mit dem Namen"
 
 k:"to the arms"
-v:"to the arms"
+v:"an den Armen"
 
 k:"to the brain"
-v:"to the brain"
+v:"am Gehirn"
 
 k:"to the college whose name"
-v:"to the college whose name"
+v:"zur Schule mit dem Namen"
 
 k:"to the eyes"
-v:"to the eyes"
+v:"an den Augen"
 
 k:"to the face"
-v:"to the face"
+v:"am Gesicht"
 
 k:"to the feet"
-v:"to the feet"
+v:"an den Füßen"
 
 k:"to the fins"
-v:"to the fins"
+v:"an den Schwimmflossen"
 
 k:"to the full body"
-v:"to the full body"
+v:"am ganzen Körper"
 
 k:"to the full body except the eyes"
-v:"to the full body except the eyes"
+v:"am ganzen Körper mit Ausnahme der Augen"
 
 k:"to the groin"
-v:"to the groin"
+v:"am Unterleib"
 
 k:"to the hands"
-v:"to the hands"
+v:"an den Händen"
 
 k:"to the legs"
-v:"to the legs"
+v:"an den Beinen"
 
 k:"to the neck"
-v:"to the neck"
+v:"am Hals"
 
 k:"to the power source whose name"
-v:"to the power source whose name"
+v:"zur Kraftquelle mit dem Namen"
 
 k:"to the skull"
-v:"to the skull"
+v:"am Kopf"
 
 k:"to the spell whose name"
-v:"to the spell whose name"
+v:"zum Zauberspruch mit dem Namen"
 
 k:"to the tail"
-v:"to the tail"
+v:"am Schwanz"
 
 k:"to the torso"
-v:"to the torso"
+v:"am Torso"
 
 k:"to the vitals"
-v:"to the vitals"
+v:"an den Organen"
 
 k:"to the wings"
-v:"to the wings"
+v:"an den Flügeln"
 
 k:"to this weapon"
-v:"to this weapon"
+v:"um diese Waffe zu treffen"
 
 k:"to weapons whose name"
-v:"to weapons whose name"
+v:"auf Waffen, deren Name"
 
 k:"to weapons whose required skill name"
-v:"to weapons whose required skill name"
+v:"auf Waffen, deren erforderlicher Fertigkeitsname"
 
 k:"touch"
 v:"Fühlen"
 
 k:"unknown file extension"
-v:"unknown file extension"
+v:"Unbekannte Dateiendung"
 
 k:"unknown option: "
-v:"unknown option: "
+v:"Unbekannt Option: "
 
 k:"vision"
 v:"Sicht"
 
 k:"when saving sheets to PNG"
-v:"when saving sheets to PNG"
+v:"wenn Blätter als PNG gespeichert werden"
 
 k:"which "
 v:"welch "
 
 k:"whose college name"
-v:"wessen Schulname"
+v:"dessen Schulname"
 
 k:"whose name"
 v:"namens"
@@ -3289,25 +3289,25 @@ k:"{0} Reaction Penalty"
 v:"{0} Reaktionsmalus"
 
 k:"{0} advantages remaining to be processed."
-v:"{0} advantages remaining to be processed."
+v:"{0} Vorteile sind noch zu vearbeiten."
 
 k:"{0} at {1}"
-v:"{0} at {1}"
+v:"{0} auf {1}"
 
 k:"{0} dpi"
 v:"{0} dpi"
 
 k:"{0} equipment remaining to be processed."
-v:"{0} equipment remaining to be processed."
+v:"{0} Ausrüstungsteile sind noch zu verarbeiten."
 
 k:"{0} files could not be deleted."
-v:"{0} files could not be deleted."
+v:"{0} Dateien konnten nicht gelöscht werden."
 
 k:"{0} items remaining to be edited."
-v:"{0} items remaining to be edited."
+v:"{0} Gegenstände sind noch zu bearbeiten."
 
 k:"{0} items remaining to be named."
-v:"{0} items remaining to be named."
+v:"{0} Gegenstände sind noch zu benennen."
 
 k:"{0}% Cost of Living Increase"
 v:"{0}% Erhöhung der Lebenshaltungskosten"
@@ -3325,13 +3325,13 @@ k:"{0}Requires all of:\n"
 v:"{0}Erfordert alles aus:\n"
 
 k:"{0}Requires at least 1 point in the skill named {1}\n"
-v:"{0}Erfordert wenigstens 1 in der Fertigkeit namens {1}\n"
+v:"{0}Erfordert mindestens 1 Punkt in der Fertigkeit namens {1}\n"
 
 k:"{0}Requires at least one of:\n"
-v:"{0}Erfordert wenigstens 1 aus:\n"
+v:"{0}Erfordert mindestens 1 aus:\n"
 
 k:"{0}at least {1}"
-v:"{0}wenigstens {1}"
+v:"{0}mindestens {1}"
 
 k:"{0}at most {1}"
 v:"{0}höchstens {1}"
@@ -3340,10 +3340,10 @@ k:"{0}exactly {1}"
 v:"{0}genau {1}"
 
 k:"{0}{1} a contained quantity which {2}\n"
-v:"{0}{1} a contained quantity which {2}\n"
+v:"{0}{1} eine enthaltene Anzahl, welch {2}\n"
 
 k:"{0}{1} a contained weight which {2}\n"
-v:"{0}{1} a contained weight which {2}\n"
+v:"{0}{1} ein enthaltenes Gewicht, welch {2}\n"
 
 k:"{0}{1} a skill whose name {2}"
 v:"{0}{1} eine Fertigkeit namens {2}"
@@ -3361,7 +3361,7 @@ k:"{0}{1} {2} {3} of any kind\n"
 v:"{0}{1} {2} {3} jeder Art\n"
 
 k:"{0}{1} {2} {3} whose college {4}\n"
-v:"{0}{1} {2} {3} whose college {4}\n"
+v:"{0}{1} {2} {3} dessen Schule {4}\n"
 
 k:"{0}{1} {2} {3} whose name {4}\n"
 v:"{0}{1} {2} {3} namens {4}\n"
