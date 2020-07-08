@@ -14,6 +14,7 @@ package com.trollworks.gcs.spell;
 import com.trollworks.gcs.character.GURPSCharacter;
 import com.trollworks.gcs.datafile.DataFile;
 import com.trollworks.gcs.datafile.ListFile;
+import com.trollworks.gcs.preferences.Preferences;
 import com.trollworks.gcs.skill.SkillPointsTextCell;
 import com.trollworks.gcs.template.Template;
 import com.trollworks.gcs.ui.widget.outline.Cell;
@@ -65,6 +66,31 @@ public enum SpellColumn {
             return builder.toString();
         }
     },
+    /** The resistance. */
+    RESIST {
+        @Override
+        public String toString() {
+            return I18n.Text("Resist");
+        }
+
+        @Override
+        public String getToolTip() {
+            return I18n.Text("The resistance");
+        }
+
+        @Override
+        public Object getData(Spell spell) {
+            return getDataAsText(spell);
+        }
+
+        @Override
+        public String getDataAsText(Spell spell) {
+            if (!spell.canHaveChildren()) {
+                return spell.getResist();
+            }
+            return "";
+        }
+    },
     /** The spell class. */
     CLASS {
         @Override
@@ -113,6 +139,17 @@ public enum SpellColumn {
                 return spell.getCollege();
             }
             return "";
+        }
+
+        @Override
+        public boolean shouldDisplay(DataFile dataFile) {
+            if (dataFile instanceof GURPSCharacter) {
+                return ((GURPSCharacter)dataFile).getSettings().showCollegeInSpells();
+            }
+            if (dataFile instanceof Template) {
+                return Preferences.getInstance().showCollegeInSheetSpells();
+            }
+            return true;
         }
     },
     /** The casting cost. */
@@ -457,11 +494,9 @@ public enum SpellColumn {
     public static void addColumns(Outline outline, DataFile dataFile) {
         boolean      sheetOrTemplate = dataFile instanceof GURPSCharacter || dataFile instanceof Template;
         OutlineModel model           = outline.getModel();
-
         for (SpellColumn one : values()) {
             if (one.shouldDisplay(dataFile)) {
                 Column column = new Column(one.ordinal(), one.toString(), one.getToolTip(), one.getCell());
-
                 column.setHeaderCell(new ListHeaderCell(sheetOrTemplate));
                 model.addColumn(column);
             }
