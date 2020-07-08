@@ -35,25 +35,26 @@ public class AttributesPanel extends DropPanel {
         super(new PrecisionLayout().setColumns(3).setMargins(0).setSpacing(2, 0).setAlignment(PrecisionLayoutAlignment.FILL, PrecisionLayoutAlignment.FILL), I18n.Text("Attributes"));
         addLabelAndField(sheet, GURPSCharacter.ID_STRENGTH, I18n.Text("Strength (ST)"), true);
         addLabelAndField(sheet, GURPSCharacter.ID_DEXTERITY, I18n.Text("Dexterity (DX)"), true);
-        addLabelAndField(sheet, GURPSCharacter.ID_INTELLIGENCE, I18n.Text("Intelligence (IQ)"), true);
         addLabelAndField(sheet, GURPSCharacter.ID_HEALTH, I18n.Text("Health (HT)"), true);
+        addDivider();
+        addLabelAndField(sheet, GURPSCharacter.ID_INTELLIGENCE, I18n.Text("Intelligence (IQ)"), true);
+        addLabelAndField(sheet, GURPSCharacter.ID_WILL, I18n.Text("Will (Will)").replace(" (Will)", ""), true);
+        addLabelAndField(sheet, GURPSCharacter.ID_PERCEPTION, I18n.Text("Perception (Per)"), true);
         addDivider();
         addLabelAndField(sheet, GURPSCharacter.ID_MYSTICISM, I18n.Text("Mysticism"), true);
         addDivider();
-        addLabelAndField(sheet, GURPSCharacter.ID_WILL, I18n.Text("Will (Will)").replace(" (Will)", ""), true);
-        addLabelAndField(sheet, GURPSCharacter.ID_FRIGHT_CHECK, I18n.Text("Fright Check"), false);
+        addLabelAndDamageField(sheet, GURPSCharacter.ID_BASIC_THRUST, I18n.Text("Basic Thrust"));
+        addLabelAndDamageField(sheet, GURPSCharacter.ID_BASIC_SWING, I18n.Text("Basic Swing"));
         addDivider();
         addLabelAndField(sheet, GURPSCharacter.ID_BASIC_SPEED, I18n.Text("Basic Speed"), true);
         addLabelAndField(sheet, GURPSCharacter.ID_BASIC_MOVE, I18n.Text("Basic Move"), true);
         addDivider();
-        addLabelAndField(sheet, GURPSCharacter.ID_PERCEPTION, I18n.Text("Perception (Per)"), true);
+        addLabelAndField(sheet, GURPSCharacter.ID_FRIGHT_CHECK, I18n.Text("Fright Check"), false);
+        addDivider();
         addLabelAndField(sheet, GURPSCharacter.ID_VISION, I18n.Text("Vision"), false);
         addLabelAndField(sheet, GURPSCharacter.ID_HEARING, I18n.Text("Hearing"), false);
         addLabelAndField(sheet, GURPSCharacter.ID_TASTE_AND_SMELL, I18n.Text("Taste & Smell"), false);
         addLabelAndField(sheet, GURPSCharacter.ID_TOUCH, I18n.Text("Touch"), false);
-        addDivider();
-        addLabelAndDamageField(sheet, GURPSCharacter.ID_BASIC_THRUST, I18n.Text("Basic Thrust"));
-        addLabelAndDamageField(sheet, GURPSCharacter.ID_BASIC_SWING, I18n.Text("Basic Swing"));
     }
 
     private void addLabelAndField(CharacterSheet sheet, String key, String title, boolean enabled) {
