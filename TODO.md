@@ -2,7 +2,7 @@ TODO
 ====
 
 - Mondzeichen hinzufügen
-- Spliterpunkte hinzufügen
+- Splitterpunkte hinzufügen
 - Ausbildung hinzufügen
 - Kultur hinzufügen
 - Rasse hinzufügen

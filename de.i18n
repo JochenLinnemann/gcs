@@ -1359,7 +1359,7 @@ k:"Max Load"
 v:"Max Last"
 
 k:"Max Uses"
-v:"Max Nutzungen"
+v:"Max Verwendungen"
 
 k:"Maximize"
 v:"Maximiere"
@@ -2608,10 +2608,10 @@ k:"The weight of one of these pieces of equipment"
 v:"Das Gewicht eine Stücks dieser Ausrüstung"
 
 k:"The weight the character can carry slung across the back"
-v:"Das Gewicht, das der Charakter auf dem Rücken "
+v:"Das Gewicht, das der Charakter auf dem Rücken tragen kann"
 
 k:"The weight the character can lift overhead with both hands in four seconds"
-v:"Das Gewicht, das der Charakter in vier Sekunden mit beiden ändern über den Kopf heben kann"
+v:"Das Gewicht, das der Charakter in vier Sekunden mit beiden Händen über den Kopf heben kann"
 
 k:"The weight the character can lift overhead with one hand in one second"
 v:"Das Gewicht, das der Charakter in einer Sekunde mit einer Hand über den Kopf heben kann"
@@ -2796,7 +2796,7 @@ k:"User Library"
 v:"Benutzerverzeichnis"
 
 k:"Uses"
-v:"Verwendet"
+v:"Verwendungen"
 
 k:"Value"
 v:"Wert"
@@ -2847,7 +2847,7 @@ k:"When generating PDF or PNG from the command line, allows you to specify the m
 v:"When generating PDF or PNG from the command line, allows you to specify the margins to use, rather than the ones embedded in the file. The top, left, bottom, and right margins must all be specified in inches, separated by colons, such as '1:1:1:1'."
 
 k:"When the Character's TL is"
-v:"Ist der TG des Charakters"
+v:"Ist der TG des Charakters gleich"
 
 k:"When the Character's TL is at least"
 v:"Ist der TG des Charakters mindestens"
