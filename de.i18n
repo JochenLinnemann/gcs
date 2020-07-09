@@ -139,34 +139,34 @@ k:"1 sec"
 v:"1 sek"
 
 k:"<html><body><b>Double-click</b> to set a character portrait.<br><br>The dimensions of the chosen picture should be in a ratio of<br><b>3 pixels wide for every 4 pixels tall</b> to scale without distortion.<br><br>Dimensions of <b>{0}x{1}</b> are ideal.</body></html>"
-v:"<html><body><b>Double-click</b> to set a character portrait.<br><br>The dimensions of the chosen picture should be in a ratio of<br><b>3 pixels wide for every 4 pixels tall</b> to scale without distortion.<br><br>Dimensions of <b>{0}x{1}</b> are ideal.</body></html>"
+v:"<html><body><b>Doppelklicken</b>, um ein Charakterportrait festzulegen.<br><br>Die Abmessungen des gewählten Bildes sollten ein Verhältnis von<br><b>3 Pixeln Breite für je 4 Pixel Höhe</b> haben, um Verzerrungen zu vermeiden.<br><br>Abmessungen von <b>{0}x{1}</b> sind ideal.</body></html>"
 
 k:"<html><body>Current hit points at or below this point cause<br>the character to <b>roll vs. HT</b> to avoid death</body></html>"
-v:"<html><body>Current hit points at or below this point cause<br>the character to <b>roll vs. HT</b> to avoid death</body></html>"
+v:"<html><body>Aktuelle Trefferpunkte auf oder unter diesem Punkt zwingen<br>den Charakter zu einer <b>KO-Probe</b>, um dem Tod zu entgehen</body></html>"
 
 k:"<html><body>Current hit points at or below this point indicate the character<br>is on the verge of collapse, causing the character to <b>roll vs. HT</b><br>(at -1 per full multiple of HP below zero) every second to avoid<br>falling unconscious</body></html>"
-v:"<html><body>Current hit points at or below this point indicate the character<br>is on the verge of collapse, causing the character to <b>roll vs. HT</b><br>(at -1 per full multiple of HP below zero) every second to avoid<br>falling unconscious</body></html>"
+v:"<html><body>Aktuelle Trefferpunkte auf oder unter diesem Punkt zeigen an, dass der Charakter<br>kurz vor dem Kollaps steht und erforden eine <b>KO-Probe</b><br>(je -1 pro vollem Vielfachen der TP unter 0) jede Sekunde, um<br>Bewusstlosigkeit zu vermeiden</body></html>"
 
 k:"<html><body>TL0: Stone Age (Prehistory and later)<br>TL1: Bronze Age (3500 B.C.+)<br>TL2: Iron Age (1200 B.C.+)<br>TL3: Medieval (600 A.D.+)<br>TL4: Age of Sail (1450+)<br>TL5: Industrial Revolution (1730+)<br>TL6: Mechanized Age (1880+)<br>TL7: Nuclear Age (1940+)<br>TL8: Digital Age (1980+)<br>TL9: Microtech Age (2025+?)<br>TL10: Robotic Age (2070+?)<br>TL11: Age of Exotic Matter<br>TL12: Anything Goes</body></html>"
-v:"<html><body>TL0: Stone Age (Prehistory and later)<br>TL1: Bronze Age (3500 B.C.+)<br>TL2: Iron Age (1200 B.C.+)<br>TL3: Medieval (600 A.D.+)<br>TL4: Age of Sail (1450+)<br>TL5: Industrial Revolution (1730+)<br>TL6: Mechanized Age (1880+)<br>TL7: Nuclear Age (1940+)<br>TL8: Digital Age (1980+)<br>TL9: Microtech Age (2025+?)<br>TL10: Robotic Age (2070+?)<br>TL11: Age of Exotic Matter<br>TL12: Anything Goes</body></html>"
+v:"<html><body>TG0: Steinzeit (Vorzeit und später)<br>TG1: Bronzezeit (3500 v.Chr.+)<br>TG2: Eisenzeit (1200 v.Chr.+)<br>TG3: Mittelalter (600 n.Chr.+)<br>TG4: Zeitalter der Seefahrt (1450+)<br>TG5: Industrielle Revolution (1730+)<br>TG6: Mechanisiertes Zeitalter (1880+)<br>TG7: Atomzeitalter (1940+)<br>TG8: Digitales Zeitalter (1980+)<br>TG9: Mikrotech-Zeitalter (2025+?)<br>TG10: Robotik-Zeitalter (2070+?)<br>TG11: Zeitalter Exotischer Materie<br>TG12: Alles ist möglich</body></html>"
 
 k:"<html><body>TL0: Stone Age<br>TL1: Bronze Age<br>TL2: Iron Age<br>TL3: Medieval<br>TL4: Age of Sail<br>TL5: Industrial Revolution<br>TL6: Mechanized Age<br>TL7: Nuclear Age<br>TL8: Digital Age<br>TL9: Microtech Age<br>TL10: Robotic Age<br>TL11: Age of Exotic Matter<br>TL12: Anything Goes</body></html>"
-v:"<html><body>TL0: Stone Age<br>TL1: Bronze Age<br>TL2: Iron Age<br>TL3: Medieval<br>TL4: Age of Sail<br>TL5: Industrial Revolution<br>TL6: Mechanized Age<br>TL7: Nuclear Age<br>TL8: Digital Age<br>TL9: Microtech Age<br>TL10: Robotic Age<br>TL11: Age of Exotic Matter<br>TL12: Anything Goes</body></html>"
+v:"<html><body>TG0: Steinzeit<br>TG1: Bronzezeit<br>TG2: Eisenzeit<br>TG3: Mittelalter<br>TG4: Zeitalter der Seefahrt<br>TG5: Industrille Revolution<br>TG6: Mechanisiertes Zeitalter<br>TG7: Atomzeitalter<br>TG8: Digitales Zeitalter<br>TG9: Mikrotech-Zeitalter<br>TG10: Robotik-Zeitalter<br>TG11: Zeitalter Exotischer Materie<br>TG12: Alles ist möglich</body></html>"
 
 k:"<html><body>The hit penalty for targeting the <b>{0}</b> hit location</body></html>"
-v:"<html><body>The hit penalty for targeting the <b>{0}</b> hit location</body></html>"
+v:"<html><body>Der Treffermalus, um die Zone <b>{0}</b> zu treffen</body></html>"
 
 k:"<html><body>The portrait to use when a new character sheet is created.<br><br>Ideal original portrait size is {0} pixels wide by {1} pixels tall,<br>although the image will be automatically scaled to these<br>dimensions, if necessary.</body></html>"
-v:"<html><body>The portrait to use when a new character sheet is created.<br><br>Ideal original portrait size is {0} pixels wide by {1} pixels tall,<br>although the image will be automatically scaled to these<br>dimensions, if necessary.</body></html>"
+v:"<html><body>Das beim Erstellen eines Charakterbogens zu verwendende Portrait.<br><br>Ideale Portraitgröße ist {0} Pixel breit mal {1} Pixel hoch,<br>obwohl das Bild automatisch auf diese Größe skaliert wird, falls nötig.</body></html>"
 
 k:"<html><body>The random roll needed to hit the <b>{0}</b> hit location</body></html>"
-v:"<html><body>The random roll needed to hit the <b>{0}</b> hit location</body></html>"
+v:"<html><body>Der nötige Zufallswurf, um die Zone <b>{0}</b> zu treffen</body></html>"
 
 k:"<html><body>The total DR protecting the <b>{0}</b> hit location</body></html>"
-v:"<html><body>The total DR protecting the <b>{0}</b> hit location</body></html>"
+v:"<html><body>Der Gesamt-RS, die die Zone <b>{0}</b> schützt</body></html>"
 
 k:"<html><body>Whether or not the native print dialogs should be used.<br>Choosing this option will prevent the program from saving<br>and restoring print settings with the document.</body></html>"
-v:"<html><body>Whether or not the native print dialogs should be used.<br>Choosing this option will prevent the program from saving<br>and restoring print settings with the document.</body></html>"
+v:"<html><body>Ob der plattformspezifische Druckdialog verwendet werden soll oder nicht.<br>Die Auswahl dieser Option verhindert, dass das Programm<br>Druckeinstellung mit dem Dokument speichert und lädt.</body></html>"
 
 k:"<html>Margins<br>(inches)"
 v:"<html>Ränder<br>(Zoll)"
@@ -235,7 +235,7 @@ k:"Add"
 v:"Hinzufügen"
 
 k:"Add Natural Attacks Advantage"
-v:"Nürliche Angriffe-Vortei hinzufügen"
+v:"Nürliche Angriffe-Vorteil hinzufügen"
 
 k:"Add Rows"
 v:"Zeilen hinzufügen"
@@ -301,58 +301,58 @@ k:"Alternative Abilities"
 v:"Alternative Fähigkeiten"
 
 k:"An attack that misses by 1 hits the torso instead. Heart, lungs, kidneys, etc. Increase the wounding modifier for an impaling or any piercing attack to x3. Increase the wounding modifier for a tight-beam burning attack to x2. Other attacks cannot target the vitals."
-v:"An attack that misses by 1 hits the torso instead. Heart, lungs, kidneys, etc. Increase the wounding modifier for an impaling or any piercing attack to x3. Increase the wounding modifier for a tight-beam burning attack to x2. Other attacks cannot target the vitals."
+v:"Ein Angriff, der um einen 1 daneben liegt, trifft stattdessen den Torso. Herz, Lunge, Nieren, etc. Erhöhe den Verletzungsmodifikator für Stich- und Durchschlagsangriffe auf x3. Erhöhe den Verwundungsmodifikator für gebündelte Strahlenbrandangriffe auf x2. Andere Angriffe können nicht auf Organe zielen."
 
 k:"An attack that misses by 1 hits the torso instead. Human males and the males of similar species suffer double shock from crushing damage, and get -5 to knockdown rolls. Otherwise, treat as a torso hit."
-v:"An attack that misses by 1 hits the torso instead. Human males and the males of similar species suffer double shock from crushing damage, and get -5 to knockdown rolls. Otherwise, treat as a torso hit."
+v:"Ein Angriff, der um einen 1 daneben liegt, trifft stattdessen den Torso. Männer (Menschen oder vergleichere Spezies) erleiden doppelten Schock durch Quetschschaden und erhalten -5 auf Niederschlagsproben. Andernfalls als Torso-Treffer behandeln."
 
 k:"An attack that misses by 1 hits the torso instead. Jaw, cheeks, nose, ears, etc. If the target has an open-faced helmet, ignore its DR. Knockdown rolls are at -5. Critical hits use the Critical Head Blow Table (B556). Corrosion damage gets a x1½ wounding modifier, and if it inflicts a major wound, it also blinds one eye (both eyes on damage over full HP). Random attacks from behind hit the skull instead."
-v:"An attack that misses by 1 hits the torso instead. Jaw, cheeks, nose, ears, etc. If the target has an open-faced helmet, ignore its DR. Knockdown rolls are at -5. Critical hits use the Critical Head Blow Table (B556). Corrosion damage gets a x1½ wounding modifier, and if it inflicts a major wound, it also blinds one eye (both eyes on damage over full HP). Random attacks from behind hit the skull instead."
+v:"Ein Angriff, der um einen 1 daneben liegt, trifft stattdessen den Torso. Kiefer, Wangen, Nase, Ohren, etc. Wenn das Ziel kein Helmvisier hat, kann der RS ignoriert werden. Niederschlagsproben erleiden -5. Kritische Treffer verwenden die Kritische Kopftreffer-Tabelle (B556). Zersetzungsschaden erhält einen x1½ Verletzungsmodifikator und, falls eine schwere Wunde verursacht wird, blendet ein Auge (beide Augen bei Schaden höher als die vollen TP). Zufällige Treffer von hinten treffen stattdessen den Schädel."
 
 k:"An attack that misses by 1 hits the torso instead. Neck and throat. Increase the wounding multiplier of crushing and corrosion attacks to x1.5, and that of cutting damage to x2. At the GM’s option, anyone killed by a cutting blow to the neck is decapitated!"
-v:"An attack that misses by 1 hits the torso instead. Neck and throat. Increase the wounding multiplier of crushing and corrosion attacks to x1.5, and that of cutting damage to x2. At the GM’s option, anyone killed by a cutting blow to the neck is decapitated!"
+v:"Ein Angriff, der um einen 1 daneben liegt, trifft stattdessen den Torso. Hals und Kehle. Erhöhe den Verletzungsmodifikator für Quetsch- und Zersetzungsangriffe auf x1.5 und den von Schnittschaden auf x2. Als SL-Option gilt jeder, der durch einen Schnitttreffer am Hals getötet wird, als geköpft!"
 
 k:"An attack that misses by 1 hits the torso instead. Only impaling, piercing, and tight-beam burning attacks can target the eye – and only from the front or sides. Injury over HP÷10 blinds the eye. Otherwise, treat as skull, but without the extra DR!"
-v:"An attack that misses by 1 hits the torso instead. Only impaling, piercing, and tight-beam burning attacks can target the eye – and only from the front or sides. Injury over HP÷10 blinds the eye. Otherwise, treat as skull, but without the extra DR!"
+v:"Ein Angriff, der um einen 1 daneben liegt, trifft stattdessen den Torso. Nur Stich-, Durchschlags- und gebündelte Strahlenbrandangriffe können auf die Augen zielen – und nur von vorne oder den Seiten. Verletzung über TP÷10 blendet das Auge. Andernfalls als Schädeltreffer behandeln, allerdings ohne Zusatz-RS!"
 
 k:"An attack that misses by 1 hits the torso instead. Wounding modifier is x4. Knockdown rolls are at -10. Critical hits use the Critical Head Blow Table (B556). Exception: These special effects do not apply to toxic damage."
-v:"An attack that misses by 1 hits the torso instead. Wounding modifier is x4. Knockdown rolls are at -10. Critical hits use the Critical Head Blow Table (B556). Exception: These special effects do not apply to toxic damage."
+v:"Ein Angriff, der um einen 1 daneben liegt, trifft stattdessen den Torso. Verletzungsmodifikator ist x4. Niederschlagswürfe erleiden -10. Kritische Treffer verwenden die Kritische Kopftreffer-Tabelle (B556). Ausnahme: Diese speziellen Effekte gelten nicht für toxischen Schaden."
 
 k:"An error occurred while trying to export the sheet as %s."
-v:"An error occurred while trying to export the sheet as %s."
+v:"Ein Fehler trat beim Versuch auf, das Blatt als %s zu exportieren."
 
 k:"An error occurred while trying to export the sheet as PDF."
-v:"An error occurred while trying to export the sheet as PDF."
+v:"Ein Fehler trat beim Versuch auf, das Blatt als PDF zu exportieren."
 
 k:"An error occurred while trying to export the sheet as PNG."
-v:"An error occurred while trying to export the sheet as PNG."
+v:"Ein Fehler trat beim Versuch auf, das Blatt als PNG zu exportieren."
 
 k:"An error occurred while trying to save the file."
-v:"An error occurred while trying to save the file."
+v:"Ein Fehler trat beim Versuch auf, die Datei zu speichern."
 
 k:"An error occurred while trying to update the %s:\n\n"
-v:"An error occurred while trying to update the %s:\n\n"
+v:"Ein Fehler trat beim Versuch auf, %s zu aktualisieren:\n\n"
 
 k:"Any Category"
 v:"Jede Kategorie"
 
 k:"Any notes that you would like to show up in the list along with this advantage"
-v:"Any notes that you would like to show up in the list along with this advantage"
+v:"Jegliche Notizen, die mit diesem Vorteil zusammen in der Liste auftauchen sollen"
 
 k:"Any notes that you would like to show up in the list along with this equipment"
-v:"Any notes that you would like to show up in the list along with this equipment"
+v:"Jegliche Notizen, die mit dieser Ausrüstung zusammen in der Liste auftauchen sollen"
 
 k:"Any notes that you would like to show up in the list along with this modifier"
-v:"Any notes that you would like to show up in the list along with this modifier"
+v:"Jegliche Notizen, die mit diesem Modifikator zusammen in der Liste auftauchen sollen"
 
 k:"Any notes that you would like to show up in the list along with this skill"
-v:"Any notes that you would like to show up in the list along with this skill"
+v:"Jegliche Notizen, die mit dieser Fertigkeit zusammen in der Liste auftauchen sollen"
 
 k:"Any notes that you would like to show up in the list along with this spell"
-v:"Any notes that you would like to show up in the list along with this spell"
+v:"Jegliche Notizen, die mit diesem Zauberspruch zusammen in der Liste auftauchen sollen"
 
 k:"Any notes that you would like to show up in the list along with this technique"
-v:"Any notes that you would like to show up in the list along with this technique"
+v:"Jegliche Notizen, die mit dieser Technik zusammen in der Liste auftauchen sollen"
 
 k:"Apply"
 v:"Awenden"
@@ -370,10 +370,10 @@ k:"Arcane"
 v:"Arkan"
 
 k:"Are you sure you want to delete these files?"
-v:"Are you sure you want to delete these files?"
+v:"Sollen diese Dateien wirklich gelöscht werden?"
 
 k:"Are you sure you want to delete this file?"
-v:"Are you sure you want to delete this file?"
+v:"Soll diese Datei wirklich gelöscht werden?"
 
 k:"Arm"
 v:"Arm"
@@ -568,7 +568,7 @@ k:"Changes the font style"
 v:"Schriftformat ändern"
 
 k:"Character Exists"
-v:"Character existiert"
+v:"Charakter existiert"
 
 k:"Character Sheet"
 v:"Charakterbogen"
@@ -649,13 +649,13 @@ k:"Create New"
 v:"Neu erstellen"
 
 k:"Create PDF versions of sheets specified on the command line."
-v:"Create PDF versions of sheets specified on the command line."
+v:"Erstellt PDF-Versionen von auf der Kommandozeile angegebenen Blättern."
 
 k:"Create PNG versions of sheets specified on the command line."
-v:"Create PNG versions of sheets specified on the command line."
+v:"Erstellt PNG-Versionen von auf der Kommandozeile angegebenen Blättern."
 
 k:"Create text versions of sheets specified on the command line using the specified template file."
-v:"Create text versions of sheets specified on the command line using the specified template file."
+v:"Erstellt Textversionen von auf der Kommandozeile angegebenen Blättern, unter Verwendung der angegebenen Vorlagendatei."
 
 k:"Created:"
 v:"Erstellt:"
@@ -679,13 +679,13 @@ k:"Current fatigue points"
 v:"Aktuelle Erschöpfungspunkte"
 
 k:"Current fatigue points at or below this point cause the character to fall unconscious"
-v:"Current fatigue points at or below this point cause the character to fall unconscious"
+v:"Aktuelle Erschöpfungspunkte auf oder unter diesem Punkt lassen den Charakter das Bewusstsein verlieren"
 
 k:"Current fatigue points at or below this point indicate the character is on the verge of collapse, causing the character to roll vs. Will to do anything besides talk or rest"
-v:"Current fatigue points at or below this point indicate the character is on the verge of collapse, causing the character to roll vs. Will to do anything besides talk or rest"
+v:"Aktuelle Erschöpfungspunkte auf oder unter diesem Punkt zeigen an, dass der Charakter am Rande des Zusammenbruchs steht und eine WI-Probe immer dann fällig wird, wenn etwas anderes als Reden und Ausruhen unternommen werden soll"
 
 k:"Current fatigue points at or below this point indicate the character is very tired, halving move, dodge and strength"
-v:"Current fatigue points at or below this point indicate the character is very tired, halving move, dodge and strength"
+v:"Aktuelle Erschöpfungspunkte auf oder unter diesem Punkt zeigen an, dass der Charakter sehr erschöpft ist und Bewegung, Ausweichen und Stärke halbiert sind"
 
 k:"Current focus points"
 v:"Aktuelle Fokuspunkte"
@@ -694,10 +694,10 @@ k:"Current hit points"
 v:"Aktuelle Trefferpunkte"
 
 k:"Current hit points at or below this point cause the character to die"
-v:"Current hit points at or below this point cause the character to die"
+v:"Aktuelle Trefferpunkte auf oder unter diesem Punkt lassen den Charakter sterben"
 
 k:"Current hit points at or below this point indicate the character is reeling from the pain, halving move, speed and dodge"
-v:"Current hit points at or below this point indicate the character is reeling from the pain, halving move, speed and dodge"
+v:"Aktuelle Trefferpunkte auf oder unter diesem Punkt zeigen an, dass der Charakter vor Schmerzen taumelt und Bewegung, Geschwindigkeit und Ausweichen halbiert sind"
 
 k:"Cut"
 v:"Schnitt"
@@ -751,10 +751,10 @@ k:"Default: "
 v:"Default: "
 
 k:"Defaults"
-v:"Defaults"
+v:"Verwendet Default"
 
 k:"Defaults To"
-v:"Defaults To"
+v:"Hat als Default"
 
 k:"Delete"
 v:"Löschen"
@@ -1014,7 +1014,7 @@ k:"GitHub Account:"
 v:"GitHub Account:"
 
 k:"Gives a DR bonus of"
-v:"Gibt eine RS Bonus von"
+v:"Gibt einen RS-Bonus von"
 
 k:"Gives a reaction modifier of"
 v:"Gibt einen Reaktionsmodifikator von"
@@ -1203,10 +1203,10 @@ k:"Initial Points"
 v:"Anfangspunkte"
 
 k:"Inline"
-v:"Inline"
+v:"Eingebettet"
 
 k:"Inline & Tooltip"
-v:"Inline & Tooltip"
+v:"Eingebettet & Tooltip"
 
 k:"Instant"
 v:"Sofort"
@@ -1227,7 +1227,7 @@ k:"Item"
 v:"Gegenstand"
 
 k:"Items that are not equipped do not apply any features they may normally contribute to the character."
-v:"Items that are not equipped do not apply any features they may normally contribute to the character."
+v:"Gegenstände, die nicht verwendet werden, gewähren keine Merkmale auch wenn sie dies normalerweise täten."
 
 k:"JPEG Files"
 v:"JPEG Dateien"
@@ -1323,7 +1323,7 @@ k:"Locate"
 v:"Finde"
 
 k:"Locate the PDF file for the prefix \"%s\""
-v:"Locate the PDF file for the prefix \"%s\""
+v:"Finde die PDF-Datei für das Prefix \"%s\""
 
 k:"Long"
 v:"Lang"
@@ -1338,7 +1338,7 @@ k:"MMMM d"
 v:"MMMM d"
 
 k:"Mailing Lists"
-v:"Mailing Listen"
+v:"Mailing-Listen"
 
 k:"Maintain"
 v:"Erhalten"
@@ -1347,7 +1347,7 @@ k:"Maintenance Cost"
 v:"Aufrechterhaltungskosten"
 
 k:"Make A Donation For GCS Development"
-v:"Make A Donation For GCS Development"
+v:"Spende für die Enwicklung von GCS"
 
 k:"Male"
 v:"Männlich"
@@ -1567,7 +1567,7 @@ k:"No printer is available!"
 v:"Kein Drucker verfügbar!"
 
 k:"No releases available for %s"
-v:"No releases available for %s"
+v:"Es sind keine Veröffentlichungen verfügbar für %s"
 
 k:"None"
 v:"Keine"
@@ -1699,10 +1699,10 @@ k:"Penalty"
 v:"Malus"
 
 k:"Penalty equal to the current encumbrance level"
-v:"Penalty equal to the current encumbrance level"
+v:"Malus in Höhe der aktuellen Belastungsstufe"
 
 k:"Penalty equal to {0} times the current encumbrance level"
-v:"Penalty equal to {0} times the current encumbrance level"
+v:"Malus in Höhe des {0}-fachen der aktuellen Belastungsstufe"
 
 k:"Per"
 v:"WA"
@@ -1882,10 +1882,10 @@ k:"Reduce the wounding multiplier of large piercing, huge piercing, and impaling
 v:"Reduce the wounding multiplier of large piercing, huge piercing, and impaling damage to x1. Any major wound (loss of over ⅓ HP from one blow) cripples the limb. Damage beyond that threshold is lost. A crippled fin affects balance: -3 DX."
 
 k:"Reduces the attribute cost of"
-v:"Reduces the attribute cost of"
+v:"Reduzoert die Attributkosten von"
 
 k:"Reduces the contained weight by"
-v:"Reduces the contained weight by"
+v:"Reduziert das enthaltene Gewicht um"
 
 k:"Reeling"
 v:"Taumelnd"
@@ -1945,13 +1945,13 @@ k:"Reset"
 v:"Zurücksetzen"
 
 k:"Reset to Current Preference Values"
-v:"Reset to Current Preference Values"
+v:"Auf aktuelle Einstellungen zurücksetzen"
 
 k:"Reset to Factory Defaults"
-v:"Reset to Factory Defaults"
+v:"Auf Auslieferungszustand zurücksetzen"
 
 k:"Resolution"
-v:"Resolution"
+v:"Auflösung"
 
 k:"Restore"
 v:"Wiederherstellen"
