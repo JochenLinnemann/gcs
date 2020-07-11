@@ -54,6 +54,8 @@ import com.trollworks.gcs.utility.FilteredIterator;
 import com.trollworks.gcs.utility.Fixed6;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.Log;
+import com.trollworks.gcs.utility.json.JsonMap;
+import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Numbers;
 import com.trollworks.gcs.utility.undo.StdUndoManager;
 import com.trollworks.gcs.utility.units.LengthUnits;
@@ -61,7 +63,6 @@ import com.trollworks.gcs.utility.units.WeightUnits;
 import com.trollworks.gcs.utility.units.WeightValue;
 import com.trollworks.gcs.utility.xml.XMLNodeType;
 import com.trollworks.gcs.utility.xml.XMLReader;
-import com.trollworks.gcs.utility.xml.XMLWriter;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -76,6 +77,7 @@ import java.util.Set;
 
 /** A GURPS character. */
 public class GURPSCharacter extends DataFile {
+    private static final int                                 CURRENT_JSON_VERSION                 = 1;
     private static final int                                 CURRENT_VERSION                      = 5;
     /**
      * The version where equipment was separated out into different lists based on carried/not
@@ -98,6 +100,24 @@ public class GURPSCharacter extends DataFile {
     private static final String                              TAG_INCLUDE_PUNCH                    = "include_punch";
     private static final String                              TAG_INCLUDE_KICK                     = "include_kick";
     private static final String                              TAG_INCLUDE_BOOTS                    = "include_kick_with_boots";
+    private static final String                              KEY_HP_ADJ                           = "HP_adj";
+    private static final String                              KEY_FP_ADJ                           = "FP_adj";
+    private static final String                              KEY_FOCUS_ADJ                        = "focus_adj";
+    private static final String                              KEY_ST                               = "ST";
+    private static final String                              KEY_DX                               = "DX";
+    private static final String                              KEY_IQ                               = "IQ";
+    private static final String                              KEY_HT                               = "HT";
+    private static final String                              KEY_MYST                             = "myst";
+    private static final String                              KEY_WILL_ADJ                         = "will_adj";
+    private static final String                              KEY_PER_ADJ                          = "per_adj";
+    private static final String                              KEY_SPEED_ADJ                        = "speed_adj";
+    private static final String                              KEY_MOVE_ADJ                         = "move_adj";
+    public static final  String                              KEY_ADVANTAGES                       = "advantages";
+    public static final  String                              KEY_SKILLS                           = "skills";
+    public static final  String                              KEY_SPELLS                           = "spells";
+    public static final  String                              KEY_EQUIPMENT                        = "equipment";
+    public static final  String                              KEY_OTHER_EQUIPMENT                  = "other_equipment";
+    public static final  String                              KEY_NOTES                            = "notes";
     /** The prefix for all character IDs. */
     public static final  String                              CHARACTER_PREFIX                     = "gcs.";
     /** The field ID for last modified date changes. */
@@ -263,16 +283,17 @@ public class GURPSCharacter extends DataFile {
     private              int                                 mMysticismBonus;
     private              int                                 mMysticismCostReduction;
     private              int                                 mWill;
+    private              int                                 mWillAdj;
     private              int                                 mWillBonus;
     private              int                                 mFrightCheckBonus;
-    private              int                                 mPerception;
+    private              int                                 mPerAdj;
     private              int                                 mPerceptionBonus;
     private              int                                 mVisionBonus;
     private              int                                 mHearingBonus;
     private              int                                 mTasteAndSmellBonus;
     private              int                                 mTouchBonus;
     private              int                                 mHitPointsDamage;
-    private              int                                 mHitPoints;
+    private              int                                 mHitPointsAdj;
     private              int                                 mHitPointBonus;
     private              int                                 mFatiguePoints;
     private              int                                 mFatiguePointsDamage;
@@ -281,8 +302,9 @@ public class GURPSCharacter extends DataFile {
     private              int                                 mFocusPointsDamage;
     private              int                                 mFocusPointBonus;
     private              double                              mSpeed;
+    private              double                              mSpeedAdj;
     private              double                              mSpeedBonus;
-    private              int                                 mMove;
+    private              int                                 mMoveAdj;
     private              int                                 mMoveBonus;
     private              int                                 mDodgeBonus;
     private              int                                 mParryBonus;
@@ -387,6 +409,26 @@ public class GURPSCharacter extends DataFile {
     }
 
     @Override
+    public int getJSONVersion() {
+        return CURRENT_JSON_VERSION;
+    }
+
+    @Override
+    public String getJSONTypeName() {
+        return TAG_ROOT;
+    }
+
+    @Override
+    public int getXMLTagVersion() {
+        return CURRENT_VERSION;
+    }
+
+    @Override
+    public String getXMLTagName() {
+        return TAG_ROOT;
+    }
+
+    @Override
     protected final void loadSelf(XMLReader reader, LoadState state) throws IOException {
         String marker        = reader.getMarker();
         int    unspentPoints = 0;
@@ -424,7 +466,7 @@ public class GURPSCharacter extends DataFile {
                 } else if (TAG_MODIFIED_DATE.equals(name)) {
                     modifiedOn = Numbers.extractDateTime(reader.readText());
                 } else if (BonusAttributeType.HP.getXMLTag().equals(name)) {
-                    mHitPoints = reader.readInteger(0);
+                    mHitPointsAdj = reader.readInteger(0);
                 } else if (TAG_HP_DAMAGE.equals(name)) {
                     mHitPointsDamage = reader.readInteger(0);
                 } else if (BonusAttributeType.FP.getXMLTag().equals(name)) {
@@ -450,13 +492,13 @@ public class GURPSCharacter extends DataFile {
                 } else if (BonusAttributeType.MYSTICISM.getXMLTag().equals(name)) {
                     mMysticism = reader.readInteger(0);
                 } else if (BonusAttributeType.WILL.getXMLTag().equals(name)) {
-                    mWill = reader.readInteger(0);
+                    mWillAdj = reader.readInteger(0);
                 } else if (BonusAttributeType.PERCEPTION.getXMLTag().equals(name)) {
-                    mPerception = reader.readInteger(0);
+                    mPerAdj = reader.readInteger(0);
                 } else if (BonusAttributeType.SPEED.getXMLTag().equals(name)) {
-                    mSpeed = reader.readDouble(0.0);
+                    mSpeedAdj = reader.readDouble(0.0);
                 } else if (BonusAttributeType.MOVE.getXMLTag().equals(name)) {
-                    mMove = reader.readInteger(0);
+                    mMoveAdj = reader.readInteger(0);
                 } else if (AdvantageList.TAG_ROOT.equals(name)) {
                     loadAdvantageList(reader, state);
                 } else if (SkillList.TAG_ROOT.equals(name)) {
@@ -492,7 +534,7 @@ public class GURPSCharacter extends DataFile {
 
         if (state.mDataFileVersion < HP_FP_DAMAGE_TRACKING) {
             if (currentHP != Integer.MIN_VALUE) {
-                mHitPointsDamage = -Math.min(currentHP - getHitPoints(), 0);
+                mHitPointsDamage = -Math.min(currentHP - getHitPointsAdj(), 0);
             }
             if (currentFP != Integer.MIN_VALUE) {
                 mFatiguePointsDamage = -Math.min(currentFP - getFatiguePoints(), 0);
@@ -614,56 +656,80 @@ public class GURPSCharacter extends DataFile {
     }
 
     @Override
-    public int getXMLTagVersion() {
-        return CURRENT_VERSION;
-    }
-
-    @Override
-    public String getXMLTagName() {
-        return TAG_ROOT;
-    }
-
-    @Override
-    protected void saveSelf(XMLWriter out) {
-        mSettings.save(out);
-        out.simpleTag(TAG_CREATED_DATE, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date(mCreatedOn)));
-        out.simpleTag(TAG_MODIFIED_DATE, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date(mModifiedOn)));
-        mProfile.save(out);
-        out.simpleTag(BonusAttributeType.HP.getXMLTag(), mHitPoints);
-        out.simpleTagNotZero(TAG_HP_DAMAGE, mHitPointsDamage);
-        out.simpleTag(BonusAttributeType.FP.getXMLTag(), mFatiguePoints);
-        out.simpleTagNotZero(TAG_FP_DAMAGE, mFatiguePointsDamage);
-        out.simpleTag(BonusAttributeType.FOCUS.getXMLTag(), mFocusPoints);
-        out.simpleTagNotZero(TAG_FOCUS_DAMAGE, mFocusPointsDamage);
-        out.simpleTag(TAG_TOTAL_POINTS, mTotalPoints);
-        out.simpleTag(BonusAttributeType.ST.getXMLTag(), mStrength);
-        out.simpleTag(BonusAttributeType.DX.getXMLTag(), mDexterity);
-        out.simpleTag(BonusAttributeType.IQ.getXMLTag(), mIntelligence);
-        out.simpleTag(BonusAttributeType.HT.getXMLTag(), mHealth);
-        out.simpleTag(BonusAttributeType.MYSTICISM.getXMLTag(), mMysticism);
-        out.simpleTag(BonusAttributeType.WILL.getXMLTag(), mWill);
-        out.simpleTag(BonusAttributeType.PERCEPTION.getXMLTag(), mPerception);
-        out.simpleTag(BonusAttributeType.SPEED.getXMLTag(), mSpeed);
-        out.simpleTag(BonusAttributeType.MOVE.getXMLTag(), mMove);
-        saveList(AdvantageList.TAG_ROOT, mAdvantages, out);
-        saveList(SkillList.TAG_ROOT, mSkills, out);
-        saveList(SpellList.TAG_ROOT, mSpells, out);
-        saveList(EquipmentList.TAG_CARRIED_ROOT, mEquipment, out);
-        saveList(EquipmentList.TAG_OTHER_ROOT, mOtherEquipment, out);
-        saveList(NoteList.TAG_ROOT, mNotes, out);
-        if (mPageSettings != null) {
-            mPageSettings.save(out, LengthUnits.IN);
+    protected void loadSelf(JsonMap m, LoadState state) throws IOException {
+        characterInitialize(false);
+        mSettings.load(m.getMap(Settings.TAG_ROOT));
+        mCreatedOn = Numbers.extractDateTime(m.getString(TAG_CREATED_DATE));
+        mProfile.load(m.getMap(Profile.TAG_ROOT));
+        mHitPointsAdj = m.getInt(KEY_HP_ADJ);
+        mHitPointsDamage = m.getInt(TAG_HP_DAMAGE);
+        mFatiguePoints = m.getInt(KEY_FP_ADJ);
+        mFatiguePointsDamage = m.getInt(TAG_FP_DAMAGE);
+        mFocusPoints = m.getInt(KEY_FOCUS_ADJ);
+        mFocusPointsDamage = m.getInt(TAG_FOCUS_DAMAGE);
+        mTotalPoints = m.getInt(TAG_TOTAL_POINTS);
+        mStrength = m.getInt(KEY_ST);
+        mDexterity = m.getInt(KEY_DX);
+        mIntelligence = m.getInt(KEY_IQ);
+        mHealth = m.getInt(KEY_HT);
+        mMysticism = m.getInt(KEY_MYST);
+        mWillAdj = m.getInt(KEY_WILL_ADJ);
+        mPerAdj = m.getInt(KEY_PER_ADJ);
+        mSpeedAdj = m.getDouble(KEY_SPEED_ADJ);
+        mMoveAdj = m.getInt(KEY_MOVE_ADJ);
+        AdvantageList.loadIntoModel(this, m.getArray(KEY_ADVANTAGES), mAdvantages, state);
+        SkillList.loadIntoModel(this, m.getArray(KEY_SKILLS), mSkills, state);
+        SpellList.loadIntoModel(this, m.getArray(KEY_SPELLS), mSpells, state);
+        EquipmentList.loadIntoModel(this, m.getArray(KEY_EQUIPMENT), mEquipment, state);
+        EquipmentList.loadIntoModel(this, m.getArray(KEY_OTHER_EQUIPMENT), mOtherEquipment, state);
+        NoteList.loadIntoModel(this, m.getArray(KEY_NOTES), mNotes, state);
+        if (mPageSettings != null && m.has(PrintManager.TAG_ROOT)) {
+            mPageSettings = new PrintManager(m.getMap(PrintManager.TAG_ROOT));
             mPageSettingsString = mPageSettings.toString();
         }
+        // Loop through the skills and update their levels. It is necessary to do this here and not
+        // as they are loaded, since references to defaults won't work until the entire list is
+        // available.
+        for (Skill skill : getSkillsIterator()) {
+            skill.updateLevel(false);
+        }
+        calculateAll();
+        mModifiedOn = Numbers.extractDateTime(m.getString(TAG_MODIFIED_DATE)); // Must be last
     }
 
-    private static void saveList(String tag, OutlineModel model, XMLWriter out) {
-        if (model.getRowCount() > 0) {
-            out.startSimpleTagEOL(tag);
-            for (ListRow row : new FilteredIterator<>(model.getTopLevelRows(), ListRow.class)) {
-                row.save(out, false);
-            }
-            out.endTagEOL(tag, true);
+    protected void saveSelf(JsonWriter w) throws IOException {
+        w.key(Settings.TAG_ROOT);
+        mSettings.save(w);
+        w.keyValue(TAG_CREATED_DATE, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date(mCreatedOn)));
+        w.keyValue(TAG_MODIFIED_DATE, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date(mModifiedOn)));
+        w.key(Profile.TAG_ROOT);
+        mProfile.save(w);
+        w.keyValueNot(KEY_HP_ADJ, mHitPointsAdj, 0);
+        w.keyValueNot(TAG_HP_DAMAGE, mHitPointsDamage, 0);
+        w.keyValueNot(KEY_FP_ADJ, mFatiguePoints, 0);
+        w.keyValueNot(TAG_FP_DAMAGE, mFatiguePointsDamage, 0);
+        w.keyValueNot(KEY_FOCUS_ADJ, mFocusPoints, 0);
+        w.keyValueNot(TAG_FOCUS_DAMAGE, mFocusPointsDamage, 0);
+        w.keyValue(TAG_TOTAL_POINTS, mTotalPoints);
+        w.keyValue(KEY_ST, mStrength);
+        w.keyValue(KEY_DX, mDexterity);
+        w.keyValue(KEY_IQ, mIntelligence);
+        w.keyValue(KEY_HT, mHealth);
+        w.keyValue(KEY_MYST, mMysticism);
+        w.keyValueNot(KEY_WILL_ADJ, mWillAdj, 0);
+        w.keyValueNot(KEY_PER_ADJ, mPerAdj, 0);
+        w.keyValueNot(KEY_SPEED_ADJ, mSpeedAdj, 0);
+        w.keyValueNot(KEY_MOVE_ADJ, mMoveAdj, 0);
+        ListRow.saveList(w, KEY_ADVANTAGES, mAdvantages.getTopLevelRows(), false);
+        ListRow.saveList(w, KEY_SKILLS, mSkills.getTopLevelRows(), false);
+        ListRow.saveList(w, KEY_SPELLS, mSpells.getTopLevelRows(), false);
+        ListRow.saveList(w, KEY_EQUIPMENT, mEquipment.getTopLevelRows(), false);
+        ListRow.saveList(w, KEY_OTHER_EQUIPMENT, mOtherEquipment.getTopLevelRows(), false);
+        ListRow.saveList(w, KEY_NOTES, mNotes.getTopLevelRows(), false);
+        if (mPageSettings != null) {
+            w.key(PrintManager.TAG_ROOT);
+            mPageSettings.save(w, LengthUnits.IN);
+            mPageSettingsString = mPageSettings.toString();
         }
     }
 
@@ -726,7 +792,7 @@ public class GURPSCharacter extends DataFile {
         } else if (ID_BASIC_LIFT.equals(id)) {
             return getBasicLift();
         } else if (ID_PERCEPTION.equals(id)) {
-            return Integer.valueOf(getPerception());
+            return Integer.valueOf(getPerAdj());
         } else if (ID_VISION.equals(id)) {
             return Integer.valueOf(getVision());
         } else if (ID_HEARING.equals(id)) {
@@ -736,7 +802,7 @@ public class GURPSCharacter extends DataFile {
         } else if (ID_TOUCH.equals(id)) {
             return Integer.valueOf(getTouch());
         } else if (ID_WILL.equals(id)) {
-            return Integer.valueOf(getWill());
+            return Integer.valueOf(getWillAdj());
         } else if (ID_FRIGHT_CHECK.equals(id)) {
             return Integer.valueOf(getFrightCheck());
         } else if (ID_ATTRIBUTE_POINTS.equals(id)) {
@@ -774,7 +840,7 @@ public class GURPSCharacter extends DataFile {
         } else if (ID_BASIC_SWING.equals(id)) {
             return getSwing();
         } else if (ID_HIT_POINTS.equals(id)) {
-            return Integer.valueOf(getHitPoints());
+            return Integer.valueOf(getHitPointsAdj());
         } else if (ID_HIT_POINTS_DAMAGE.equals(id)) {
             return Integer.valueOf(getHitPointsDamage());
         } else if (ID_CURRENT_HP.equals(id)) {
@@ -859,17 +925,17 @@ public class GURPSCharacter extends DataFile {
             } else if (ID_BASIC_MOVE.equals(id)) {
                 setBasicMove(((Integer) value).intValue());
             } else if (ID_PERCEPTION.equals(id)) {
-                setPerception(((Integer) value).intValue());
+                setPerAdj(((Integer) value).intValue());
             } else if (ID_WILL.equals(id)) {
-                setWill(((Integer) value).intValue());
+                setWillAdj(((Integer) value).intValue());
             } else if (ID_UNSPENT_POINTS.equals(id)) {
                 setUnspentPoints(((Integer) value).intValue());
             } else if (ID_HIT_POINTS.equals(id)) {
-                setHitPoints(((Integer) value).intValue());
+                setHitPointsAdj(((Integer) value).intValue());
             } else if (ID_HIT_POINTS_DAMAGE.equals(id)) {
                 setHitPointsDamage(((Integer) value).intValue());
             } else if (ID_CURRENT_HP.equals(id)) {
-                setHitPointsDamage(-Math.min(((Integer) value).intValue() - getHitPoints(), 0));
+                setHitPointsDamage(-Math.min(((Integer) value).intValue() - getHitPointsAdj(), 0));
             } else if (ID_FATIGUE_POINTS.equals(id)) {
                 setFatiguePoints(((Integer) value).intValue());
             } else if (ID_FATIGUE_POINTS_DAMAGE.equals(id)) {
@@ -1346,7 +1412,7 @@ public class GURPSCharacter extends DataFile {
      * @return The character's basic speed.
      */
     public double getBasicSpeed() {
-        return mSpeed + mSpeedBonus + getRawBasicSpeed();
+        return mSpeedAdj + mSpeedBonus + getRawBasicSpeed();
     }
 
     private double getRawBasicSpeed() {
@@ -1374,7 +1440,7 @@ public class GURPSCharacter extends DataFile {
     /** @param bonus The basic speed bonus. */
     public void setBasicSpeedBonus(double bonus) {
         if (mSpeedBonus != bonus) {
-            updateBasicSpeedInfo(mSpeed, bonus);
+            updateBasicSpeedInfo(mSpeedAdj, bonus);
         }
     }
 
@@ -1383,7 +1449,7 @@ public class GURPSCharacter extends DataFile {
         int[] data = preserveMoveAndDodge();
         int   tmp;
 
-        mSpeed = speed;
+        mSpeedAdj = speed;
         mSpeedBonus = bonus;
 
         startNotify();
@@ -1399,14 +1465,14 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The number of points spent on basic speed. */
     public int getBasicSpeedPoints() {
-        return (int) (mSpeed * 20.0);
+        return (int) (mSpeedAdj * 20.0);
     }
 
     /**
      * @return The character's basic move.
      */
     public int getBasicMove() {
-        return Math.max(mMove + mMoveBonus + getRawBasicMove(), 0);
+        return Math.max(mMoveAdj + mMoveBonus + getRawBasicMove(), 0);
     }
 
     private int getRawBasicMove() {
@@ -1435,7 +1501,7 @@ public class GURPSCharacter extends DataFile {
     /** @param bonus The basic move bonus. */
     public void setBasicMoveBonus(int bonus) {
         if (mMoveBonus != bonus) {
-            updateBasicMoveInfo(mMove, bonus);
+            updateBasicMoveInfo(mMoveAdj, bonus);
         }
     }
 
@@ -1443,7 +1509,7 @@ public class GURPSCharacter extends DataFile {
         int[] data = preserveMoveAndDodge();
 
         startNotify();
-        mMove = move;
+        mMoveAdj = move;
         mMoveBonus = bonus;
         notify(ID_BASIC_MOVE, Integer.valueOf(getBasicMove()));
         notifyIfMoveOrDodgeAltered(data);
@@ -1453,7 +1519,7 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The number of points spent on basic move. */
     public int getBasicMovePoints() {
-        return mMove * 5;
+        return mMoveAdj * 5;
     }
 
     /**
@@ -1809,8 +1875,8 @@ public class GURPSCharacter extends DataFile {
     }
 
     private void updateIntelligenceInfo(int intelligence, int bonus) {
-        int perception = getPerception();
-        int will       = getWill();
+        int perception = getPerAdj();
+        int will       = getWillAdj();
         int newPerception;
         int newWill;
 
@@ -1819,7 +1885,7 @@ public class GURPSCharacter extends DataFile {
 
         startNotify();
         notify(ID_INTELLIGENCE, Integer.valueOf(getIntelligence()));
-        newPerception = getPerception();
+        newPerception = getPerAdj();
         if (newPerception != perception) {
             notify(ID_PERCEPTION, Integer.valueOf(newPerception));
             notify(ID_VISION, Integer.valueOf(getVision()));
@@ -1827,7 +1893,7 @@ public class GURPSCharacter extends DataFile {
             notify(ID_TASTE_AND_SMELL, Integer.valueOf(getTasteAndSmell()));
             notify(ID_TOUCH, Integer.valueOf(getTouch()));
         }
-        newWill = getWill();
+        newWill = getWillAdj();
         if (newWill != will) {
             notify(ID_WILL, Integer.valueOf(newWill));
             notify(ID_FRIGHT_CHECK, Integer.valueOf(getFrightCheck()));
@@ -2100,12 +2166,12 @@ public class GURPSCharacter extends DataFile {
     }
 
     public int getCurrentHitPoints() {
-        return getHitPoints() - getHitPointsDamage();
+        return getHitPointsAdj() - getHitPointsDamage();
     }
 
     /** @return The hit points (HP). */
-    public int getHitPoints() {
-        return getStrength() + mHitPoints + mHitPointBonus;
+    public int getHitPointsAdj() {
+        return getStrength() + mHitPointsAdj + mHitPointBonus;
     }
 
     /**
@@ -2113,12 +2179,12 @@ public class GURPSCharacter extends DataFile {
      *
      * @param hp The new hit points.
      */
-    public void setHitPoints(int hp) {
-        int oldHP = getHitPoints();
+    public void setHitPointsAdj(int hp) {
+        int oldHP = getHitPointsAdj();
         if (oldHP != hp) {
             postUndoEdit(I18n.Text("Hit Points Change"), ID_HIT_POINTS, Integer.valueOf(oldHP), Integer.valueOf(hp));
             startNotify();
-            mHitPoints = hp - (getStrength() + mHitPointBonus);
+            mHitPointsAdj = hp - (getStrength() + mHitPointBonus);
             mNeedAttributePointCalculation = true;
             notifyOfBaseHitPointChange();
             endNotify();
@@ -2127,7 +2193,7 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The number of points spent on hit points. */
     public int getHitPointPoints() {
-        int pts = 2 * mHitPoints;
+        int pts = 2 * mHitPointsAdj;
         if (!mSettings.useKnowYourOwnStrength()) {
             int sizeModifier = mProfile.getSizeModifier();
             if (sizeModifier > 0) {
@@ -2163,14 +2229,14 @@ public class GURPSCharacter extends DataFile {
 
     private void notifyOfBaseHitPointChange() {
         startNotify();
-        notify(ID_HIT_POINTS, Integer.valueOf(getHitPoints()));
+        notify(ID_HIT_POINTS, Integer.valueOf(getHitPointsAdj()));
         notify(ID_DEATH_CHECK_1_HIT_POINTS, Integer.valueOf(getDeathCheck1HitPoints()));
         notify(ID_DEATH_CHECK_2_HIT_POINTS, Integer.valueOf(getDeathCheck2HitPoints()));
         notify(ID_DEATH_CHECK_3_HIT_POINTS, Integer.valueOf(getDeathCheck3HitPoints()));
         notify(ID_DEATH_CHECK_4_HIT_POINTS, Integer.valueOf(getDeathCheck4HitPoints()));
         notify(ID_DEAD_HIT_POINTS, Integer.valueOf(getDeadHitPoints()));
         notify(ID_REELING_HIT_POINTS, Integer.valueOf(getReelingHitPoints()));
-        notify(ID_CURRENT_HP, Integer.valueOf(getHitPoints() - mHitPointsDamage));
+        notify(ID_CURRENT_HP, Integer.valueOf(getHitPointsAdj() - mHitPointsDamage));
         endNotify();
     }
 
@@ -2189,13 +2255,13 @@ public class GURPSCharacter extends DataFile {
             postUndoEdit(I18n.Text("Current Hit Points Change"), ID_HIT_POINTS_DAMAGE, Integer.valueOf(mHitPointsDamage), Integer.valueOf(damage));
             mHitPointsDamage = damage;
             notifySingle(ID_HIT_POINTS_DAMAGE, Integer.valueOf(mHitPointsDamage));
-            notifySingle(ID_CURRENT_HP, Integer.valueOf(getHitPoints() - mHitPointsDamage));
+            notifySingle(ID_CURRENT_HP, Integer.valueOf(getHitPointsAdj() - mHitPointsDamage));
         }
     }
 
     /** @return The number of hit points where "reeling" effects start. */
     public int getReelingHitPoints() {
-        int hp        = getHitPoints();
+        int hp        = getHitPointsAdj();
         int threshold = hp / 3;
         if (hp % 3 != 0) {
             threshold++;
@@ -2239,40 +2305,40 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The number of hit points where the first death check must be made. */
     public int getDeathCheck1HitPoints() {
-        return -1 * getHitPoints();
+        return -1 * getHitPointsAdj();
     }
 
     /** @return The number of hit points where the second death check must be made. */
     public int getDeathCheck2HitPoints() {
-        return -2 * getHitPoints();
+        return -2 * getHitPointsAdj();
     }
 
     /** @return The number of hit points where the third death check must be made. */
     public int getDeathCheck3HitPoints() {
-        return -3 * getHitPoints();
+        return -3 * getHitPointsAdj();
     }
 
     /** @return The number of hit points where the fourth death check must be made. */
     public int getDeathCheck4HitPoints() {
-        return -4 * getHitPoints();
+        return -4 * getHitPointsAdj();
     }
 
     /** @return The number of hit points where the character is just dead. */
     public int getDeadHitPoints() {
-        return -5 * getHitPoints();
+        return -5 * getHitPointsAdj();
     }
 
     /** @return The will. */
-    public int getWill() {
-        return mWill + mWillBonus + (mSettings.baseWillAndPerOn10() ? 10 : getIntelligence());
+    public int getWillAdj() {
+        return mWillAdj + mWillBonus + (mSettings.baseWillAndPerOn10() ? 10 : getIntelligence());
     }
 
-    /** @param will The new will. */
-    public void setWill(int will) {
-        int oldWill = getWill();
-        if (oldWill != will) {
-            postUndoEdit(I18n.Text("Will Change"), ID_WILL, Integer.valueOf(oldWill), Integer.valueOf(will));
-            updateWillInfo(will - (mWillBonus + (mSettings.baseWillAndPerOn10() ? 10 : getIntelligence())), mWillBonus);
+    /** @param willAdj The new will. */
+    public void setWillAdj(int willAdj) {
+        int oldWill = getWillAdj();
+        if (oldWill != willAdj) {
+            postUndoEdit(I18n.Text("Will Change"), ID_WILL, Integer.valueOf(oldWill), Integer.valueOf(willAdj));
+            updateWillInfo(willAdj - (mWillBonus + (mSettings.baseWillAndPerOn10() ? 10 : getIntelligence())), mWillBonus);
         }
     }
 
@@ -2284,16 +2350,16 @@ public class GURPSCharacter extends DataFile {
     /** @param bonus The new will bonus. */
     public void setWillBonus(int bonus) {
         if (mWillBonus != bonus) {
-            updateWillInfo(mWill, bonus);
+            updateWillInfo(mWillAdj, bonus);
         }
     }
 
     private void updateWillInfo(int will, int bonus) {
-        mWill = will;
+        mWillAdj = will;
         mWillBonus = bonus;
 
         startNotify();
-        notify(ID_WILL, Integer.valueOf(getWill()));
+        notify(ID_WILL, Integer.valueOf(getWillAdj()));
         notify(ID_FRIGHT_CHECK, Integer.valueOf(getFrightCheck()));
         updateSkills();
         mNeedAttributePointCalculation = true;
@@ -2302,18 +2368,18 @@ public class GURPSCharacter extends DataFile {
 
     /** Called to ensure notifications are sent out when the optional IQ rule use is changed. */
     public void updateWillAndPerceptionDueToOptionalIQRuleUseChange() {
-        updateWillInfo(mWill, mWillBonus);
-        updatePerceptionInfo(mPerception, mPerceptionBonus);
+        updateWillInfo(mWillAdj, mWillBonus);
+        updatePerceptionInfo(mPerAdj, mPerceptionBonus);
     }
 
     /** @return The number of points spent on will. */
     public int getWillPoints() {
-        return mWill * 5;
+        return mWillAdj * 5;
     }
 
     /** @return The fright check. */
     public int getFrightCheck() {
-        return getWill() + mFrightCheckBonus;
+        return getWillAdj() + mFrightCheckBonus;
     }
 
     /** @return The fright check bonus. */
@@ -2333,7 +2399,7 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The vision. */
     public int getVision() {
-        return getPerception() + mVisionBonus;
+        return getPerAdj() + mVisionBonus;
     }
 
     /** @return The vision bonus. */
@@ -2353,7 +2419,7 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The hearing. */
     public int getHearing() {
-        return getPerception() + mHearingBonus;
+        return getPerAdj() + mHearingBonus;
     }
 
     /** @return The hearing bonus. */
@@ -2373,7 +2439,7 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The touch perception. */
     public int getTouch() {
-        return getPerception() + mTouchBonus;
+        return getPerAdj() + mTouchBonus;
     }
 
     /** @return The touch bonus. */
@@ -2393,7 +2459,7 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The taste and smell perception. */
     public int getTasteAndSmell() {
-        return getPerception() + mTasteAndSmellBonus;
+        return getPerAdj() + mTasteAndSmellBonus;
     }
 
     /** @return The taste and smell bonus. */
@@ -2412,20 +2478,20 @@ public class GURPSCharacter extends DataFile {
     }
 
     /** @return The perception (Per). */
-    public int getPerception() {
-        return mPerception + mPerceptionBonus + (mSettings.baseWillAndPerOn10() ? 10 : getIntelligence());
+    public int getPerAdj() {
+        return mPerAdj + mPerceptionBonus + (mSettings.baseWillAndPerOn10() ? 10 : getIntelligence());
     }
 
     /**
      * Sets the perception.
      *
-     * @param perception The new perception.
+     * @param perAdj The new perception.
      */
-    public void setPerception(int perception) {
-        int oldPerception = getPerception();
-        if (oldPerception != perception) {
-            postUndoEdit(I18n.Text("Perception Change"), ID_PERCEPTION, Integer.valueOf(oldPerception), Integer.valueOf(perception));
-            updatePerceptionInfo(perception - (mPerceptionBonus + (mSettings.baseWillAndPerOn10() ? 10 : getIntelligence())), mPerceptionBonus);
+    public void setPerAdj(int perAdj) {
+        int oldPerception = getPerAdj();
+        if (oldPerception != perAdj) {
+            postUndoEdit(I18n.Text("Perception Change"), ID_PERCEPTION, Integer.valueOf(oldPerception), Integer.valueOf(perAdj));
+            updatePerceptionInfo(perAdj - (mPerceptionBonus + (mSettings.baseWillAndPerOn10() ? 10 : getIntelligence())), mPerceptionBonus);
         }
     }
 
@@ -2437,15 +2503,15 @@ public class GURPSCharacter extends DataFile {
     /** @param bonus The new perception bonus. */
     public void setPerceptionBonus(int bonus) {
         if (mPerceptionBonus != bonus) {
-            updatePerceptionInfo(mPerception, bonus);
+            updatePerceptionInfo(mPerAdj, bonus);
         }
     }
 
     private void updatePerceptionInfo(int perception, int bonus) {
-        mPerception = perception;
+        mPerAdj = perception;
         mPerceptionBonus = bonus;
         startNotify();
-        notify(ID_PERCEPTION, Integer.valueOf(getPerception()));
+        notify(ID_PERCEPTION, Integer.valueOf(getPerAdj()));
         notify(ID_VISION, Integer.valueOf(getVision()));
         notify(ID_HEARING, Integer.valueOf(getHearing()));
         notify(ID_TASTE_AND_SMELL, Integer.valueOf(getTasteAndSmell()));
@@ -2457,7 +2523,7 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The number of points spent on perception. */
     public int getPerceptionPoints() {
-        return mPerception * 5;
+        return mPerAdj * 5;
     }
 
     public int getCurrentFatiguePoints() {

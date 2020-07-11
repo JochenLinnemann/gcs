@@ -106,7 +106,7 @@ public enum BonusAttributeType {
             return I18n.Text("dodge");
         }
     },
-    /** The Dodge attribute. */
+    /** The Parry attribute. */
     PARRY {
         @Override
         public String toString() {
