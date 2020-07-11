@@ -805,7 +805,7 @@ k:"Displays the program version."
 v:"Zeigt die Programmversion an."
 
 k:"Dodge"
-v:"Ausweichen"
+v:"Ausw."
 
 k:"Does not have"
 v:"Hat nicht"
@@ -1416,7 +1416,7 @@ k:"Monochrome"
 v:"Schwarz-weiß"
 
 k:"Move"
-v:"Bewegung"
+v:"Bew."
 
 k:"Move to Carried Equipment"
 v:"In Getragene Ausrüstung verschieben"
@@ -1978,7 +1978,7 @@ k:"RoF"
 v:"FR"
 
 k:"Roll"
-v:"Würfeln"
+v:"Wurf"
 
 k:"Round Down"
 v:"Abrunden"
@@ -2092,7 +2092,7 @@ k:"Size Modifier Change"
 v:"Änderung des Größenmodifikators"
 
 k:"Size:"
-v:"Größe:"
+v:"GM:"
 
 k:"Skill"
 v:"Fertigkeit"
@@ -2191,7 +2191,7 @@ k:"Tan"
 v:"Bräune"
 
 k:"Taste & Smell"
-v:"Schmecken & Riechen"
+v:"Riechen & Schmecken"
 
 k:"Tech Level"
 v:"Techgrad"
@@ -2904,7 +2904,7 @@ k:"Winged Vermiform"
 v:"Geflügelter Wurmförmiger"
 
 k:"X-Heavy"
-v:"Sehr Schwer"
+v:"Sehr Schw."
 
 k:"Yards"
 v:"Schritt"
@@ -3121,7 +3121,7 @@ k:"starts with"
 v:"beginnt mit"
 
 k:"taste & smell"
-v:"Schmecken & Riechen"
+v:"Riechen & Schmecken"
 
 k:"to"
 v:"zu"
