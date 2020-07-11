@@ -24,6 +24,7 @@ import com.trollworks.gcs.template.Template;
 import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.ui.widget.outline.RowEditor;
 import com.trollworks.gcs.utility.I18n;
+import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.xml.XMLReader;
 import com.trollworks.gcs.utility.xml.XMLWriter;
 
@@ -126,9 +127,9 @@ public class SplittermondSpell extends RitualMagicSpell{
     }
 
     @Override
-    public void saveSelf(XMLWriter out, boolean forUndo) {
-        super.saveSelf(out, forUndo);
-        out.simpleTag(TAG_NAME_DE, mNameDe);
+    protected void saveSelf(JsonWriter w, boolean forUndo) throws IOException {
+        super.saveSelf(w, forUndo);
+        w.keyValue(TAG_NAME_DE, mNameDe);
     }
 
     //@Override
