@@ -173,7 +173,7 @@ public class TemplateDockable extends DataFileDockable implements NotifierTarget
 
     @Override
     public void jumpToSearchField() {
-        mSearch.requestFocusInWindow();
+        mSearch.requestFocus();
     }
 
     @Override

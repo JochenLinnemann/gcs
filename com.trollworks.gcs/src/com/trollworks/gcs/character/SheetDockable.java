@@ -70,8 +70,8 @@ public class SheetDockable extends DataFileDockable implements SearchTarget, Ret
     /** Creates a new {@link SheetDockable}. */
     public SheetDockable(GURPSCharacter character) {
         super(character);
-        GURPSCharacter dataFile = getDataFile();
-        mSheet = new CharacterSheet(dataFile);
+        mSheet = new CharacterSheet(character);
+        long modifiedOn = character.getModifiedOn();
         createToolbar();
         JScrollPane scroller = new JScrollPane(mSheet);
         scroller.setBorder(null);
@@ -80,12 +80,13 @@ public class SheetDockable extends DataFileDockable implements SearchTarget, Ret
         viewport.addChangeListener(mSheet);
         add(scroller, BorderLayout.CENTER);
         mSheet.rebuild();
-        mSheet.getCharacter().processFeaturesAndPrereqs();
-        dataFile.setModified(false);
+        character.processFeaturesAndPrereqs();
+        character.setModifiedOn(modifiedOn);
+        character.setModified(false);
         StdUndoManager undoManager = getUndoManager();
         undoManager.discardAllEdits();
-        dataFile.setUndoManager(undoManager);
-        dataFile.addTarget(this, Profile.ID_BODY_TYPE);
+        character.setUndoManager(undoManager);
+        character.addTarget(this, Profile.ID_BODY_TYPE);
     }
 
     private void createToolbar() {
@@ -178,7 +179,7 @@ public class SheetDockable extends DataFileDockable implements SearchTarget, Ret
 
     @Override
     public void jumpToSearchField() {
-        mSearch.requestFocusInWindow();
+        mSearch.requestFocus();
     }
 
     @Override

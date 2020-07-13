@@ -28,6 +28,7 @@ import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -131,8 +132,15 @@ public class WindowUtils {
                 }
             });
         }
+        Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner();
+        if (focusOwner == null) {
+            focusOwner = parentComponent;
+        }
         dialog.setVisible(true);
         dialog.dispose();
+        if (focusOwner != null) {
+            focusOwner.requestFocus();
+        }
         pane.setMessage(null);
 
         Object selectedValue = pane.getValue();
