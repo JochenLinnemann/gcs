@@ -78,6 +78,8 @@ public class SpellList extends ListFile {
                 model.addRow(new Spell(file, m1, state), true);
             } else if (RitualMagicSpell.TAG_RITUAL_MAGIC_SPELL.equals(type)) {
                 model.addRow(new RitualMagicSpell(file, m1, state), true);
+            } else if (SplittermondSpell.TAG_SPLITTERMOND_SPELL.equals(type)) {
+                model.addRow(new SplittermondSpell(file, m1, state), true);
             } else {
                 Log.warn("invalid spell type: " + type);
             }

@@ -389,6 +389,8 @@ public class Spell extends ListRow implements HasSourceReference {
                 addChild(new Spell(mDataFile, m, state));
             } else if (RitualMagicSpell.TAG_RITUAL_MAGIC_SPELL.equals(type)) {
                 addChild(new RitualMagicSpell(mDataFile, m, state));
+            } else if (SplittermondSpell.TAG_SPLITTERMOND_SPELL.equals(type)) {
+                addChild(new SplittermondSpell(mDataFile, m, state));
             } else {
                 Log.warn("invalid child type: " + type);
             }
