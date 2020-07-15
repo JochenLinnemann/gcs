@@ -206,6 +206,8 @@ public class Template extends DataFile {
                     mSpells.addRow(new Spell(this, reader, state), true);
                 } else if (RitualMagicSpell.TAG_RITUAL_MAGIC_SPELL.equals(name)) {
                     mSpells.addRow(new RitualMagicSpell(this, reader, state), true);
+                } else if (SplittermondSpell.TAG_SPLITTERMOND_SPELL.equals(name)) {
+                    mSpells.addRow(new SplittermondSpell(this, reader, state), true);
                 } else {
                     reader.skipTag(name);
                 }
