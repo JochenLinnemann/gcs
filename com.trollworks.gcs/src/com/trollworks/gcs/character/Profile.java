@@ -152,6 +152,8 @@ public class Profile {
         mPlayerName = full ? prefs.getDefaultPlayerName() : "";
         mPortrait = createPortrait(getPortraitFromPortraitPath(prefs.getDefaultPortraitPath()));
         mHitLocationTable = HitLocationTable.HUMANOID;
+
+        ctor_Custom(character, full);
     }
 
     void load(XMLReader reader) throws IOException {
@@ -214,7 +216,7 @@ public class Profile {
                 Log.warn(imageException);
             }
         } else {
-            return false;
+            return loadTag_Custom(reader, tag);
         }
         return true;
     }
@@ -247,6 +249,8 @@ public class Profile {
                 Log.warn(imageException);
             }
         }
+
+        load_Custom(m);
     }
 
     void save(JsonWriter w) throws IOException {
@@ -279,6 +283,9 @@ public class Profile {
                 Log.warn(imageException);
             }
         }
+
+        save_Custom(w);
+
         w.endMap();
     }
 
@@ -711,6 +718,8 @@ public class Profile {
                 return Integer.valueOf(getSizeModifier());
             } else if (ID_BODY_TYPE.equals(id)) {
                 return mHitLocationTable;
+            } else {
+                return getValueForID_Custom(id);
             }
         }
         return null;
@@ -758,6 +767,8 @@ public class Profile {
                 setSizeModifier(((Integer) value).intValue());
             } else if (ID_BODY_TYPE.equals(id)) {
                 setHitLocationTable((HitLocationTable) value);
+            } else {
+                setValueForID_custom(id, value);
             }
         }
     }
@@ -989,10 +1000,159 @@ public class Profile {
     /*
         CUSTOM PROFILE
      */
-    public static final String ID_RACE           = PROFILE_PREFIX + "Race";
-    public static final String ID_CULTURE        = PROFILE_PREFIX + "Culture";
-    public static final String ID_ORIGIN         = PROFILE_PREFIX + "Origin";
-    public static final String ID_TRAINING       = PROFILE_PREFIX + "Training";
-    public static final String ID_MOONSIGN       = PROFILE_PREFIX + "Moonsign";
-    public static final String ID_SPLINTERPOINTS = PROFILE_PREFIX + "SplinterPoints";
+
+    public static final String ID_RACE        = PROFILE_PREFIX + "Race";
+    public static final String ID_CULTURE     = PROFILE_PREFIX + "Culture";
+    public static final String ID_ORIGIN      = PROFILE_PREFIX + "Origin";
+    public static final String ID_TRAINING    = PROFILE_PREFIX + "Training";
+    public static final String ID_MOONSIGN    = PROFILE_PREFIX + "Moonsign";
+
+    private static final String TAG_RACE      = "race";
+    private static final String TAG_CULTURE   = "culture";
+    private static final String TAG_ORIGIN    = "origin";
+    private static final String TAG_TRAINING  = "training";
+    private static final String TAG_MOONSIGN  = "moonsign";
+
+    private String mRace;
+    private String mCulture;
+    private String mOrigin;
+    private String mTraining;
+    private String mMoonsign;
+
+    private void ctor_Custom(GURPSCharacter character, boolean full) {
+        mRace = "";
+        mCulture = "";
+        mOrigin = "";
+        mTraining = "";
+        mMoonsign = "";
+    }
+
+    private boolean loadTag_Custom(XMLReader reader, String tag) throws IOException {
+        if (TAG_RACE.equals(tag)) {
+            mRace = reader.readText();
+        } else if (TAG_CULTURE.equals(tag)) {
+            mCulture = reader.readText();
+        } else if (TAG_ORIGIN.equals(tag)) {
+            mOrigin = reader.readText();
+        } else if (TAG_TRAINING.equals(tag)) {
+            mTraining = reader.readText();
+        } else if (TAG_MOONSIGN.equals(tag)) {
+            mMoonsign = reader.readText();
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void load_Custom(JsonMap m) {
+        mRace = m.getString(TAG_RACE);
+        mCulture = m.getString(TAG_CULTURE);
+        mOrigin = m.getString(TAG_ORIGIN);
+        mTraining = m.getString(TAG_TRAINING);
+        mMoonsign = m.getString(TAG_MOONSIGN);
+    }
+
+    private void save_Custom(JsonWriter w) throws IOException {
+        w.keyValue(TAG_RACE, mRace);
+        w.keyValue(TAG_CULTURE, mCulture);
+        w.keyValue(TAG_ORIGIN, mOrigin);
+        w.keyValue(TAG_TRAINING, mTraining);
+        w.keyValue(TAG_MOONSIGN, mMoonsign);
+    }
+
+    private Object getValueForID_Custom(String id) {
+        if (TAG_RACE.equals(id)) {
+            return mRace;
+        } else if (TAG_CULTURE.equals(id)) {
+            return mCulture;
+        } else if (TAG_ORIGIN.equals(id)) {
+            return mOrigin;
+        } else if (TAG_TRAINING.equals(id)) {
+            return mTraining;
+        } else if (TAG_MOONSIGN.equals(id)) {
+            return mMoonsign;
+        } else {
+            return null;
+        }
+    }
+
+    private void setValueForID_custom(String id, Object value) {
+        if (TAG_RACE.equals(id)) {
+            setRace((String) value);
+        } else if (TAG_CULTURE.equals(id)) {
+            setCulture((String) value);
+        } else if (TAG_ORIGIN.equals(id)) {
+            setOrigin((String) value);
+        } else if (TAG_TRAINING.equals(id)) {
+            setTraining((String) value);
+        } else if (TAG_MOONSIGN.equals(id)) {
+            setMoonsign((String) value);
+        }
+    }
+
+    /**
+     * Sets the race.
+     *
+     * @param race The new race.
+     */
+    public void setRace(String race) {
+        if (!mRace.equals(race)) {
+            mCharacter.postUndoEdit(I18n.Text("Race Change"), ID_RACE, mRace, race);
+            mRace = race;
+            mCharacter.notifySingle(ID_RACE, mRace);
+        }
+    }
+
+    /**
+     * Sets the culture.
+     *
+     * @param culture The new culture.
+     */
+    public void setCulture(String culture) {
+        if (!mCulture.equals(culture)) {
+            mCharacter.postUndoEdit(I18n.Text("Culture Change"), ID_CULTURE, mCulture, culture);
+            mCulture = culture;
+            mCharacter.notifySingle(ID_CULTURE, mCulture);
+        }
+    }
+
+    /**
+     * Sets the origin.
+     *
+     * @param origin The new origin
+     */
+    public void setOrigin(String origin) {
+        if (!mOrigin.equals(origin)) {
+            mCharacter.postUndoEdit(I18n.Text("Origin Change"), ID_ORIGIN, mOrigin, origin);
+            mOrigin = origin;
+            mCharacter.notifySingle(ID_ORIGIN, mOrigin);
+        }
+    }
+
+    /**
+     * Sets the training.
+     *
+     * @param training The new training.
+     */
+    public void setTraining(String training) {
+        if (!mTraining.equals(training)) {
+            mCharacter.postUndoEdit(I18n.Text("Training Change"), ID_TRAINING, mTraining, training);
+            mTraining = training;
+            mCharacter.notifySingle(ID_TRAINING, mTraining);
+        }
+    }
+
+    /**
+     * Sets the moonsign.
+     *
+     * @param moonsign The new moonsign.
+     */
+    public void setMoonsign(String moonsign) {
+        if (!mMoonsign.equals(moonsign)) {
+            mCharacter.postUndoEdit(I18n.Text("Moonsign Change"), ID_MOONSIGN, mMoonsign, moonsign);
+            mMoonsign = moonsign;
+            mCharacter.notifySingle(ID_MOONSIGN, mMoonsign);
+        }
+    }
 }
