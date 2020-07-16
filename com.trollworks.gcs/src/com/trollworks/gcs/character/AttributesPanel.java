@@ -41,8 +41,6 @@ public class AttributesPanel extends DropPanel {
         addLabelAndField(sheet, GURPSCharacter.ID_WILL, I18n.TextWithContext(1, "Will"), true);
         addLabelAndField(sheet, GURPSCharacter.ID_PERCEPTION, I18n.Text("Perception (Per)"), true);
         addDivider();
-        addLabelAndField(sheet, GURPSCharacter.ID_MYSTICISM, I18n.Text("Mysticism"), true);
-        addDivider();
         addLabelAndDamageField(sheet, GURPSCharacter.ID_BASIC_THRUST, I18n.Text("Basic Thrust"));
         addLabelAndDamageField(sheet, GURPSCharacter.ID_BASIC_SWING, I18n.Text("Basic Swing"));
         addDivider();
