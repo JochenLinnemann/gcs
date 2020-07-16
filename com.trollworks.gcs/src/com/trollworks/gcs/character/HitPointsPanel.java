@@ -51,8 +51,8 @@ public class HitPointsPanel extends DropPanel implements NotifierTarget {
         super(new PrecisionLayout().setColumns(3).setMargins(0).setSpacing(2, 0).setAlignment(PrecisionLayoutAlignment.FILL, PrecisionLayoutAlignment.FILL), I18n.Text("Hit Points"));
         mSheet = sheet;
         mState = State.UNAFFECTED;
-        addLabelAndField(sheet, GURPSCharacter.ID_CURRENT_HP, I18n.Text("Current"), I18n.Text("Current hit points"), true);
         addLabelAndField(sheet, GURPSCharacter.ID_HIT_POINTS, I18n.Text("Basic"), I18n.Text("Normal (i.e. unharmed) hit points"), true);
+        addLabelAndField(sheet, GURPSCharacter.ID_CURRENT_HP, I18n.Text("Current"), I18n.Text("Current hit points"), true);
         mReelingField = addLabelAndField(sheet, GURPSCharacter.ID_REELING_HIT_POINTS, I18n.Text("Reeling"), I18n.Text("Current hit points at or below this point indicate the character is reeling from the pain, halving move, speed and dodge"), false);
         mCollapsedField = addLabelAndField(sheet, GURPSCharacter.ID_UNCONSCIOUS_CHECKS_HIT_POINTS, I18n.Text("Collapse"), I18n.Text("<html><body>Current hit points at or below this point indicate the character<br>is on the verge of collapse, causing the character to <b>roll vs. HT</b><br>(at -1 per full multiple of HP below zero) every second to avoid<br>falling unconscious</body></html>"), false);
         String deathCheckTooltip = I18n.Text("<html><body>Current hit points at or below this point cause<br>the character to <b>roll vs. HT</b> to avoid death</body></html>");
