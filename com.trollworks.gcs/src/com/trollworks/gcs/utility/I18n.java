@@ -93,7 +93,8 @@ public class I18n {
         }
         if (base == null) {
             if (GCS.VERSION.isZero()) { // Development mode, just use the working dir
-                base = Paths.get(".").toAbsolutePath();
+                //base = Paths.get(".").toAbsolutePath();
+                base = Paths.get(".", "extra", "i18n").toAbsolutePath();
             } else {
                 base = Paths.get(System.getProperty("java.home"));
                 if (Platform.isMacintosh()) {
@@ -104,7 +105,8 @@ public class I18n {
             base = base.normalize();
         }
 
-        String filename = "de"; //Locale.getDefault().toString();
+        //String filename = Locale.getDefault().toString();
+        String filename = "de";
         while (true) {
             Path path = base.resolve(filename + ".i18n");
             if (Files.isRegularFile(path) && Files.isReadable(path)) {
