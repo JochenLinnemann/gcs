@@ -43,13 +43,6 @@ public enum BonusAttributeType {
             return I18n.Text("HT");
         }
     },
-    /** The Mysticism attribute. */
-    MYSTICISM {
-        @Override
-        public String toString() {
-            return I18n.Text("mysticism");
-        }
-    },
     /** The Will attribute. */
     WILL {
         @Override
@@ -139,13 +132,6 @@ public enum BonusAttributeType {
             return I18n.Text("basic move");
         }
     },
-    /** The Focus attribute. */
-    FOCUS {
-        @Override
-        public String toString() {
-            return I18n.Text("focus");
-        }
-    },
     /** The FP attribute. */
     FP {
         @Override
@@ -165,6 +151,27 @@ public enum BonusAttributeType {
         @Override
         public String toString() {
             return I18n.Text("size modifier");
+        }
+    },
+    /** The Mysticism attribute. */
+    MYSTICISM {
+        @Override
+        public String toString() {
+            return I18n.Text("mysticism");
+        }
+    },
+    /** The Focus attribute. */
+    FOCUS {
+        @Override
+        public String toString() {
+            return I18n.Text("focus");
+        }
+    },
+    /** The Splinter Points attribute. */
+    SPLINTER_POINTS {
+        @Override
+        public String toString() {
+            return I18n.Text("splinter points");
         }
     };
 

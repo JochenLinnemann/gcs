@@ -3186,7 +3186,11 @@ public class GURPSCharacter extends DataFile {
     private static final String                              KEY_FOCUS_ADJ                        = "focus_adj";
     private static final String                              TAG_FOCUS_DAMAGE                     = "focus_damage";
 
+    private static final String                              KEY_SPLINTER_POINTS                  = "splinter_points";
+    private static final String                              TAG_SPLINTER_POINTS_DAMAGE           = "splinter_points_damage";
+
     private static final String                              FOCUS_POINTS_PREFIX                  = ATTRIBUTES_PREFIX + "derived_focus.";
+    private static final String                              SPLINTER_POINTS_PREFIX               = ATTRIBUTES_PREFIX + "derived_splinter_points.";
 
     /** The field ID for mysticism (Myst) changes. */
     public static final  String                              ID_MYSTICISM                         = ATTRIBUTES_PREFIX + BonusAttributeType.MYSTICISM.name();
@@ -3197,16 +3201,30 @@ public class GURPSCharacter extends DataFile {
     /** The field ID for current focus point changes. */
     public static final  String                              ID_CURRENT_FOCUS                     = FOCUS_POINTS_PREFIX + "Current";
 
+    /** The field ID for splinter point changes. */
+    public static final  String                              ID_SPLINTER_POINTS                   = ATTRIBUTES_PREFIX + BonusAttributeType.SPLINTER_POINTS.name();
+    /** The field ID for splinter point damage changes. */
+    public static final  String                              ID_SPLINTER_POINTS_DAMAGE            = SPLINTER_POINTS_PREFIX + "Damage";
+    /** The field ID for current splinter point changes. */
+    public static final  String                              ID_CURRENT_SPLINTER_POINTS           = SPLINTER_POINTS_PREFIX + "Current";
+
     private              int                                 mMysticism;
     private              int                                 mMysticismBonus;
     private              int                                 mMysticismCostReduction;
     private              int                                 mFocusPoints;
-    private              int                                 mFocusPointBonus;
+    private              int                                 mFocusPointsBonus;
     private              int                                 mFocusPointsDamage;
+
+    private              int                                 mSplinterPoints;
+    private              int                                 mSplinterPointsBonus;
+    private              int                                 mSplinterPointsDamage;
 
     private void characterInitialize_Custom(boolean full) {
         mMysticism = 10;
         mFocusPointsDamage = 0;
+
+        mSplinterPoints = 3;
+        mSplinterPointsDamage = 0;
     }
 
     private boolean loadSelf_Custom(String name, XMLReader reader, LoadState state) throws IOException {
@@ -3216,6 +3234,10 @@ public class GURPSCharacter extends DataFile {
             mFocusPoints = reader.readInteger(0);
         } else if (TAG_FOCUS_DAMAGE.equals(name)) {
             mFocusPointsDamage = reader.readInteger(0);
+        } else if (BonusAttributeType.SPLINTER_POINTS.getXMLTag().equals(name)) {
+            mSplinterPoints= reader.readInteger(0);
+        } else if (TAG_SPLINTER_POINTS_DAMAGE.equals(name)) {
+            mSplinterPointsDamage = reader.readInteger(0);
         } else {
             return false;
         }
@@ -3227,12 +3249,18 @@ public class GURPSCharacter extends DataFile {
         mMysticism = m.getInt(KEY_MYST);
         mFocusPoints = m.getInt(KEY_FOCUS_ADJ);
         mFocusPointsDamage = m.getInt(TAG_FOCUS_DAMAGE);
+
+        mSplinterPoints = m.getInt(KEY_SPLINTER_POINTS);
+        mSplinterPointsDamage = m.getInt(TAG_SPLINTER_POINTS_DAMAGE);
     }
 
     private void saveSelf_Custom(JsonWriter w) throws IOException {
         w.keyValue(KEY_MYST, mMysticism);
         w.keyValueNot(KEY_FOCUS_ADJ, mFocusPoints, 0);
         w.keyValueNot(TAG_FOCUS_DAMAGE, mFocusPointsDamage, 0);
+
+        w.keyValue(KEY_SPLINTER_POINTS, mSplinterPoints);
+        w.keyValueNot(TAG_SPLINTER_POINTS_DAMAGE, mSplinterPointsDamage, 0);
     }
 
     private Object getValueForID_PointsPrefix_Custom(String id) {
@@ -3240,6 +3268,8 @@ public class GURPSCharacter extends DataFile {
             return Integer.valueOf(getMysticismPoints());
         } else if (ID_FOCUS_POINTS.equals(id)) {
             return Integer.valueOf(getFocusPointPoints());
+        } else if (ID_SPLINTER_POINTS.equals(id)) {
+            return Integer.valueOf(getSplinterPointsPoints());
         } else {
             return null;
         }
@@ -3254,6 +3284,12 @@ public class GURPSCharacter extends DataFile {
             return Integer.valueOf(getFocusPointsDamage());
         } else if (ID_CURRENT_FOCUS.equals(id)) {
             return Integer.valueOf(getCurrentFocusPoints());
+        } else if (ID_SPLINTER_POINTS.equals(id)) {
+            return Integer.valueOf(getSplinterPoints());
+        } else if (ID_SPLINTER_POINTS_DAMAGE.equals(id)) {
+            return Integer.valueOf(getSplinterPointsDamage());
+        } else if (ID_CURRENT_SPLINTER_POINTS.equals(id)) {
+            return Integer.valueOf(getCurrentSplinterPoints());
         } else {
             return null;
         }
@@ -3268,6 +3304,12 @@ public class GURPSCharacter extends DataFile {
             setFocusPointsDamage(((Integer) value).intValue());
         } else if (ID_CURRENT_FOCUS.equals(id)) {
             setFocusPointsDamage(-Math.min(((Integer) value).intValue() - getFocusPoints(), 0));
+        } else if (ID_SPLINTER_POINTS.equals(id)) {
+            setSplinterPoints(((Integer) value).intValue());
+        } else if (ID_SPLINTER_POINTS_DAMAGE.equals(id)) {
+            setSplinterPointsDamage(((Integer) value).intValue());
+        } else if (ID_CURRENT_SPLINTER_POINTS.equals(id)) {
+            setSplinterPointsDamage(-Math.min(((Integer) value).intValue() - getSplinterPoints(), 0));
         } else {
             return false;
         }
@@ -3333,7 +3375,7 @@ public class GURPSCharacter extends DataFile {
     }
 
     private int calculateAttributePoints_Custom() {
-        return getMysticismPoints() + getFocusPointPoints();
+        return getMysticismPoints() + getFocusPointPoints() + getSplinterPointsPoints();
     }
 
     public int getCurrentFocusPoints() {
@@ -3342,7 +3384,7 @@ public class GURPSCharacter extends DataFile {
 
     /** @return The focus points. */
     public int getFocusPoints() {
-        return getMysticism() + mFocusPoints + mFocusPointBonus;
+        return getMysticism() + mFocusPoints + mFocusPointsBonus;
     }
 
     /**
@@ -3355,7 +3397,7 @@ public class GURPSCharacter extends DataFile {
         if (oldFocus != focus) {
             postUndoEdit(I18n.Text("Focus Points Change"), ID_FOCUS_POINTS, Integer.valueOf(oldFocus), Integer.valueOf(focus));
             startNotify();
-            mFocusPoints = focus - (getMysticism() + mFocusPointBonus);
+            mFocusPoints = focus - (getMysticism() + mFocusPointsBonus);
             mNeedAttributePointCalculation = true;
             notifyOfBaseFocusPointChange();
             endNotify();
@@ -3368,14 +3410,14 @@ public class GURPSCharacter extends DataFile {
     }
 
     /** @return The focus point bonus. */
-    public int getFocusPointBonus() {
-        return mFocusPointBonus;
+    public int getFocusPointsBonus() {
+        return mFocusPointsBonus;
     }
 
     /** @param bonus The focus point bonus. */
-    public void setFocusPointBonus(int bonus) {
-        if (mFocusPointBonus != bonus) {
-            mFocusPointBonus = bonus;
+    public void setFocusPointsBonus(int bonus) {
+        if (mFocusPointsBonus != bonus) {
+            mFocusPointsBonus = bonus;
             notifyOfBaseFocusPointChange();
         }
     }
@@ -3406,9 +3448,75 @@ public class GURPSCharacter extends DataFile {
         }
     }
 
+    /** @return The number of points spent on splinter points. */
+    public int getSplinterPointsPoints() {
+        return 5 * (mSplinterPoints - 3);
+    }
+
+    /** @return The splinter points. */
+    private int getSplinterPoints() {
+        return mSplinterPoints + mSplinterPointsBonus;
+    }
+
+    /**
+     * Sets the splinter points
+     *
+     * @param splinterPoints The new splinter points
+     */
+    private void setSplinterPoints(int splinterPoints) {
+        int oldSplinterPoints = getSplinterPoints();
+        if (oldSplinterPoints != splinterPoints) {
+            postUndoEdit(I18n.Text("Splinter Points Change"), ID_SPLINTER_POINTS, Integer.valueOf(oldSplinterPoints), Integer.valueOf(splinterPoints));
+            startNotify();
+            mSplinterPoints = splinterPoints - mSplinterPointsBonus;
+            mNeedAttributePointCalculation = true;
+            notifyOfBaseSplinterPointsChange();
+            endNotify();
+        }
+    }
+
+    private void notifyOfBaseSplinterPointsChange() {
+        startNotify();
+        notify(ID_SPLINTER_POINTS, Integer.valueOf(getSplinterPoints()));
+        notify(ID_CURRENT_SPLINTER_POINTS, Integer.valueOf(getSplinterPoints() - mSplinterPointsDamage));
+        endNotify();
+    }
+
+    /** @return The splinter points damage. */
+    private int getSplinterPointsDamage() {
+        return mSplinterPointsDamage;
+    }
+
+    /**
+     * Sets the splinter points damage
+     *
+     * @param damage
+     */
+    private void setSplinterPointsDamage(int damage) {
+        if (mSplinterPointsDamage != damage) {
+            postUndoEdit(I18n.Text("Current Splinter Points Change"), ID_SPLINTER_POINTS_DAMAGE, Integer.valueOf(mSplinterPointsDamage), Integer.valueOf(damage));
+            mSplinterPointsDamage = damage;
+            notifySingle(ID_SPLINTER_POINTS_DAMAGE, Integer.valueOf(mSplinterPointsDamage));
+            notifySingle(ID_CURRENT_SPLINTER_POINTS, Integer.valueOf(getSplinterPoints() - mSplinterPointsDamage));
+        }
+    }
+
+    private int getCurrentSplinterPoints() {
+        return getSplinterPoints() - getSplinterPointsDamage();
+    }
+
+    /** @param bonus The splinter point bonus. */
+    public void setSplinterPointsBonus(int bonus) {
+        if (mSplinterPointsBonus != bonus) {
+            mSplinterPointsBonus = bonus;
+            notifyOfBaseSplinterPointsChange();
+        }
+    }
+
     private void setFeatureMap_Custom(HashMap<String, ArrayList<Feature>> map) {
         setMysticismBonus(getIntegerBonusFor(ID_MYSTICISM));
         setMysticismCostReduction(getCostReductionFor(ID_MYSTICISM));
-        setFocusPointBonus(getIntegerBonusFor(ID_FOCUS_POINTS));
+        setFocusPointsBonus(getIntegerBonusFor(ID_FOCUS_POINTS));
+        setSplinterPointsBonus(getIntegerBonusFor(ID_SPLINTER_POINTS));
     }
 }
