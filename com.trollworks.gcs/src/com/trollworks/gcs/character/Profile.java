@@ -1062,15 +1062,15 @@ public class Profile {
     }
 
     private Object getValueForID_Custom(String id) {
-        if (TAG_RACE.equals(id)) {
+        if (ID_RACE.equals(id)) {
             return mRace;
-        } else if (TAG_CULTURE.equals(id)) {
+        } else if (ID_CULTURE.equals(id)) {
             return mCulture;
-        } else if (TAG_ORIGIN.equals(id)) {
+        } else if (ID_ORIGIN.equals(id)) {
             return mOrigin;
-        } else if (TAG_TRAINING.equals(id)) {
+        } else if (ID_TRAINING.equals(id)) {
             return mTraining;
-        } else if (TAG_MOONSIGN.equals(id)) {
+        } else if (ID_MOONSIGN.equals(id)) {
             return mMoonsign;
         } else {
             return null;
@@ -1078,15 +1078,15 @@ public class Profile {
     }
 
     private void setValueForID_custom(String id, Object value) {
-        if (TAG_RACE.equals(id)) {
+        if (ID_RACE.equals(id)) {
             setRace((String) value);
-        } else if (TAG_CULTURE.equals(id)) {
+        } else if (ID_CULTURE.equals(id)) {
             setCulture((String) value);
-        } else if (TAG_ORIGIN.equals(id)) {
+        } else if (ID_ORIGIN.equals(id)) {
             setOrigin((String) value);
-        } else if (TAG_TRAINING.equals(id)) {
+        } else if (ID_TRAINING.equals(id)) {
             setTraining((String) value);
-        } else if (TAG_MOONSIGN.equals(id)) {
+        } else if (ID_MOONSIGN.equals(id)) {
             setMoonsign((String) value);
         }
     }
