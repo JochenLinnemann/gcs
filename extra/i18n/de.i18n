@@ -1,4 +1,4 @@
-# Generated on Mon Jul 13 20:59:06 CEST 2020
+# Generated on Fri Jul 17 00:16:54 CEST 2020
 #
 # This file consists of UTF-8 text. Do not save it as anything else.
 #
@@ -668,6 +668,12 @@ v:"Erstellt Textversionen von auf der Kommandozeile angegebenen Blättern, unter
 k:"Created:"
 v:"Erstellt:"
 
+k:"Culture Change"
+v:"Änderung der Kultur"
+
+k:"Culture:"
+v:"Kultur:"
+
 k:"Curly"
 v:"Lockig"
 
@@ -682,6 +688,9 @@ v:"Änderung der Aktuellen Fokuspunkte"
 
 k:"Current Hit Points Change"
 v:"Änderung der Aktuellen Trefferpunkte"
+
+k:"Current Splinter Points Change"
+v:"Änderung der Aktuellen Splitterpunkte"
 
 k:"Current fatigue points"
 v:"Aktuelle Erschöpfungspunkte"
@@ -706,6 +715,9 @@ v:"Aktuelle Trefferpunkte auf oder unter diesem Punkt lassen den Charakter sterb
 
 k:"Current hit points at or below this point indicate the character is reeling from the pain, halving move, speed and dodge"
 v:"Aktuelle Trefferpunkte auf oder unter diesem Punkt zeigen an, dass der Charakter vor Schmerzen taumelt und Bewegung, Geschwindigkeit und Ausweichen halbiert sind"
+
+k:"Current splinter points"
+v:"Aktuelle Splitterpunkte"
 
 k:"Cut"
 v:"Schnitt"
@@ -1429,6 +1441,12 @@ v:"Modifikatoren"
 k:"Monochrome"
 v:"Schwarz-weiß"
 
+k:"Moonsign"
+v:"Mondzeichen"
+
+k:"Moonsign Change"
+v:"Änderung des Mondzeichens"
+
 k:"Move"
 v:"Bew."
 
@@ -1598,6 +1616,9 @@ v:"Normale (d.h völlig ausgeruht) Erschöpfungspunkte"
 k:"Normal (i.e. fully rested) focus points"
 v:"Normale (d.h völlig regeneriert) Fokuspunkte"
 
+k:"Normal (i.e. fully restored) splinter points"
+v:"Normale (d.h. völlig wieder hergestellte) Splitterpunkte"
+
 k:"Normal (i.e. unharmed) hit points"
 v:"Normale (d.h. unverletzt) Trefferpunkte"
 
@@ -1651,6 +1672,12 @@ v:"Optionen:"
 
 k:"Orientation"
 v:"Ausrichtung"
+
+k:"Origin Change"
+v:"Änderung der Abstammung"
+
+k:"Origin:"
+v:"Abstammung:"
 
 k:"Other Equipment"
 v:"Andere Ausrüstung"
@@ -1835,6 +1862,12 @@ v:"RFW"
 
 k:"Race"
 v:"Rasse"
+
+k:"Race Change"
+v:"Änderung der Rasse"
+
+k:"Race:"
+v:"Rasse:"
 
 k:"Randomize"
 v:"Generieren"
@@ -2168,6 +2201,15 @@ v:"Zaubersprüche"
 
 k:"Spells Library"
 v:"Zauberspruchverzeichnis"
+
+k:"Splinter Points"
+v:"Splitterpunkte"
+
+k:"Splinter Points Change"
+v:"Änderung der Splitterpunkte"
+
+k:"Splintermoon"
+v:"Splittermond"
 
 k:"Splittermond Spell"
 v:"Splittermond-Zauberspruch"
@@ -2705,6 +2747,12 @@ v:"Gesamt"
 k:"Touch"
 v:"Fühlen"
 
+k:"Training Change"
+v:"Änderung der Ausbildung"
+
+k:"Training:"
+v:"Ausbildung:"
+
 k:"Tumble"
 v:"Straucheln"
 
@@ -3153,6 +3201,9 @@ v:"Zauberspru(e)ch(e)"
 
 k:"spells"
 v:"Zaubersprüche"
+
+k:"splinter points"
+v:"Splitterpunkte"
 
 k:"starts with"
 v:"beginnt mit"
