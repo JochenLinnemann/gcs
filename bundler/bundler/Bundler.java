@@ -120,15 +120,15 @@ public class Bundler {
         String osName = System.getProperty("os.name");
         if (osName.startsWith("Mac")) {
             OS = MACOS;
-            PKG = Paths.get("GCS-" + GCS_VERSION + ".dmg");
+            PKG = Paths.get("GCS-SpliMo-" + GCS_VERSION + ".dmg");
             ICON_TYPE = "icns";
         } else if (osName.startsWith("Win")) {
             OS = WINDOWS;
-            PKG = Paths.get("GCS-" + GCS_VERSION + ".msi");
+            PKG = Paths.get("GCS-SpliMo-" + GCS_VERSION + ".msi");
             ICON_TYPE = "ico";
         } else if (osName.startsWith("Linux")) {
             OS = LINUX;
-            PKG = Paths.get("gcs-" + GCS_VERSION + "-1_amd64.deb");
+            PKG = Paths.get("gcs-SpliMo-" + GCS_VERSION + "-1_amd64.deb");
             ICON_TYPE = "png";
         } else {
             System.err.println("Unsupported platform: " + osName);
@@ -259,6 +259,7 @@ public class Bundler {
         copyResourceTree(Paths.get("third_party", "org.apache.pdfbox", "resources"), BUILD_DIR.resolve("org.apache.pdfbox"));
         copyResourceTree(Paths.get("third_party", "org.apache.fontbox", "resources"), BUILD_DIR.resolve("org.apache.fontbox"));
         copyResourceTree(Paths.get("third_party", "com.lowagie.text", "resources"), BUILD_DIR.resolve("com.lowagie.text"));
+        copyResourceTree(Paths.get("extra"), EXTRA_DIR);
         showTiming(timing);
     }
 
@@ -314,7 +315,7 @@ public class Bundler {
     private static void createManifest() {
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(MANIFEST))) {
             out.println("Manifest-Version: 1.0");
-            out.println("bundle-name: GCS");
+            out.println("bundle-name: GCS-SpliMo");
             out.println("bundle-version: " + GCS_VERSION);
             out.println("bundle-license: Mozilla Public License 2.0");
             out.println("bundle-copyright-owner: Richard A. Wilkes");
@@ -633,6 +634,8 @@ public class Bundler {
         } else {
             args.add("jpackage");
         }
+        args.add("--name");
+        args.add("GCS-SpliMo");
         args.add("--module");
         args.add("com.trollworks.gcs/com.trollworks.gcs.GCS");
         args.add("--app-version");

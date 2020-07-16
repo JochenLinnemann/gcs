@@ -46,7 +46,7 @@ public class Workspace extends BaseWindow implements SignificantFrame, JumpToSea
     }
 
     private Workspace() {
-        super("GCS");
+        super("GCS SpliMo");
         Container content = getContentPane();
         Toolbar   toolbar = new Toolbar();
         content.add(toolbar, BorderLayout.NORTH);
