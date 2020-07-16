@@ -49,8 +49,8 @@ import javax.imageio.ImageIO;
 /** Holds the character profile. */
 public class Profile {
     /** The root XML tag. */
-    public static final  String           TAG_ROOT         = "profile";
-    private static final String           KEY_SM           = "SM";
+    public static final  String           TAG_ROOT = "profile";
+    private static final String           KEY_SM   = "SM";
     /** The prefix used in front of all IDs for profile. */
     public static final  String           PROFILE_PREFIX   = GURPSCharacter.CHARACTER_PREFIX + "pi.";
     /** The field ID for portrait changes. */
@@ -985,4 +985,14 @@ public class Profile {
             mCharacter.notifySingle(ID_BODY_TYPE, mHitLocationTable);
         }
     }
+
+    /*
+        CUSTOM PROFILE
+     */
+    public static final String ID_RACE           = PROFILE_PREFIX + "Race";
+    public static final String ID_CULTURE        = PROFILE_PREFIX + "Culture";
+    public static final String ID_ORIGIN         = PROFILE_PREFIX + "Origin";
+    public static final String ID_TRAINING       = PROFILE_PREFIX + "Training";
+    public static final String ID_MOONSIGN       = PROFILE_PREFIX + "Moonsign";
+    public static final String ID_SPLINTERPOINTS = PROFILE_PREFIX + "SplinterPoints";
 }
