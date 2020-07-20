@@ -30,6 +30,7 @@ import com.trollworks.gcs.utility.xml.XMLReader;
 import com.trollworks.gcs.utility.xml.XMLWriter;
 
 import java.io.IOException;
+import java.util.Set;
 
 public class SplittermondSpell extends RitualMagicSpell{
     /** The XML tag used for items. */
@@ -89,10 +90,7 @@ public class SplittermondSpell extends RitualMagicSpell{
      */
     @Override
     public void updateLevel(boolean notify) {
-        GURPSCharacter character = getCharacter();
-        Skill              skill = character != null ? character.getBestSkillNamed(getBaseSkillName(), null, false, null) : null;
-        int                level = skill != null ? skill.getLevel() : Integer.MIN_VALUE;
-        SkillLevel    skillLevel = new SkillLevel(level, 0, new StringBuilder());
+        SkillLevel skillLevel = calculateLevel(getCharacter(), getName(), getBaseSkillName());
 
         if (mLevel == null || !mLevel.isSameLevelAs(skillLevel)) {
             mLevel = skillLevel;
@@ -100,6 +98,60 @@ public class SplittermondSpell extends RitualMagicSpell{
                 notify(ID_LEVEL, this);
             }
         }
+    }
+
+    /**
+     * Calculates the spell level.
+     *
+     * @param character         The character the spell will be attached to.
+     * @param name              The name of the spell.
+     * @param baseSkillName     The base name of the skill the Splittermond Spell uses.
+     * @return The calculated spell level.
+     */
+    public static SkillLevel calculateLevel(GURPSCharacter character, String name, String baseSkillName) {
+        Skill              skill = character != null ? character.getBestSkillNamed(baseSkillName, null, false, null) : null;
+        int                level = skill != null ? skill.getLevel() : Integer.MIN_VALUE;
+        SkillLevel    skillLevel = new SkillLevel(level, 0, new StringBuilder());
+
+        return skillLevel;
+    }
+
+    /**
+     * Call to force an update of the points this spell.
+     *
+     * @param notify Whether or not a notification should be issued on a change.
+     */
+    public void updatePoints(boolean notify) {
+        int prereqCount = getPrerequisiteSpellsCount();
+        int points      = calculatePoints(prereqCount);
+
+        if (mPoints != points) {
+            mPoints = points;
+            if (notify) {
+                notify(ID_POINTS, this);
+            }
+        }
+    }
+
+    /**
+     * Calculates the spell points.
+     *
+     * @param prereqCount The prerequisite count.
+     * @return The calculated spell points.
+     */
+    public static int calculatePoints(int prereqCount) {
+        return 1 + (int)Math.ceil(prereqCount / 2.0);
+    }
+
+    @Override
+    public boolean setPrerequisiteSpellsCount(int prerequisiteSpellsCount) {
+        if (super.setPrerequisiteSpellsCount(prerequisiteSpellsCount)) {
+            updatePoints(true);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -144,8 +196,8 @@ public class SplittermondSpell extends RitualMagicSpell{
         w.keyValue(TAG_NAME_DE, mNameDe);
     }
 
-    //@Override
-    //public RowEditor<? extends ListRow> createEditor() {
-    //    return new SplittermondSpellEditor(this);
-    //}
+    @Override
+    public RowEditor<? extends ListRow> createEditor() {
+        return new SplittermondSpellEditor(this);
+    }
 }
