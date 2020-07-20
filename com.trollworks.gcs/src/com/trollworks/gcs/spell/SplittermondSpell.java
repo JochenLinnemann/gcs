@@ -113,6 +113,11 @@ public class SplittermondSpell extends RitualMagicSpell{
     }
 
     @Override
+    public String getJSONTypeName() {
+        return TAG_SPLITTERMOND_SPELL;
+    }
+
+    @Override
     public String getRowType() {
         return I18n.Text("Splittermond Spell");
     }
