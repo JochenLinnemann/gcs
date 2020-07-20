@@ -72,7 +72,7 @@ public class UpdateChecker implements Runnable {
     public static void goToUpdate() {
         if (isNewAppVersionAvailable() && Desktop.isDesktopSupported()) {
             try {
-                Desktop.getDesktop().browse(new URI(GCS.WEB_SITE));
+                Desktop.getDesktop().browse(new URI("https://heldenhaufen.de/Splittermond/mit-gurps.html"));
             } catch (Exception exception) {
                 WindowUtils.showError(null, exception.getMessage());
             }
@@ -110,7 +110,7 @@ public class UpdateChecker implements Runnable {
             setAppResult(I18n.Text("Development versions don't look for GCS updates"), null, false);
         } else {
             Version       minimum  = new Version(4, 17, 0);
-            List<Release> releases = Release.load("richardwilkes", "gcs", GCS.VERSION, (version, notes) -> version.compareTo(minimum) >= 0);
+            List<Release> releases = Release.load("JochenLinnemann", "gcs", GCS.VERSION, (version, notes) -> version.compareTo(minimum) >= 0);
             if (releases == null) {
                 setAppResult(I18n.Text("Unable to access the GCS repo"), null, false);
                 return;
