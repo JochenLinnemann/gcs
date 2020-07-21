@@ -390,4 +390,8 @@ public class Settings {
             mCharacter.notifySingle(ID_USE_TITLE_IN_FOOTER, Boolean.valueOf(mUseTitleInFooter));
         }
     }
+
+    public boolean useSymmetricDamage() {
+        return true;
+    }
 }

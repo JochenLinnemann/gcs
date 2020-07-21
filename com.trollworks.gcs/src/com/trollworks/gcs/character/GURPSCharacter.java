@@ -1153,6 +1153,9 @@ public class GURPSCharacter extends DataFile {
      * @return The basic thrusting damage.
      */
     public Dice getThrust(int strength) {
+        if (mSettings.useSymmetricDamage())
+            return getDamageDice(strength / 3);
+
         if (mSettings.useThrustEqualsSwingMinus2()) {
             Dice dice = getSwing(strength);
             dice.add(-2);
@@ -1212,6 +1215,9 @@ public class GURPSCharacter extends DataFile {
      * @return The basic thrusting damage.
      */
     public Dice getSwing(int strength) {
+        if (mSettings.useSymmetricDamage())
+            return getDamageDice(strength / 2);
+
         if (mSettings.useReducedSwing()) {
             if (strength < 10) {
                 return new Dice(1, -(5 - (strength - 1) / 2));
@@ -3518,5 +3524,14 @@ public class GURPSCharacter extends DataFile {
         setMysticismCostReduction(getCostReductionFor(ID_MYSTICISM));
         setFocusPointsBonus(getIntegerBonusFor(ID_FOCUS_POINTS));
         setSplinterPointsBonus(getIntegerBonusFor(ID_SPLINTER_POINTS));
+    }
+
+    private Dice getDamageDice(int damage) {
+        int count = (damage + 1) / 4;
+        if (count < 1)
+            count = 1;
+        int modifier = damage - count * 4;
+
+        return new Dice(count, modifier);
     }
 }
