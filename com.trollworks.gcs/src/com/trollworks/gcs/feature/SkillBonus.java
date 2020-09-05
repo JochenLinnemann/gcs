@@ -18,7 +18,6 @@ import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Enums;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.util.Map;
@@ -49,16 +48,6 @@ public class SkillBonus extends Bonus {
     public SkillBonus(JsonMap m) throws IOException {
         this();
         loadSelf(m);
-    }
-
-    /**
-     * Loads a {@link SkillBonus}.
-     *
-     * @param reader The XML reader to use.
-     */
-    public SkillBonus(XMLReader reader) throws IOException {
-        this();
-        load(reader);
     }
 
     /**
@@ -99,21 +88,12 @@ public class SkillBonus extends Bonus {
     }
 
     @Override
-    public String getXMLTag() {
-        return TAG_ROOT;
-    }
-
-    @Override
     public String getKey() {
-        switch (mSkillSelectionType) {
-        case THIS_WEAPON:
-        default:
-            return WeaponBonus.THIS_WEAPON_ID;
-        case WEAPONS_WITH_NAME:
-            return buildKey(WeaponBonus.WEAPON_NAMED_ID_PREFIX);
-        case SKILLS_WITH_NAME:
-            return buildKey(Skill.ID_NAME);
-        }
+        return switch (mSkillSelectionType) {
+            case WEAPONS_WITH_NAME -> buildKey(WeaponBonus.WEAPON_NAMED_ID_PREFIX);
+            case SKILLS_WITH_NAME -> buildKey(Skill.ID_NAME);
+            default -> WeaponBonus.THIS_WEAPON_ID;
+        };
     }
 
     private String buildKey(String prefix) {
@@ -130,22 +110,6 @@ public class SkillBonus extends Bonus {
 
     public boolean matchesCategories(Set<String> categories) {
         return matchesCategories(mCategoryCriteria, categories);
-    }
-
-    @Override
-    protected void loadSelf(XMLReader reader) throws IOException {
-        String name = reader.getName();
-        if (TAG_SELECTION_TYPE.equals(name)) {
-            mSkillSelectionType = Enums.extract(reader.readText(), SkillSelectionType.values(), SkillSelectionType.SKILLS_WITH_NAME);
-        } else if (TAG_NAME.equals(name)) {
-            mNameCriteria.load(reader);
-        } else if (TAG_SPECIALIZATION.equals(name)) {
-            mSpecializationCriteria.load(reader);
-        } else if (TAG_CATEGORY.equals(name)) {
-            mCategoryCriteria.load(reader);
-        } else {
-            super.loadSelf(reader);
-        }
     }
 
     @Override

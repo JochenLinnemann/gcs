@@ -14,6 +14,7 @@ package com.trollworks.gcs.equipment;
 import com.trollworks.gcs.character.GURPSCharacter;
 import com.trollworks.gcs.datafile.DataFile;
 import com.trollworks.gcs.datafile.ListFile;
+import com.trollworks.gcs.datafile.PageRefCell;
 import com.trollworks.gcs.template.Template;
 import com.trollworks.gcs.ui.widget.outline.Cell;
 import com.trollworks.gcs.ui.widget.outline.Column;
@@ -22,7 +23,6 @@ import com.trollworks.gcs.ui.widget.outline.ListTextCell;
 import com.trollworks.gcs.ui.widget.outline.MultiCell;
 import com.trollworks.gcs.ui.widget.outline.Outline;
 import com.trollworks.gcs.ui.widget.outline.OutlineModel;
-import com.trollworks.gcs.utility.Fixed6;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.text.Numbers;
 import com.trollworks.gcs.utility.units.WeightValue;
@@ -126,10 +126,10 @@ public enum EquipmentColumn {
                     builder.append('\n');
                 }
             }
-            if (builder.length() > 0) {
+            if (!builder.isEmpty()) {
                 builder.setLength(builder.length() - 1);   // Remove the last '\n'
             }
-            return builder.length() == 0 ? null : builder.toString();
+            return builder.isEmpty() ? null : builder.toString();
         }
 
         @Override
@@ -137,7 +137,7 @@ public enum EquipmentColumn {
             if (dataFile instanceof GURPSCharacter) {
                 GURPSCharacter character = (GURPSCharacter) dataFile;
                 if (carried) {
-                    return MessageFormat.format(I18n.Text("Carried Equipment ({0}; ${1})"), character.getWeightCarried().toString(), character.getWealthCarried().toLocalizedString());
+                    return MessageFormat.format(I18n.Text("Carried Equipment ({0}; ${1})"), character.getWeightCarried(false).toString(), character.getWealthCarried().toLocalizedString());
                 }
                 return MessageFormat.format(I18n.Text("Other Equipment (${0})"), character.getWealthNotCarried().toLocalizedString());
             }
@@ -321,12 +321,12 @@ public enum EquipmentColumn {
 
         @Override
         public Object getData(Equipment equipment) {
-            return equipment.getAdjustedWeight();
+            return equipment.getAdjustedWeight(false);
         }
 
         @Override
         public String getDataAsText(Equipment equipment) {
-            return getDisplayWeight(equipment.getDataFile(), equipment.getAdjustedWeight());
+            return getDisplayWeight(equipment.getDataFile(), equipment.getAdjustedWeight(false));
         }
     },
     /** The value. */
@@ -385,12 +385,12 @@ public enum EquipmentColumn {
 
         @Override
         public Object getData(Equipment equipment) {
-            return equipment.getExtendedWeight();
+            return equipment.getExtendedWeight(false);
         }
 
         @Override
         public String getDataAsText(Equipment equipment) {
-            return getDisplayWeight(equipment.getDataFile(), equipment.getExtendedWeight());
+            return getDisplayWeight(equipment.getDataFile(), equipment.getExtendedWeight(false));
         }
     },
     /** The category. */
@@ -434,12 +434,17 @@ public enum EquipmentColumn {
 
         @Override
         public String getToolTip() {
-            return I18n.Text("A reference to the book and page this equipment appears on (e.g. B22 would refer to \"Basic Set\", page 22)");
+            return PageRefCell.getStdToolTip(I18n.Text("equipment"));
+        }
+
+        @Override
+        public String getToolTip(Equipment equipment) {
+            return PageRefCell.getStdCellToolTip(equipment.getReference());
         }
 
         @Override
         public Cell getCell() {
-            return new ListTextCell(SwingConstants.RIGHT, false);
+            return new PageRefCell();
         }
 
         @Override
@@ -533,10 +538,6 @@ public enum EquipmentColumn {
 
     public static String getDisplayWeight(DataFile df, WeightValue weight) {
         return getConvertedWeight(df, weight).toString();
-    }
-
-    public static Fixed6 getNormalizedDisplayWeight(DataFile df, WeightValue weight) {
-        return getConvertedWeight(df, weight).getNormalizedValue();
     }
 
     public static WeightValue getConvertedWeight(DataFile df, WeightValue weight) {

@@ -19,10 +19,9 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-public class Images {
+public final class Images {
     public static final List<Img>  APP_ICON_LIST         = Arrays.asList(get("app_1024"), get("app_512"), get("app_256"), get("app_128"), get("app_64"), get("app_32"), get("app_16"));
     public static final RetinaIcon ABOUT                 = getRetina("about");
-    public static final RetinaIcon ACTUAL_SIZE           = getRetina("actual_size");
     public static final RetinaIcon ADD                   = getRetina("add");
     public static final RetinaIcon ADM_FILE              = getRetina("adm_file");
     public static final RetinaIcon ADM_MARKER            = getRetina("adm_marker");
@@ -47,15 +46,12 @@ public class Images {
     public static final RetinaIcon GCS_FILE              = getRetina("gcs_file");
     public static final RetinaIcon GCS_MARKER            = getRetina("gcs_marker");
     public static final RetinaIcon GCT_FILE              = getRetina("gct_file");
-    public static final RetinaIcon GCT_MARKER            = getRetina("gct_marker");
     public static final RetinaIcon GEAR                  = getRetina("gear");
     public static final RetinaIcon LOCKED                = getRetina("locked");
     public static final RetinaIcon MENTAL_TYPE           = getRetina("mental_type");
     public static final RetinaIcon MORE                  = getRetina("more");
     public static final RetinaIcon NOT_FILE              = getRetina("not_file");
     public static final RetinaIcon NOT_MARKER            = getRetina("not_marker");
-    public static final RetinaIcon PAGE_DOWN             = getRetina("page_down");
-    public static final RetinaIcon PAGE_UP               = getRetina("page_up");
     public static final RetinaIcon PDF_FILE              = getRetina("pdf_file");
     public static final RetinaIcon PHYSICAL_TYPE         = getRetina("physical_type");
     public static final RetinaIcon REFRESH               = getRetina("refresh");
@@ -69,11 +65,12 @@ public class Images {
     public static final RetinaIcon SUPERNATURAL_TYPE     = getRetina("supernatural_type");
     public static final RetinaIcon TOGGLE_OPEN           = getRetina("toggle_open");
     public static final RetinaIcon UNLOCKED              = getRetina("unlocked");
-    public static final RetinaIcon ZOOM_IN               = getRetina("zoom_in");
-    public static final RetinaIcon ZOOM_OUT              = getRetina("zoom_out");
     public static final Img        DEFAULT_PORTRAIT      = get("default_portrait");
 
-    static final synchronized Img get(String name) {
+    private Images() {
+    }
+
+    static synchronized Img get(String name) {
         name += ".png";
         try (InputStream in = Img.class.getModule().getResourceAsStream("/images/" + name)) {
             return Img.create(in);
@@ -83,7 +80,7 @@ public class Images {
         }
     }
 
-    static final RetinaIcon getRetina(String name) {
+    static RetinaIcon getRetina(String name) {
         return new RetinaIcon(get(name), get(name + "@2x"));
     }
 }

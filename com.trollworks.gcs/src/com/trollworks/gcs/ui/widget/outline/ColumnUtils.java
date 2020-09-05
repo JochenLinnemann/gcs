@@ -11,11 +11,16 @@
 
 package com.trollworks.gcs.ui.widget.outline;
 
+import com.trollworks.gcs.ui.scale.Scale;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /** Utilities for columns. */
-public class ColumnUtils {
+public final class ColumnUtils {
+    private ColumnUtils() {
+    }
+
     /**
      * Packs the columns to their preferred sizes.
      *
@@ -29,7 +34,7 @@ public class ColumnUtils {
         int[]        widths       = new int[count];
         Column       column;
         if (outline.shouldDrawColumnDividers()) {
-            width -= count - 1;
+            width -= Scale.get(outline).scale(count - 1);
         }
         for (int i = 0; i < count; i++) {
             column = outlineModel.getColumnAtIndex(i);
@@ -58,7 +63,6 @@ public class ColumnUtils {
                 column = outlineModel.getColumnAtIndex(i);
                 if (column.getRowCell(null).participatesInDynamicRowLayout()) {
                     int min = column.getPreferredHeaderWidth(outline);
-
                     if (min < widths[i]) {
                         list[pos] = i;
                         minList[pos++] = min;

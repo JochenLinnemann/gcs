@@ -19,6 +19,7 @@ import com.trollworks.gcs.ui.widget.DataModifiedListener;
 import com.trollworks.gcs.utility.FileType;
 import com.trollworks.gcs.utility.Log;
 import com.trollworks.gcs.utility.SafeFileUpdater;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.VersionException;
 import com.trollworks.gcs.utility.json.Json;
 import com.trollworks.gcs.utility.json.JsonMap;
@@ -27,8 +28,6 @@ import com.trollworks.gcs.utility.notification.Notifier;
 import com.trollworks.gcs.utility.notification.NotifierTarget;
 import com.trollworks.gcs.utility.undo.StdUndoManager;
 import com.trollworks.gcs.utility.units.WeightUnits;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -44,13 +43,13 @@ import java.util.UUID;
 import javax.swing.undo.UndoableEdit;
 
 /** A common super class for all data file-based model objects. */
-public abstract class DataFile implements Undoable {
+public abstract class DataFile implements Updatable, Undoable {
     /** The 'id' attribute. */
     public static final String                     ATTRIBUTE_ID           = "id";
     /** Identifies the type of a JSON object. */
     public static final String                     KEY_TYPE               = "type";
     private             Path                       mPath;
-    private             UUID                       mId                    = UUID.randomUUID();
+    private             UUID                       mID                    = UUID.randomUUID();
     private             Notifier                   mNotifier              = new Notifier();
     private             boolean                    mModified;
     private             StdUndoManager             mUndoManager           = new StdUndoManager();
@@ -69,28 +68,7 @@ public abstract class DataFile implements Undoable {
             }
             fileReader.reset();
             if (n == 5 && buffer[0] == '<' && buffer[1] == '?' && buffer[2] == 'x' && buffer[3] == 'm' && buffer[4] == 'l') {
-                // Load xml format from version 4.18 and earlier
-                try (XMLReader reader = new XMLReader(fileReader)) {
-                    XMLNodeType type  = reader.next();
-                    boolean     found = false;
-                    while (type != XMLNodeType.END_DOCUMENT) {
-                        if (type == XMLNodeType.START_TAG) {
-                            String name = reader.getName();
-                            if (matchesRootTag(name)) {
-                                if (found) {
-                                    throw new IOException();
-                                }
-                                found = true;
-                                load(reader, new LoadState());
-                            } else {
-                                reader.skipTag(name);
-                            }
-                            type = reader.getType();
-                        } else {
-                            type = reader.next();
-                        }
-                    }
-                }
+                throw new IOException("The old xml format from versions prior to GCS v4.20 cannot be read by this version of GCS");
             } else {
                 load(Json.asMap(Json.parse(fileReader)), new LoadState());
             }
@@ -99,31 +77,14 @@ public abstract class DataFile implements Undoable {
     }
 
     /**
-     * @param reader The {@link XMLReader} to load data from.
-     * @param state  The {@link LoadState} to use.
-     */
-    public void load(XMLReader reader, LoadState state) throws IOException {
-        try {
-            mId = UUID.fromString(reader.getAttribute(ATTRIBUTE_ID));
-        } catch (Exception exception) {
-            mId = UUID.randomUUID();
-        }
-        state.mDataFileVersion = reader.getAttributeAsInteger(LoadState.ATTRIBUTE_VERSION, 0);
-        if (state.mDataFileVersion > getXMLTagVersion()) {
-            throw VersionException.createTooNew();
-        }
-        loadSelf(reader, state);
-    }
-
-    /**
      * @param m     The {@link JsonMap} to load data from.
      * @param state The {@link LoadState} to use.
      */
     public void load(JsonMap m, LoadState state) throws IOException {
         try {
-            mId = UUID.fromString(m.getString(ATTRIBUTE_ID));
+            mID = UUID.fromString(m.getString(ATTRIBUTE_ID));
         } catch (Exception exception) {
-            mId = UUID.randomUUID();
+            mID = UUID.randomUUID();
         }
         state.mDataFileVersion = m.getInt(LoadState.ATTRIBUTE_VERSION);
         if (state.mDataFileVersion > getJSONVersion()) {
@@ -131,14 +92,6 @@ public abstract class DataFile implements Undoable {
         }
         loadSelf(m, state);
     }
-
-    /**
-     * Called to load the data file.
-     *
-     * @param reader The {@link XMLReader} to load data from.
-     * @param state  The {@link LoadState} to use.
-     */
-    protected abstract void loadSelf(XMLReader reader, LoadState state) throws IOException;
 
     /**
      * Called to load the data file.
@@ -161,7 +114,7 @@ public abstract class DataFile implements Undoable {
         try {
             File transactionFile = transaction.getTransactionFile(path.toFile());
             try (JsonWriter w = new JsonWriter(new BufferedWriter(new FileWriter(transactionFile, StandardCharsets.UTF_8)), "\t")) {
-                save(w, true, false);
+                save(w, SaveType.NORMAL, false);
             }
             transaction.commit();
             setModified(false);
@@ -176,19 +129,17 @@ public abstract class DataFile implements Undoable {
     /**
      * Writes the data to the specified {@link JsonWriter}.
      *
-     * @param w               The {@link JsonWriter} to use.
-     * @param includeUniqueID Whether the unique should be included in the attribute list.
-     * @param onlyIfNotEmpty  Whether to write something even if the file contents are empty.
+     * @param w              The {@link JsonWriter} to use.
+     * @param saveType       The type of save being performed.
+     * @param onlyIfNotEmpty Whether to write something even if the file contents are empty.
      */
-    public void save(JsonWriter w, boolean includeUniqueID, boolean onlyIfNotEmpty) throws IOException {
+    public void save(JsonWriter w, SaveType saveType, boolean onlyIfNotEmpty) throws IOException {
         if (!onlyIfNotEmpty || !isEmpty()) {
             w.startMap();
             w.keyValue(KEY_TYPE, getJSONTypeName());
             w.keyValue(LoadState.ATTRIBUTE_VERSION, getJSONVersion());
-            if (includeUniqueID) {
-                w.keyValue(ATTRIBUTE_ID, mId.toString());
-            }
-            saveSelf(w);
+            w.keyValue(ATTRIBUTE_ID, mID.toString());
+            saveSelf(w, saveType);
             w.endMap();
         }
     }
@@ -196,9 +147,10 @@ public abstract class DataFile implements Undoable {
     /**
      * Called to save the data file.
      *
-     * @param w The {@link JsonWriter} to use.
+     * @param w        The {@link JsonWriter} to use.
+     * @param saveType The type of save being performed.
      */
-    protected abstract void saveSelf(JsonWriter w) throws IOException;
+    protected abstract void saveSelf(JsonWriter w, SaveType saveType) throws IOException;
 
     /** @return Whether the file is empty. By default, returns {@code false}. */
     @SuppressWarnings("static-method")
@@ -211,22 +163,6 @@ public abstract class DataFile implements Undoable {
 
     /** @return The type name to use for this data. */
     public abstract String getJSONTypeName();
-
-    /** @return The most recent version of the XML tag this object knows how to load. */
-    public abstract int getXMLTagVersion();
-
-    /** @return The XML root container tag name for this particular file. */
-    public abstract String getXMLTagName();
-
-    /**
-     * Called to match an XML tag name with the root tag for this data file.
-     *
-     * @param name The tag name to check.
-     * @return Whether it matches the root tag or not.
-     */
-    public boolean matchesRootTag(String name) {
-        return getXMLTagName().equals(name);
-    }
 
     /** @return The {@link FileType}. */
     public abstract FileType getFileType();
@@ -248,13 +184,13 @@ public abstract class DataFile implements Undoable {
     }
 
     /** @return The ID for this data file. */
-    public UUID getId() {
-        return mId;
+    public UUID getID() {
+        return mID;
     }
 
     /** Replaces the existing ID with a new randomly generated one. */
-    public void generateNewId() {
-        mId = UUID.randomUUID();
+    public void generateNewID() {
+        mID = UUID.randomUUID();
     }
 
     /** @return {@code true} if the data has been modified. */

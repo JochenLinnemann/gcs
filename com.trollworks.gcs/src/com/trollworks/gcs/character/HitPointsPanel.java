@@ -11,35 +11,29 @@
 
 package com.trollworks.gcs.character;
 
-import com.trollworks.gcs.page.DropPanel;
 import com.trollworks.gcs.page.PageField;
-import com.trollworks.gcs.page.PageLabel;
-import com.trollworks.gcs.page.PagePoints;
-import com.trollworks.gcs.ui.layout.PrecisionLayout;
-import com.trollworks.gcs.ui.layout.PrecisionLayoutAlignment;
-import com.trollworks.gcs.ui.layout.PrecisionLayoutData;
 import com.trollworks.gcs.utility.I18n;
-import com.trollworks.gcs.utility.notification.NotifierTarget;
-
-import java.awt.Color;
-import java.awt.Component;
-import javax.swing.SwingConstants;
 
 /** The character hit points panel. */
-public class HitPointsPanel extends DropPanel implements NotifierTarget {
-    private static final Color          CURRENT_THRESHOLD_COLOR = new Color(255, 224, 224);
-    private              CharacterSheet mSheet;
-    private              PageField      mReelingField;
-    private              PageField      mCollapsedField;
-    private              PageField      mCheck1Field;
-    private              PageField      mCheck2Field;
-    private              PageField      mCheck3Field;
-    private              PageField      mCheck4Field;
-    private              PageField      mDeadField;
-    private              State          mState;
+public class HitPointsPanel extends HPFPPanel {
+    private PageField mReelingField;
+    private PageField mCollapsedField;
+    private PageField mCheck1Field;
+    private PageField mCheck2Field;
+    private PageField mCheck3Field;
+    private PageField mCheck4Field;
+    private PageField mDeadField;
+    private State     mState;
 
     enum State {
-        UNAFFECTED, REELING, COLLAPSED, CHECK1, CHECK2, CHECK3, CHECK4, DEAD
+        UNAFFECTED,
+        REELING,
+        COLLAPSED,
+        CHECK1,
+        CHECK2,
+        CHECK3,
+        CHECK4,
+        DEAD
     }
 
     /**
@@ -48,8 +42,7 @@ public class HitPointsPanel extends DropPanel implements NotifierTarget {
      * @param sheet The sheet to display the data for.
      */
     public HitPointsPanel(CharacterSheet sheet) {
-        super(new PrecisionLayout().setColumns(3).setMargins(0).setSpacing(2, 0).setAlignment(PrecisionLayoutAlignment.FILL, PrecisionLayoutAlignment.FILL), I18n.Text("Hit Points"));
-        mSheet = sheet;
+        super(sheet, I18n.Text("Hit Points"));
         mState = State.UNAFFECTED;
         addLabelAndField(sheet, GURPSCharacter.ID_CURRENT_HP, I18n.Text("Current"), I18n.Text("Current hit points"), true);
         addLabelAndField(sheet, GURPSCharacter.ID_HIT_POINTS, I18n.Text("Basic"), I18n.Text("Normal (i.e. unharmed) hit points"), true);
@@ -61,19 +54,11 @@ public class HitPointsPanel extends DropPanel implements NotifierTarget {
         mCheck3Field = addLabelAndField(sheet, GURPSCharacter.ID_DEATH_CHECK_3_HIT_POINTS, I18n.Text("Check #3"), deathCheckTooltip, false);
         mCheck4Field = addLabelAndField(sheet, GURPSCharacter.ID_DEATH_CHECK_4_HIT_POINTS, I18n.Text("Check #4"), deathCheckTooltip, false);
         mDeadField = addLabelAndField(sheet, GURPSCharacter.ID_DEAD_HIT_POINTS, I18n.Text("Dead"), I18n.Text("Current hit points at or below this point cause the character to die"), false);
-        adjustBackgrounds();
+        adjustColors();
         sheet.getCharacter().addTarget(this, GURPSCharacter.ID_CURRENT_HP);
     }
 
-    private PageField addLabelAndField(CharacterSheet sheet, String key, String title, String tooltip, boolean enabled) {
-        add(new PagePoints(sheet, key), new PrecisionLayoutData().setHorizontalAlignment(PrecisionLayoutAlignment.END));
-        PageField field = new PageField(sheet, key, SwingConstants.RIGHT, enabled, tooltip);
-        add(field, new PrecisionLayoutData().setGrabHorizontalSpace(true).setHorizontalAlignment(PrecisionLayoutAlignment.FILL));
-        add(new PageLabel(title, field));
-        return field;
-    }
-
-    private void adjustBackgrounds() {
+    protected void adjustColors() {
         GURPSCharacter character = mSheet.getCharacter();
         if (character.isDead()) {
             if (mState == State.DEAD) {
@@ -115,31 +100,13 @@ public class HitPointsPanel extends DropPanel implements NotifierTarget {
         } else {
             mState = State.UNAFFECTED;
         }
-        applyBackground(mReelingField, mState == State.REELING);
-        applyBackground(mCollapsedField, mState == State.COLLAPSED);
-        applyBackground(mCheck1Field, mState == State.CHECK1);
-        applyBackground(mCheck2Field, mState == State.CHECK2);
-        applyBackground(mCheck3Field, mState == State.CHECK3);
-        applyBackground(mCheck4Field, mState == State.CHECK4);
-        applyBackground(mDeadField, mState == State.DEAD);
+        adjustColor(mReelingField, mState == State.REELING);
+        adjustColor(mCollapsedField, mState == State.COLLAPSED);
+        adjustColor(mCheck1Field, mState == State.CHECK1);
+        adjustColor(mCheck2Field, mState == State.CHECK2);
+        adjustColor(mCheck3Field, mState == State.CHECK3);
+        adjustColor(mCheck4Field, mState == State.CHECK4);
+        adjustColor(mDeadField, mState == State.DEAD);
         repaint();
-    }
-
-    private void applyBackground(Component field, boolean add) {
-        if (add) {
-            addHorizontalBackground(field, CURRENT_THRESHOLD_COLOR);
-        } else {
-            removeHorizontalBackground(field);
-        }
-    }
-
-    @Override
-    public int getNotificationPriority() {
-        return 0;
-    }
-
-    @Override
-    public void handleNotification(Object producer, String name, Object data) {
-        adjustBackgrounds();
     }
 }

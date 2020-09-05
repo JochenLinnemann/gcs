@@ -22,10 +22,9 @@ import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.ui.widget.outline.RowEditor;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.Log;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
-import com.trollworks.gcs.utility.text.Text;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.util.Map;
@@ -34,7 +33,6 @@ import java.util.Set;
 /** A note. */
 public class Note extends ListRow implements HasSourceReference {
     private static final int    CURRENT_JSON_VERSION = 1;
-    private static final int    CURRENT_VERSION      = 1;
     /** The XML tag used for items. */
     public static final  String TAG_NOTE             = "note";
     /** The XML tag used for containers. */
@@ -88,18 +86,6 @@ public class Note extends ListRow implements HasSourceReference {
         load(m, state);
     }
 
-    /**
-     * Loads a note and associates it with the specified data file.
-     *
-     * @param dataFile The data file to associate it with.
-     * @param reader   The XML reader to load from.
-     * @param state    The {@link LoadState} to use.
-     */
-    public Note(DataFile dataFile, XMLReader reader, LoadState state) throws IOException {
-        this(dataFile, TAG_NOTE_CONTAINER.equals(reader.getName()));
-        load(reader, state);
-    }
-
     @Override
     public boolean isEquivalentTo(Object obj) {
         if (obj == this) {
@@ -133,16 +119,6 @@ public class Note extends ListRow implements HasSourceReference {
     }
 
     @Override
-    public String getXMLTagName() {
-        return canHaveChildren() ? TAG_NOTE_CONTAINER : TAG_NOTE;
-    }
-
-    @Override
-    public int getXMLTagVersion() {
-        return CURRENT_VERSION;
-    }
-
-    @Override
     public String getRowType() {
         return I18n.Text("Note");
     }
@@ -155,21 +131,7 @@ public class Note extends ListRow implements HasSourceReference {
     }
 
     @Override
-    protected void loadSubElement(XMLReader reader, LoadState state) throws IOException {
-        String name = reader.getName();
-        if (TAG_TEXT.equals(name)) {
-            mText = Text.standardizeLineEndings(reader.readText());
-        } else if (TAG_REFERENCE.equals(name)) {
-            mReference = reader.readText().replace("\n", " ");
-        } else if (!state.mForUndo && (TAG_NOTE.equals(name) || TAG_NOTE_CONTAINER.equals(name))) {
-            addChild(new Note(mDataFile, reader, state));
-        } else {
-            super.loadSubElement(reader, state);
-        }
-    }
-
-    @Override
-    protected void loadSelf(JsonMap m, LoadState state) throws IOException {
+    protected void loadSelf(JsonMap m, LoadState state) {
         mText = m.getString(TAG_TEXT);
         mReference = m.getString(TAG_REFERENCE);
     }
@@ -187,7 +149,7 @@ public class Note extends ListRow implements HasSourceReference {
     }
 
     @Override
-    protected void saveSelf(JsonWriter w, boolean forUndo) throws IOException {
+    protected void saveSelf(JsonWriter w, SaveType saveType) throws IOException {
         w.keyValueNot(TAG_TEXT, mText, "");
         w.keyValueNot(TAG_REFERENCE, mReference, "");
     }
@@ -271,5 +233,10 @@ public class Note extends ListRow implements HasSourceReference {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String getToolTip(Column column) {
+        return NoteColumn.values()[column.getID()].getToolTip(this);
     }
 }

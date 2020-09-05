@@ -18,6 +18,7 @@ import com.trollworks.gcs.ui.Colors;
 import com.trollworks.gcs.ui.GraphicsUtilities;
 import com.trollworks.gcs.ui.RetinaIcon;
 import com.trollworks.gcs.ui.Selection;
+import com.trollworks.gcs.ui.ThemeColor;
 import com.trollworks.gcs.ui.UIUtilities;
 import com.trollworks.gcs.ui.image.Img;
 import com.trollworks.gcs.ui.print.PrintUtilities;
@@ -29,7 +30,6 @@ import com.trollworks.gcs.ui.widget.dock.DockableTransferable;
 import com.trollworks.gcs.utility.Geometry;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.Log;
-import com.trollworks.gcs.utility.text.Numbers;
 import com.trollworks.gcs.utility.text.Text;
 
 import java.awt.AlphaComposite;
@@ -70,7 +70,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
 import javax.swing.JScrollPane;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
@@ -86,8 +85,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     public static final  String            CMD_SELECTION_CHANGED             = "Outline.SelectionChanged";
     /** The default potential content size change action command. */
     public static final  String            CMD_POTENTIAL_CONTENT_SIZE_CHANGE = "Outline.ContentSizeMayHaveChanged";
-    /** The column visibility command. */
-    public static final  String            CMD_TOGGLE_COLUMN_VISIBILITY      = "Outline.ToggleColumnVisibility";
     private static final int               DIVIDER_HIT_SLOP                  = 2;
     private static final int               AUTO_SCROLL_MARGIN                = 10;
     private              OutlineModel      mModel;
@@ -95,7 +92,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     protected            OutlineHeader     mHeaderPanel;
     private              boolean           mDrawRowDividers;
     private              boolean           mDrawColumnDividers;
-    private              Color             mDividerColor;
     private              boolean           mDrawingDragImage;
     private              Rectangle         mDragClip;
     private              Column            mDividerDrag;
@@ -106,7 +102,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     private              boolean           mAllowColumnResize;
     private              boolean           mAllowColumnDrag;
     private              boolean           mAllowRowDrag;
-    private              String            mDefaultConfig;
     private              boolean           mUseBanding;
     private              List<Column>      mSavedColumns;
     private              Row               mRollRow;
@@ -171,7 +166,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
         mDrawRowDividers = true;
         mDrawColumnDividers = true;
         mUseBanding = true;
-        mDividerColor = Color.LIGHT_GRAY;
         mSelectionChangedCommand = CMD_SELECTION_CHANGED;
         mPotentialContentSizeChangeCommand = CMD_POTENTIAL_CONTENT_SIZE_CHANGE;
         mDragChildInsertIndex = -1;
@@ -246,16 +240,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     /** @return {@code true} if hierarchy indention (and controls) will be shown. */
     public boolean showIndent() {
         return mModel.showIndent();
-    }
-
-    /** @return The color to use when drawing the divider lines. */
-    public Color getDividerColor() {
-        return mDividerColor;
-    }
-
-    /** @param color The color to use when drawing the divider lines. */
-    public void setDividerColor(Color color) {
-        mDividerColor = color;
     }
 
     /** @return Whether to draw the row dividers or not. */
@@ -523,7 +507,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
                         gc.setColor(getBackground(rowIndex, rowSelected, active));
                         gc.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
                         if (mDrawRowDividers) {
-                            gc.setColor(mDividerColor);
+                            gc.setColor(ThemeColor.DIVIDER);
                             gc.fillRect(bounds.x, bounds.y + bounds.height, bounds.width, one);
                         }
                     }
@@ -534,7 +518,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
 
         if (mDrawColumnDividers) {
             int x = insets.left;
-            gc.setColor(mDividerColor);
+            gc.setColor(ThemeColor.DIVIDER);
             List<Column> columns = mModel.getColumns();
             int          count   = columns.size() - 1;
             while (count > 0 && !columns.get(count).isVisible()) {
@@ -639,15 +623,10 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
         }
     }
 
-    /**
-     * Repaints the current selection.
-     *
-     * @return The bounding rectangle of the repainted selection.
-     */
-    protected Rectangle repaintSelectionInternal() {
+    /** Repaints the current selection. */
+    protected void repaintSelectionInternal() {
         Scale        scale   = Scale.get(this);
         int          one     = scale.scale(1);
-        Rectangle    area    = new Rectangle();
         Insets       insets  = getInsets();
         Rectangle    bounds  = new Rectangle(insets.left, insets.top, getWidth() - (insets.left + insets.right), getHeight() - (insets.top + insets.bottom));
         int          last    = getLastRowToDisplay();
@@ -666,12 +645,10 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
                 if (mModel.isRowSelected(row)) {
                     bounds.height = height;
                     repaint(bounds);
-                    area = Geometry.union(area, bounds);
                 }
                 bounds.y += height;
             }
         }
-        return area;
     }
 
     /**
@@ -684,7 +661,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
         if (selected) {
             return Colors.getListBackground(true, active);
         }
-        return useBanding() ? Colors.getBanding(rowIndex % 2 == 0) : Color.white;
+        return (useBanding() && (rowIndex % 2 != 0)) ? ThemeColor.BANDING : Color.WHITE;
     }
 
     @Override
@@ -921,7 +898,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
                 gc.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
                 gc.setColor(getBackground());
                 gc.fill(bounds);
-                gc.setColor(getDividerColor());
+                gc.setColor(ThemeColor.DIVIDER);
                 if (mDrawRowDividers) {
                     gc.fillRect(bounds.x, bounds.y, bounds.width, one);
                     gc.fillRect(bounds.x, bounds.y + bounds.height - one, bounds.width, one);
@@ -947,13 +924,12 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     }
 
     private void drawOneColumn(Graphics2D g2d, Column column, Rectangle bounds) {
-        Scale scale    = Scale.get(this);
-        int   one      = scale.scale(1);
-        Shape oldClip  = g2d.getClip();
-        Color divColor = getDividerColor();
-        int   last     = getLastRowToDisplay();
-        int   y        = bounds.y;
-        int   maxY     = bounds.y + bounds.height;
+        Scale scale   = Scale.get(this);
+        int   one     = scale.scale(1);
+        Shape oldClip = g2d.getClip();
+        int   last    = getLastRowToDisplay();
+        int   y       = bounds.y;
+        int   maxY    = bounds.y + bounds.height;
 
         if (mHeaderPanel != null) {
             bounds.height = mHeaderPanel.getHeight();
@@ -961,7 +937,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
             g2d.fill(bounds);
             column.drawHeaderCell(this, g2d, bounds);
             bounds.y += mHeaderPanel.getHeight();
-            g2d.setColor(divColor);
+            g2d.setColor(ThemeColor.DIVIDER);
             g2d.fillRect(bounds.x, bounds.y, bounds.width, one);
             bounds.y += one;
         }
@@ -980,7 +956,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
                     column.drawRowCell(this, g2d, bounds, row, false, true);
                     g2d.setClip(oldClip);
                     if (mDrawRowDividers) {
-                        g2d.setColor(divColor);
+                        g2d.setColor(ThemeColor.DIVIDER);
                         g2d.fillRect(bounds.x, bounds.y + bounds.height, bounds.width, one);
                     }
                 }
@@ -1469,8 +1445,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
                 mSelectOnMouseUp = -1;
                 if (mDividerDrag != null && allowColumnResize()) {
                     dragColumnDivider(x);
-                    JScrollPane scrollPane = UIUtilities.getAncestorOfType(this, JScrollPane.class);
-                    if (scrollPane != null) {
+                    if (UIUtilities.getAncestorOfType(this, JScrollPane.class) != null) {
                         Point pt = event.getPoint();
                         if (!(event.getSource() instanceof Outline)) {
                             // Column resizing is occurring in the header, most likely
@@ -1532,9 +1507,27 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
             switch (event.getKeyCode()) {
             case KeyEvent.VK_LEFT:
                 index = selection.firstSelectedIndex();
-                while (index >= 0) {
-                    mModel.getRowAtIndex(index).setOpen(false);
-                    index = selection.nextSelectedIndex(index + 1);
+                if (index >= 0) {
+                    if (selection.getCount() == 1) {
+                        Row row = mModel.getRowAtIndex(index);
+                        if (row.canHaveChildren() && row.isOpen()) {
+                            row.setOpen(false);
+                            repaintSelection();
+                        } else {
+                            Row parentRow = row.getParent();
+                            if (parentRow != null) {
+                                index = getModel().getIndexOfRow(parentRow);
+                                selection.select(index, false);
+                                keyScroll(index);
+                            }
+                        }
+                    } else {
+                        while (index >= 0) {
+                            mModel.getRowAtIndex(index).setOpen(false);
+                            index = selection.nextSelectedIndex(index + 1);
+                            repaintSelection();
+                        }
+                    }
                 }
                 break;
             case KeyEvent.VK_RIGHT:
@@ -1542,6 +1535,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
                 while (index >= 0) {
                     mModel.getRowAtIndex(index).setOpen(true);
                     index = selection.nextSelectedIndex(index + 1);
+                    repaintSelection();
                 }
                 break;
             case KeyEvent.VK_UP:
@@ -1995,138 +1989,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
         mUseBanding = useBanding;
     }
 
-    /**
-     * Creates a configuration that can be applied to an outline.
-     *
-     * @param configSpec The column configuration spec for each column.
-     * @return The configuration.
-     */
-    public static String createConfig(ColumnConfig[] configSpec) {
-        return createConfig(configSpec, 0, 0);
-    }
-
-    /**
-     * Creates a configuration that can be applied to an outline.
-     *
-     * @param configSpec The column configuration spec for each column.
-     * @param hSplit     The position of the horizontal splitter.
-     * @param vSplit     The position of the vertical splitter.
-     * @return The configuration.
-     */
-    public static String createConfig(ColumnConfig[] configSpec, int hSplit, int vSplit) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(OutlineModel.CONFIG_VERSION);
-        buffer.append('\t');
-        buffer.append(configSpec.length);
-        for (ColumnConfig element : configSpec) {
-            buffer.append('\t');
-            buffer.append(element.mID);
-            buffer.append('\t');
-            buffer.append(element.mVisible);
-            buffer.append('\t');
-            buffer.append(element.mWidth);
-            buffer.append('\t');
-            buffer.append(element.mSortSequence);
-            buffer.append('\t');
-            buffer.append(element.mSortAscending);
-        }
-        buffer.append('\t');
-        buffer.append(hSplit);
-        buffer.append('\t');
-        buffer.append(vSplit);
-        return buffer.toString();
-    }
-
-    /**
-     * @return A configuration string that can be used to restore the current column configuration
-     *         and splitter settings (if the outline is embedded in a scroll panel).
-     */
-    public String getConfig() {
-        StringBuilder buffer = new StringBuilder();
-        int           count  = mModel.getColumnCount();
-        buffer.append(OutlineModel.CONFIG_VERSION);
-        buffer.append('\t');
-        buffer.append(count);
-        for (int i = 0; i < count; i++) {
-            Column column = mModel.getColumnAtIndex(i);
-            buffer.append('\t');
-            buffer.append(column.getID());
-            buffer.append('\t');
-            buffer.append(column.isVisible());
-            buffer.append('\t');
-            buffer.append(column.getWidth());
-            buffer.append('\t');
-            buffer.append(column.getSortSequence());
-            buffer.append('\t');
-            buffer.append(column.isSortAscending());
-        }
-        return buffer.toString();
-    }
-
-    private static int getInteger(StringTokenizer tokenizer, int def) {
-        try {
-            return Integer.parseInt(tokenizer.nextToken().trim());
-        } catch (Exception exception) {
-            return def;
-        }
-    }
-
-    /**
-     * Attempts to restore the specified column configuration.
-     *
-     * @param config The configuration to restore.
-     */
-    public void applyConfig(String config) {
-        try {
-            StringTokenizer tokenizer = new StringTokenizer(config, "\t");
-            if (getInteger(tokenizer, 0) == OutlineModel.CONFIG_VERSION) {
-                int          count    = getInteger(tokenizer, 0);
-                List<Column> columns  = mModel.getColumns();
-                boolean      needSort = false;
-                Column       column;
-                int          i;
-
-                mModel.clearSort();
-
-                for (i = 0; i < count; i++) {
-                    column = mModel.getColumnWithID(getInteger(tokenizer, 0));
-                    if (column == null) {
-                        throw new Exception();
-                    }
-                    columns.remove(column);
-                    columns.add(i, column);
-                    column.setVisible(Numbers.extractBoolean(tokenizer.nextToken()));
-                    column.setWidth(this, getInteger(tokenizer, column.getWidth()));
-                    column.setSortCriteria(getInteger(tokenizer, -1), Numbers.extractBoolean(tokenizer.nextToken()));
-                    if (column.getSortSequence() != -1) {
-                        needSort = true;
-                    }
-                }
-                if (needSort) {
-                    mModel.sort();
-                }
-                updateRowHeightsIfNeeded(columns);
-            }
-        } catch (Exception exception) {
-            // Nothing can be done, so allow the view to restore itself
-        }
-
-        revalidateView();
-    }
-
-    /** @return The default configuration. */
-    public String getDefaultConfig() {
-        if (mDefaultConfig == null) {
-            mDefaultConfig = getConfig();
-        }
-        return mDefaultConfig;
-    }
-
-    /** @param config The configuration to set as the default. */
-    public void setDefaultConfig(String config) {
-        mDefaultConfig = config;
-    }
-
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
         if (mDividerDrag == null && mModel.hasSelection() && allowRowDrag() && hasFocus()) {
@@ -2424,7 +2286,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     }
 
     @SuppressWarnings("static-method")
-    protected boolean isDragToRowAcceptable(@SuppressWarnings("unused") Row parentRow) {
+    protected boolean isDragToRowAcceptable(Row parentRow) {
         return true;
     }
 
@@ -2856,8 +2718,8 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     }
 
     @Override
-    public void sorted(OutlineModel model, boolean restoring) {
-        if (!restoring && isFocusOwner()) {
+    public void sorted(OutlineModel model) {
+        if (isFocusOwner()) {
             scrollSelectionIntoView();
         }
         repaintView();

@@ -19,7 +19,6 @@ import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Numbers;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -74,16 +73,6 @@ public class MeleeWeaponStats extends WeaponStats {
         super(owner, m);
     }
 
-    /**
-     * Creates a {@link MeleeWeaponStats}.
-     *
-     * @param owner  The owning piece of equipment or advantage.
-     * @param reader The reader to load from.
-     */
-    public MeleeWeaponStats(ListRow owner, XMLReader reader) throws IOException {
-        super(owner, reader);
-    }
-
     @Override
     public WeaponStats clone(ListRow owner) {
         return new MeleeWeaponStats(owner, this);
@@ -94,25 +83,6 @@ public class MeleeWeaponStats extends WeaponStats {
         mReach = "";
         mParry = "";
         mBlock = "";
-    }
-
-    @Override
-    protected void loadSelf(XMLReader reader) throws IOException {
-        String name = reader.getName();
-        if (TAG_REACH.equals(name)) {
-            mReach = reader.readText();
-        } else if (TAG_PARRY.equals(name)) {
-            mParry = reader.readText();
-        } else if (TAG_BLOCK.equals(name)) {
-            mBlock = reader.readText();
-        } else {
-            super.loadSelf(reader);
-        }
-    }
-
-    @Override
-    protected String getRootTag() {
-        return TAG_ROOT;
     }
 
     @Override
@@ -188,7 +158,7 @@ public class MeleeWeaponStats extends WeaponStats {
                                 int best = Integer.MIN_VALUE;
                                 for (SkillDefault skillDefault : getDefaults()) {
                                     SkillDefaultType type  = skillDefault.getType();
-                                    int              level = type.getSkillLevelFast(character, skillDefault, false, new HashSet<>());
+                                    int              level = type.getSkillLevelFast(character, skillDefault, false, new HashSet<>(), true);
                                     if (level != Integer.MIN_VALUE && type != baseDefaultType) {
                                         level = level / 2 + 3 + (baseDefaultType == SkillDefaultType.Parry ? character.getParryBonus() : character.getBlockBonus());
                                     }
@@ -198,7 +168,7 @@ public class MeleeWeaponStats extends WeaponStats {
                                 }
                                 skillLevel = best == Integer.MIN_VALUE ? 0 : best;
                             }
-                            num = Numbers.format(skillLevel + (neg ? -modifier : modifier) + (token.contains("F") ? character.getEncumbranceLevel().getEncumbrancePenalty() : 0));
+                            num = Numbers.format(skillLevel + (neg ? -modifier : modifier) + (token.contains("F") ? character.getEncumbranceLevel(true).getEncumbrancePenalty() : 0));
                             if (i < max) {
                                 buffer.append(num);
                                 token = token.substring(i);

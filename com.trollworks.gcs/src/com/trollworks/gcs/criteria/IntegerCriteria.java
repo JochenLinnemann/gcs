@@ -14,7 +14,6 @@ package com.trollworks.gcs.criteria;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Numbers;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 
@@ -56,17 +55,6 @@ public class IntegerCriteria extends NumericCriteria {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public void load(XMLReader reader) throws IOException {
-        super.load(reader);
-        setQualifier(reader.readInteger(0));
-    }
-
-    @Override
     public void load(JsonMap m) throws IOException {
         super.load(m);
         setQualifier(m.getInt(KEY_QUALIFIER));
@@ -98,14 +86,10 @@ public class IntegerCriteria extends NumericCriteria {
      * @return Whether the data matches this criteria.
      */
     public boolean matches(int data) {
-        switch (getType()) {
-        case IS:
-            return data == mQualifier;
-        case AT_LEAST:
-        default:
-            return data >= mQualifier;
-        case AT_MOST:
-            return data <= mQualifier;
-        }
+        return switch (getType()) {
+            case IS -> data == mQualifier;
+            case AT_MOST -> data <= mQualifier;
+            default -> data >= mQualifier;
+        };
     }
 }

@@ -16,8 +16,6 @@ import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.util.Map;
@@ -25,11 +23,9 @@ import java.util.Set;
 
 /** Describes a bonus. */
 public abstract class Bonus extends Feature {
-    /** The "amount" tag. */
-    public static final String        TAG_AMOUNT = "amount";
-    private             LeveledAmount mAmount;
+    private LeveledAmount mAmount;
     // The "parent" item that is providing this particular bonus (for information only).
-    private             ListRow       mParent;
+    private ListRow       mParent;
 
     /**
      * Creates a new bonus.
@@ -74,27 +70,6 @@ public abstract class Bonus extends Feature {
         return super.hashCode();
     }
 
-    /** @param reader The XML reader to use. */
-    protected final void load(XMLReader reader) throws IOException {
-        String marker = reader.getMarker();
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                loadSelf(reader);
-            }
-        } while (reader.withinMarker(marker));
-    }
-
-    /** @param reader The XML reader to use. */
-    protected void loadSelf(XMLReader reader) throws IOException {
-        String tag = reader.getName();
-
-        if (TAG_AMOUNT.equals(tag)) {
-            mAmount.load(reader);
-        } else {
-            reader.skipTag(tag);
-        }
-    }
-
     protected void loadSelf(JsonMap m) throws IOException {
         mAmount.load(m);
     }
@@ -120,10 +95,6 @@ public abstract class Bonus extends Feature {
 
     public void setParent(ListRow parent) {
         mParent = parent;
-    }
-
-    public ListRow getParent() {
-        return mParent;
     }
 
     public String getParentName() {

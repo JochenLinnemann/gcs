@@ -15,8 +15,9 @@ import com.trollworks.gcs.GCS;
 import com.trollworks.gcs.character.CharacterSheet;
 import com.trollworks.gcs.character.DisplayOption;
 import com.trollworks.gcs.library.Library;
-import com.trollworks.gcs.pdfview.PdfRef;
+import com.trollworks.gcs.pdfview.PDFRef;
 import com.trollworks.gcs.ui.Fonts;
+import com.trollworks.gcs.ui.Theme;
 import com.trollworks.gcs.ui.print.PageOrientation;
 import com.trollworks.gcs.ui.print.PrintManager;
 import com.trollworks.gcs.ui.scale.Scales;
@@ -56,9 +57,8 @@ import javax.swing.ToolTipManager;
 
 /** Provides the implementation of preferences. Note: not all preferences emit notifications. */
 public class Preferences {
-    private static final int CURRENT_VERSION        = 2;
-    private static final int VERSION_AS_OF_GCS_4_18 = 2;
-    private static final int MINIMUM_VERSION        = 1;
+    private static final int CURRENT_VERSION = 2;
+    private static final int MINIMUM_VERSION = 1;
 
     private static final String AUTO_NAME_NEW_CHARACTERS        = "auto_name_new_characters";
     private static final String BASE_WILL_AND_PER_ON_10         = "base_will_and_per_on_10";
@@ -89,6 +89,7 @@ public class Preferences {
     private static final String RECENT_FILES                    = "recent_files";
     private static final String SHOW_COLLEGE_IN_SHEET_SPELLS    = "show_college_in_sheet_spells";
     private static final String USE_TITLE_IN_FOOTER             = "use_title_in_footer";
+    private static final String THEME                           = "theme";
     private static final String TOOLTIP_TIMEOUT                 = "tooltip_timeout";
     private static final String USE_KNOW_YOUR_OWN_STRENGTH      = "use_know_your_own_strength";
     private static final String USE_MODIFYING_DICE_PLUS_ADDS    = "use_modifying_dice_plus_adds";
@@ -100,11 +101,6 @@ public class Preferences {
     private static final String USER_DESCRIPTION_DISPLAY        = "user_description_display";
     private static final String VERSION                         = "version";
     private static final String WINDOW_POSITIONS                = "window_positions";
-
-    // No longer used as of the 4.18 release -- remove at some point in the future
-    private static final String LAST_GCS_VERSION    = "last_gcs_version";
-    private static final String MASTER_LIBRARY_PATH = "master_library_path";
-    private static final String USER_LIBRARY_PATH   = "user_library_path";
 
     public static final String KEY_PREFIX           = "prefs.";
     public static final String KEY_PER_SHEET_PREFIX = KEY_PREFIX + "sheet.";
@@ -173,9 +169,9 @@ public class Preferences {
     private        WeightUnits                      mDefaultWeightUnits;
     private        List<String>                     mBlockLayout;
     private        List<Path>                       mRecentFiles;
-    private        Path                             mLastDir;
-    private        Map<String, PdfRef>              mPdfRefs;
-    private        Map<String, String>              mKeyBindingOverrides;
+    private        Path                mLastDir;
+    private        Map<String, PDFRef> mPdfRefs;
+    private        Map<String, String> mKeyBindingOverrides;
     private        Map<String, Fonts.Info>          mFontInfo;
     private        Map<String, BaseWindow.Position> mBaseWindowPositions;
     private        PrintManager                     mDefaultPageSettings;
@@ -271,25 +267,15 @@ public class Preferences {
                     int version = m.getInt(VERSION);
                     if (version >= MINIMUM_VERSION && version <= CURRENT_VERSION) {
                         mID = UUID.fromString(m.getStringWithDefault(ID, mID.toString()));
-                        Version loadVersion;
-                        if (version >= VERSION_AS_OF_GCS_4_18) {
-                            loadVersion = new Version(m.getString(LAST_SEEN_GCS_VERSION));
-                        } else {
-                            loadVersion = new Version(m.getString(LAST_GCS_VERSION));
-                        }
+                        Version loadVersion = new Version(m.getString(LAST_SEEN_GCS_VERSION));
                         if (loadVersion.compareTo(mLastSeenGCSVersion) > 0) {
                             mLastSeenGCSVersion = loadVersion;
                         }
-                        if (version >= VERSION_AS_OF_GCS_4_18) {
-                            if (m.has(LIBRARIES)) {
-                                JsonMap m2 = m.getMap(LIBRARIES);
-                                for (String key : m2.keySet()) {
-                                    Library.LIBRARIES.add(Library.fromJSON(key, m2.getMap(key)));
-                                }
+                        if (m.has(LIBRARIES)) {
+                            JsonMap m2 = m.getMap(LIBRARIES);
+                            for (String key : m2.keySet()) {
+                                Library.LIBRARIES.add(Library.fromJSON(key, m2.getMap(key)));
                             }
-                        } else {
-                            Library.MASTER.setPath(Paths.get(m.getStringWithDefault(MASTER_LIBRARY_PATH, Library.MASTER.getPathNoCreate().toString())));
-                            Library.USER.setPath(Paths.get(m.getStringWithDefault(USER_LIBRARY_PATH, Library.USER.getPathNoCreate().toString())));
                         }
                         mInitialPoints = m.getIntWithDefault(INITIAL_POINTS, mInitialPoints);
                         mToolTipTimeout = m.getIntWithDefault(TOOLTIP_TIMEOUT, mToolTipTimeout);
@@ -316,9 +302,6 @@ public class Preferences {
                             for (int i = 0; i < length; i++) {
                                 mBlockLayout.add(a.getString(i));
                             }
-                            if (version < VERSION_AS_OF_GCS_4_18) {
-                                mBlockLayout.add(0, CharacterSheet.REACTIONS_KEY);
-                            }
                         }
                         if (m.has(RECENT_FILES)) {
                             JsonArray a      = m.getArray(RECENT_FILES);
@@ -333,7 +316,7 @@ public class Preferences {
                             JsonMap m2 = m.getMap(PDF_REFS);
                             mPdfRefs = new HashMap<>();
                             for (String key : m2.keySet()) {
-                                mPdfRefs.put(key, new PdfRef(m2.getMap(key)));
+                                mPdfRefs.put(key, new PDFRef(m2.getMap(key)));
                             }
                         }
                         if (m.has(KEY_BINDINGS)) {
@@ -374,6 +357,9 @@ public class Preferences {
                         mUseNativePrintDialogs = m.getBooleanWithDefault(USE_NATIVE_PRINT_DIALOGS, mUseNativePrintDialogs);
                         mShowCollegeInSheetSpells = m.getBooleanWithDefault(SHOW_COLLEGE_IN_SHEET_SPELLS, mShowCollegeInSheetSpells);
                         mUseTitleInFooter = m.getBooleanWithDefault(USE_TITLE_IN_FOOTER, mUseTitleInFooter);
+                        if (m.has(THEME)) {
+                            Theme.set(new Theme(m.getMap(THEME)));
+                        }
                         if (m.has(DEFAULT_PAGE_SETTINGS)) {
                             mDefaultPageSettings = new PrintManager(m.getMap(DEFAULT_PAGE_SETTINGS));
                         }
@@ -441,8 +427,6 @@ public class Preferences {
                         lib.toJSON(w);
                     }
                     w.endMap();
-                    w.keyValue(MASTER_LIBRARY_PATH, Library.MASTER.getPathNoCreate().toString());
-                    w.keyValue(USER_LIBRARY_PATH, Library.USER.getPathNoCreate().toString());
                     w.keyValue(INITIAL_POINTS, mInitialPoints);
                     w.keyValue(TOOLTIP_TIMEOUT, mToolTipTimeout);
                     w.key(LIBRARY_EXPLORER);
@@ -476,7 +460,7 @@ public class Preferences {
                     w.keyValue(LAST_DIR, mLastDir.toString());
                     w.key(PDF_REFS);
                     w.startMap();
-                    for (Map.Entry<String, PdfRef> entry : mPdfRefs.entrySet()) {
+                    for (Map.Entry<String, PDFRef> entry : mPdfRefs.entrySet()) {
                         w.key(entry.getKey());
                         entry.getValue().toJSON(w);
                     }
@@ -501,13 +485,7 @@ public class Preferences {
                         BaseWindow.Position info = entry.getValue();
                         if (info.mLastUpdated > cutoff) {
                             w.key(entry.getKey());
-                            w.startMap();
-                            w.keyValue("x", info.mBounds.x);
-                            w.keyValue("y", info.mBounds.y);
-                            w.keyValue("width", info.mBounds.width);
-                            w.keyValue("height", info.mBounds.height);
-                            w.keyValue("last_updated", info.mLastUpdated);
-                            w.endMap();
+                            info.toJSON(w);
                         }
                     }
                     w.endMap();
@@ -527,6 +505,8 @@ public class Preferences {
                     w.keyValue(SHOW_COLLEGE_IN_SHEET_SPELLS, mShowCollegeInSheetSpells);
                     w.keyValue(USE_TITLE_IN_FOOTER, mUseTitleInFooter);
                     w.keyValue(AUTO_NAME_NEW_CHARACTERS, mAutoNameNewCharacters);
+                    w.key(THEME);
+                    Theme.current().save(w);
                     w.keyValue(USE_NATIVE_PRINT_DIALOGS, mUseNativePrintDialogs);
                     if (mDefaultPageSettings != null) {
                         w.key(DEFAULT_PAGE_SETTINGS);
@@ -595,39 +575,33 @@ public class Preferences {
         return mUserDescriptionDisplay;
     }
 
-    public boolean setUserDescriptionDisplay(DisplayOption userDescriptionDisplay) {
+    public void setUserDescriptionDisplay(DisplayOption userDescriptionDisplay) {
         if (mUserDescriptionDisplay != userDescriptionDisplay) {
             mUserDescriptionDisplay = userDescriptionDisplay;
             mNotifier.notify(this, KEY_USER_DESCRIPTION_DISPLAY);
-            return true;
         }
-        return false;
     }
 
     public DisplayOption getModifiersDisplay() {
         return mModifiersDisplay;
     }
 
-    public boolean setModifiersDisplay(DisplayOption modifiersDisplay) {
+    public void setModifiersDisplay(DisplayOption modifiersDisplay) {
         if (mModifiersDisplay != modifiersDisplay) {
             mModifiersDisplay = modifiersDisplay;
             mNotifier.notify(this, KEY_MODIFIERS_DISPLAY);
-            return true;
         }
-        return false;
     }
 
     public DisplayOption getNotesDisplay() {
         return mNotesDisplay;
     }
 
-    public boolean setNotesDisplay(DisplayOption notesDisplay) {
+    public void setNotesDisplay(DisplayOption notesDisplay) {
         if (mNotesDisplay != notesDisplay) {
             mNotesDisplay = notesDisplay;
             mNotifier.notify(this, KEY_NOTES_DISPLAY);
-            return true;
         }
-        return false;
     }
 
     public Scales getInitialUIScale() {
@@ -642,45 +616,39 @@ public class Preferences {
         return mDefaultLengthUnits;
     }
 
-    public boolean setDefaultLengthUnits(LengthUnits defaultLengthUnits) {
+    public void setDefaultLengthUnits(LengthUnits defaultLengthUnits) {
         if (mDefaultLengthUnits != defaultLengthUnits) {
             mDefaultLengthUnits = defaultLengthUnits;
             mNotifier.notify(this, KEY_DEFAULT_LENGTH_UNITS);
-            return true;
         }
-        return false;
     }
 
     public WeightUnits getDefaultWeightUnits() {
         return mDefaultWeightUnits;
     }
 
-    public boolean setDefaultWeightUnits(WeightUnits defaultWeightUnits) {
+    public void setDefaultWeightUnits(WeightUnits defaultWeightUnits) {
         if (mDefaultWeightUnits != defaultWeightUnits) {
             mDefaultWeightUnits = defaultWeightUnits;
             mNotifier.notify(this, KEY_DEFAULT_WEIGHT_UNITS);
-            return true;
         }
-        return false;
     }
 
     public List<String> getBlockLayout() {
         return mBlockLayout;
     }
 
-    public boolean setBlockLayout(List<String> blockLayout) {
+    public void setBlockLayout(List<String> blockLayout) {
         if (!mBlockLayout.equals(blockLayout)) {
             mBlockLayout = new ArrayList<>(blockLayout);
             mNotifier.notify(this, KEY_BLOCK_LAYOUT);
-            return true;
         }
-        return false;
     }
 
     public static String linesToString(List<String> lines) {
         StringBuilder buffer = new StringBuilder();
         for (String line : lines) {
-            if (buffer.length() != 0) {
+            if (!buffer.isEmpty()) {
                 buffer.append('\n');
             }
             buffer.append(line);
@@ -701,7 +669,7 @@ public class Preferences {
         if (Platform.isMacintosh() || Platform.isWindows()) {
             extension = extension.toLowerCase();
         }
-        for (FileType fileType : FileType.OPENABLE) {
+        for (FileType fileType : FileType.ALL_OPENABLE) {
             if (fileType.matchExtension(extension)) {
                 if (Files.isReadable(path)) {
                     mLastRecentFilesUpdateCounter++;
@@ -773,10 +741,10 @@ public class Preferences {
         mPNGResolution = PNGResolution;
     }
 
-    public List<PdfRef> allPdfRefs(boolean requireExistence) {
-        List<PdfRef> list = new ArrayList<>();
+    public List<PDFRef> allPdfRefs(boolean requireExistence) {
+        List<PDFRef> list = new ArrayList<>();
         for (String key : mPdfRefs.keySet()) {
-            PdfRef ref = lookupPdfRef(key, requireExistence);
+            PDFRef ref = lookupPdfRef(key, requireExistence);
             if (ref != null) {
                 list.add(ref);
             }
@@ -785,8 +753,8 @@ public class Preferences {
         return list;
     }
 
-    public PdfRef lookupPdfRef(String id, boolean requireExistence) {
-        PdfRef ref = mPdfRefs.get(id);
+    public PDFRef lookupPdfRef(String id, boolean requireExistence) {
+        PDFRef ref = mPdfRefs.get(id);
         if (ref == null) {
             return null;
         }
@@ -799,12 +767,12 @@ public class Preferences {
         return ref;
     }
 
-    public void putPdfRef(PdfRef ref) {
-        mPdfRefs.put(ref.getId(), ref);
+    public void putPdfRef(PDFRef ref) {
+        mPdfRefs.put(ref.getID(), ref);
     }
 
-    public void removePdfRef(PdfRef ref) {
-        mPdfRefs.remove(ref.getId());
+    public void removePdfRef(PDFRef ref) {
+        mPdfRefs.remove(ref.getID());
     }
 
     public void clearPdfRefs() {
@@ -855,13 +823,11 @@ public class Preferences {
         return mIncludeUnspentPointsInTotal;
     }
 
-    public boolean setIncludeUnspentPointsInTotal(boolean includeUnspentPointsInTotal) {
+    public void setIncludeUnspentPointsInTotal(boolean includeUnspentPointsInTotal) {
         if (mIncludeUnspentPointsInTotal != includeUnspentPointsInTotal) {
             mIncludeUnspentPointsInTotal = includeUnspentPointsInTotal;
             mNotifier.notify(this, KEY_INCLUDE_UNSPENT_POINTS_IN_TOTAL);
-            return true;
         }
-        return false;
     }
 
     /** @return Whether Will and Perception should be based on 10 rather than IQ. */
@@ -869,13 +835,11 @@ public class Preferences {
         return mBaseWillAndPerOn10;
     }
 
-    public boolean setBaseWillAndPerOn10(boolean baseWillAndPerOn10) {
+    public void setBaseWillAndPerOn10(boolean baseWillAndPerOn10) {
         if (mBaseWillAndPerOn10 != baseWillAndPerOn10) {
             mBaseWillAndPerOn10 = baseWillAndPerOn10;
             mNotifier.notify(this, KEY_BASE_WILL_AND_PER_ON_10);
-            return true;
         }
-        return false;
     }
 
     /** @return Whether to show the college column in the sheet display. */
@@ -883,13 +847,11 @@ public class Preferences {
         return mShowCollegeInSheetSpells;
     }
 
-    public boolean setShowCollegeInSheetSpells(boolean show) {
+    public void setShowCollegeInSheetSpells(boolean show) {
         if (mShowCollegeInSheetSpells != show) {
             mShowCollegeInSheetSpells = show;
             mNotifier.notify(this, KEY_SHOW_COLLEGE_IN_SHEET_SPELLS);
-            return true;
         }
-        return false;
     }
 
     /** @return Whether to show the title in the page footer (rather than the name). */
@@ -897,13 +859,11 @@ public class Preferences {
         return mUseTitleInFooter;
     }
 
-    public boolean setUseTitleInFooter(boolean show) {
+    public void setUseTitleInFooter(boolean show) {
         if (mUseTitleInFooter != show) {
             mUseTitleInFooter = show;
             mNotifier.notify(this, KEY_USE_TITLE_IN_FOOTER);
-            return true;
         }
-        return false;
     }
 
     /** @return Whether to use the multiplicative modifier rules from PW102. */
@@ -911,13 +871,11 @@ public class Preferences {
         return mUseMultiplicativeModifiers;
     }
 
-    public boolean setUseMultiplicativeModifiers(boolean useMultiplicativeModifiers) {
+    public void setUseMultiplicativeModifiers(boolean useMultiplicativeModifiers) {
         if (mUseMultiplicativeModifiers != useMultiplicativeModifiers) {
             mUseMultiplicativeModifiers = useMultiplicativeModifiers;
             mNotifier.notify(this, KEY_USE_MULTIPLICATIVE_MODIFIERS);
-            return true;
         }
-        return false;
     }
 
     /** @return Whether to use the dice modification rules from B269. */
@@ -925,13 +883,11 @@ public class Preferences {
         return mUseModifyingDicePlusAdds;
     }
 
-    public boolean setUseModifyingDicePlusAdds(boolean useModifyingDicePlusAdds) {
+    public void setUseModifyingDicePlusAdds(boolean useModifyingDicePlusAdds) {
         if (mUseModifyingDicePlusAdds != useModifyingDicePlusAdds) {
             mUseModifyingDicePlusAdds = useModifyingDicePlusAdds;
             mNotifier.notify(this, KEY_USE_MODIFYING_DICE_PLUS_ADDS);
-            return true;
         }
-        return false;
     }
 
     /** @return Whether to use the Know Your Own Strength rules from PY83. */
@@ -939,13 +895,11 @@ public class Preferences {
         return mUseKnowYourOwnStrength;
     }
 
-    public boolean setUseKnowYourOwnStrength(boolean useKnowYourOwnStrength) {
+    public void setUseKnowYourOwnStrength(boolean useKnowYourOwnStrength) {
         if (mUseKnowYourOwnStrength != useKnowYourOwnStrength) {
             mUseKnowYourOwnStrength = useKnowYourOwnStrength;
             mNotifier.notify(this, KEY_USE_KNOW_YOUR_OWN_STRENGTH);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -956,13 +910,11 @@ public class Preferences {
         return mUseReducedSwing;
     }
 
-    public boolean setUseReducedSwing(boolean useReducedSwing) {
+    public void setUseReducedSwing(boolean useReducedSwing) {
         if (mUseReducedSwing != useReducedSwing) {
             mUseReducedSwing = useReducedSwing;
             mNotifier.notify(this, KEY_USE_REDUCED_SWING);
-            return true;
         }
-        return false;
     }
 
     /** @return Whether to set thrust damage to swing-2. */
@@ -970,13 +922,11 @@ public class Preferences {
         return mUseThrustEqualsSwingMinus2;
     }
 
-    public boolean setUseThrustEqualsSwingMinus2(boolean useThrustEqualsSwingMinus2) {
+    public void setUseThrustEqualsSwingMinus2(boolean useThrustEqualsSwingMinus2) {
         if (mUseThrustEqualsSwingMinus2 != useThrustEqualsSwingMinus2) {
             mUseThrustEqualsSwingMinus2 = useThrustEqualsSwingMinus2;
             mNotifier.notify(this, KEY_USE_THRUST_EQUALS_SWING_MINUS_2);
-            return true;
         }
-        return false;
     }
 
     /** @return Whether to use the simple metric conversion rules from B9. */
@@ -984,13 +934,11 @@ public class Preferences {
         return mUseSimpleMetricConversions;
     }
 
-    public boolean setUseSimpleMetricConversions(boolean useSimpleMetricConversions) {
+    public void setUseSimpleMetricConversions(boolean useSimpleMetricConversions) {
         if (mUseSimpleMetricConversions != useSimpleMetricConversions) {
             mUseSimpleMetricConversions = useSimpleMetricConversions;
             mNotifier.notify(this, KEY_USE_SIMPLE_METRIC_CONVERSIONS);
-            return true;
         }
-        return false;
     }
 
     /** @return Whether a new character should be automatically named. */

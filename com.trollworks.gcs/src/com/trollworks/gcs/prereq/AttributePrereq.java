@@ -21,7 +21,6 @@ import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Enums;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -34,7 +33,6 @@ public class AttributePrereq extends HasPrereq {
     public static final  String               TAG_ROOT                = "attribute_prereq";
     private static final String               ATTRIBUTE_WHICH         = "which";
     private static final String               ATTRIBUTE_COMBINED_WITH = "combined_with";
-    private static final String               ATTRIBUTE_COMPARE       = "compare";
     private static final String               KEY_QUALIFIER           = "qualifier";
     private              BonusAttributeType   mWhich;
     private              BonusAttributeType   mCombinedWith;
@@ -64,21 +62,6 @@ public class AttributePrereq extends HasPrereq {
     }
 
     /**
-     * Loads a prerequisite.
-     *
-     * @param parent The owning prerequisite list, if any.
-     * @param reader The XML reader to load from.
-     */
-    public AttributePrereq(PrereqList parent, XMLReader reader) throws IOException {
-        this(parent);
-        loadHasAttribute(reader);
-        setWhich(Enums.extract(reader.getAttribute(ATTRIBUTE_WHICH), TYPES, BonusAttributeType.ST));
-        setCombinedWith(Enums.extract(reader.getAttribute(ATTRIBUTE_COMBINED_WITH), TYPES));
-        mValueCompare.setType(Enums.extract(reader.getAttribute(ATTRIBUTE_COMPARE), NumericCompareType.values(), NumericCompareType.AT_LEAST));
-        mValueCompare.setQualifier(reader.readInteger(10));
-    }
-
-    /**
      * Creates a copy of the specified prerequisite.
      *
      * @param parent The owning prerequisite list, if any.
@@ -104,17 +87,7 @@ public class AttributePrereq extends HasPrereq {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
     public String getJSONTypeName() {
-        return TAG_ROOT;
-    }
-
-    @Override
-    public String getXMLTag() {
         return TAG_ROOT;
     }
 
@@ -165,22 +138,15 @@ public class AttributePrereq extends HasPrereq {
         if (attribute == null) {
             return 0;
         }
-        switch (attribute) {
-        case ST:
-            return character.getStrength();
-        case DX:
-            return character.getDexterity();
-        case IQ:
-            return character.getIntelligence();
-        case HT:
-            return character.getHealth();
-        case WILL:
-            return character.getWillAdj();
-        case PERCEPTION:
-            return character.getPerAdj();
-        default:
-            return 0;
-        }
+        return switch (attribute) {
+            case ST -> character.getStrength();
+            case DX -> character.getDexterity();
+            case IQ -> character.getIntelligence();
+            case HT -> character.getHealth();
+            case WILL -> character.getWillAdj();
+            case PERCEPTION -> character.getPerAdj();
+            default -> 0;
+        };
     }
 
     /** @return The value comparison object. */

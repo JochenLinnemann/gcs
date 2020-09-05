@@ -24,9 +24,9 @@ import com.trollworks.gcs.template.Template;
 import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.ui.widget.outline.RowEditor;
 import com.trollworks.gcs.utility.I18n;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -41,8 +41,6 @@ import java.util.Set;
  * spell.
  */
 public class RitualMagicSpell extends Spell {
-    private static final int    CURRENT_VERSION         = 1;
-    /** The XML tag used for items. */
     public static final  String TAG_RITUAL_MAGIC_SPELL  = "ritual_magic_spell";
     private static final String TAG_BASE_SKILL_NAME     = "base_skill";
     private static final String TAG_PREREQ_COUNT        = "prereq_count";
@@ -87,21 +85,6 @@ public class RitualMagicSpell extends Spell {
     public RitualMagicSpell(DataFile dataFile, JsonMap m, LoadState state) throws IOException {
         this(dataFile);
         load(m, state);
-        if (!(dataFile instanceof GURPSCharacter) && !(dataFile instanceof Template)) {
-            mPoints = 0;
-        }
-    }
-
-    /**
-     * Loads a ritual magic spell and associates it with the specified data file.
-     *
-     * @param dataFile The data file to associate it with.
-     * @param reader   The XML reader to load from.
-     * @param state    The {@link LoadState} to use.
-     */
-    public RitualMagicSpell(DataFile dataFile, XMLReader reader, LoadState state) throws IOException {
-        this(dataFile);
-        load(reader, state);
         if (!(dataFile instanceof GURPSCharacter) && !(dataFile instanceof Template)) {
             mPoints = 0;
         }
@@ -194,16 +177,6 @@ public class RitualMagicSpell extends Spell {
     }
 
     @Override
-    public String getXMLTagName() {
-        return TAG_RITUAL_MAGIC_SPELL;
-    }
-
-    @Override
-    public int getXMLTagVersion() {
-        return CURRENT_VERSION;
-    }
-
-    @Override
     public String getRowType() {
         return I18n.Text("Ritual Magic Spell");
     }
@@ -217,18 +190,6 @@ public class RitualMagicSpell extends Spell {
     }
 
     @Override
-    protected void loadSubElement(XMLReader reader, LoadState state) throws IOException {
-        String name = reader.getName();
-        if (TAG_BASE_SKILL_NAME.equals(name)) {
-            mBaseSkillName = reader.readText().replace("\n", " ");
-        } else if (TAG_PREREQ_COUNT.equals(name)) {
-            mPrerequisiteSpellsCount = reader.readInteger(0);
-        } else {
-            super.loadSubElement(reader, state);
-        }
-    }
-
-    @Override
     protected void loadSelf(JsonMap m, LoadState state) throws IOException {
         super.loadSelf(m, state);
         mBaseSkillName = m.getString(TAG_BASE_SKILL_NAME);
@@ -236,8 +197,8 @@ public class RitualMagicSpell extends Spell {
     }
 
     @Override
-    protected void saveSelf(JsonWriter w, boolean forUndo) throws IOException {
-        super.saveSelf(w, forUndo);
+    protected void saveSelf(JsonWriter w, SaveType saveType) throws IOException {
+        super.saveSelf(w, saveType);
         w.keyValue(TAG_BASE_SKILL_NAME, mBaseSkillName);
         w.keyValueNot(TAG_PREREQ_COUNT, mPrerequisiteSpellsCount, 0);
         // Spells assume a default of 1 point, while RM assumes a default of 0, so we have to make

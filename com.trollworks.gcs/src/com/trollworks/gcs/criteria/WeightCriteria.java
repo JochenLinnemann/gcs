@@ -14,7 +14,6 @@ package com.trollworks.gcs.criteria;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.units.WeightValue;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 
@@ -55,17 +54,6 @@ public class WeightCriteria extends NumericCriteria {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public void load(XMLReader reader) throws IOException {
-        super.load(reader);
-        setQualifier(WeightValue.extract(reader.readText(), false));
-    }
-
-    @Override
     public void load(JsonMap m) throws IOException {
         super.load(m);
         setQualifier(WeightValue.extract(m.getString(KEY_QUALIFIER), false));
@@ -97,14 +85,10 @@ public class WeightCriteria extends NumericCriteria {
      * @return Whether the data matches this criteria.
      */
     public boolean matches(WeightValue data) {
-        switch (getType()) {
-        case IS:
-            return mQualifier.equals(data);
-        case AT_LEAST:
-        default:
-            return data.getNormalizedValue().greaterThanOrEqual(mQualifier.getNormalizedValue());
-        case AT_MOST:
-            return data.getNormalizedValue().lessThanOrEqual(mQualifier.getNormalizedValue());
-        }
+        return switch (getType()) {
+            case IS -> mQualifier.equals(data);
+            case AT_MOST -> data.getNormalizedValue().lessThanOrEqual(mQualifier.getNormalizedValue());
+            default -> data.getNormalizedValue().greaterThanOrEqual(mQualifier.getNormalizedValue());
+        };
     }
 }

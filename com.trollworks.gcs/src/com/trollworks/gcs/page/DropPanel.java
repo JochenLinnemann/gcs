@@ -14,6 +14,7 @@ package com.trollworks.gcs.page;
 import com.trollworks.gcs.character.CharacterSheet;
 import com.trollworks.gcs.ui.Fonts;
 import com.trollworks.gcs.ui.GraphicsUtilities;
+import com.trollworks.gcs.ui.ThemeColor;
 import com.trollworks.gcs.ui.UIUtilities;
 import com.trollworks.gcs.ui.border.EmptyBorder;
 import com.trollworks.gcs.ui.border.TitledBorder;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 
@@ -38,7 +40,6 @@ import javax.swing.border.CompoundBorder;
 public class DropPanel extends JPanel {
     private Map<Component, Color> mHorizontalBackgrounds = new HashMap<>();
     private Map<Component, Color> mVerticalBackgrounds   = new HashMap<>();
-    private boolean               mPaintVerticalFirst;
     private TitledBorder          mTitledBorder;
     private boolean               mOnlyReportPreferredSize;
 
@@ -96,7 +97,7 @@ public class DropPanel extends JPanel {
     public DropPanel(LayoutManager layout, String title, Font font, boolean onlyReportPreferredSize) {
         super(layout);
         setOpaque(true);
-        setBackground(Color.WHITE);
+        setBackground(ThemeColor.PAGE);
         mTitledBorder = new TitledBorder(font, title);
         setBorder(new CompoundBorder(mTitledBorder, new EmptyBorder(0, 2, 1, 2)));
         setAlignmentY(TOP_ALIGNMENT);
@@ -183,13 +184,8 @@ public class DropPanel extends JPanel {
         localBounds.y = insets.top;
         localBounds.width -= insets.left + insets.right;
         localBounds.height -= insets.top + insets.bottom;
-        if (mPaintVerticalFirst) {
-            paintVerticalBackgrounds(gc, localBounds);
-            paintHorizontalBackgrounds(gc, localBounds);
-        } else {
-            paintHorizontalBackgrounds(gc, localBounds);
-            paintVerticalBackgrounds(gc, localBounds);
-        }
+        paintHorizontalBackgrounds(gc, localBounds);
+        paintVerticalBackgrounds(gc, localBounds);
     }
 
     private void paintHorizontalBackgrounds(Graphics gc, Rectangle localBounds) {
@@ -222,16 +218,6 @@ public class DropPanel extends JPanel {
         }
     }
 
-    /** @return Whether or not to paint the vertical backgrounds first. */
-    public final boolean isPaintVerticalFirst() {
-        return mPaintVerticalFirst;
-    }
-
-    /** @param first Whether or not to paint the vertical backgrounds first. */
-    public final void setPaintVerticalFirst(boolean first) {
-        mPaintVerticalFirst = first;
-    }
-
     /** @return The {@link TitledBorder}. */
     public TitledBorder getTitledBorder() {
         return mTitledBorder;
@@ -243,15 +229,12 @@ public class DropPanel extends JPanel {
      * @param key       The notification ID to use.
      * @param title     The title to use.
      * @param tooltip   The tooltip to use.
-     * @param alignment The horizontal field alignment to use.
-     * @return The newly created field.
      */
     @SuppressWarnings("static-method")
-    protected PageField createLabelAndField(Container parent, CharacterSheet sheet, String key, String title, String tooltip, int alignment) {
-        PageField field = new PageField(sheet, key, alignment, true, tooltip);
+    protected void createLabelAndField(Container parent, CharacterSheet sheet, String key, String title, String tooltip) {
+        PageField field = new PageField(sheet, key, SwingConstants.LEFT, true, tooltip);
         parent.add(new PageLabel(title, field));
         parent.add(field);
-        return field;
     }
 
     /**
@@ -260,45 +243,12 @@ public class DropPanel extends JPanel {
      * @param key       The notification ID to use.
      * @param title     The title to use.
      * @param tooltip   The tooltip to use.
-     * @param alignment The horizontal field alignment to use.
-     * @return The newly created field.
      */
     @SuppressWarnings("static-method")
-    protected PageField createLabelAndDisabledField(Container parent, CharacterSheet sheet, String key, String title, String tooltip, int alignment) {
-        PageField field = new PageField(sheet, key, alignment, false, tooltip);
+    protected void createLabelAndDisabledField(Container parent, CharacterSheet sheet, String key, String title, String tooltip) {
+        PageField field = new PageField(sheet, key, SwingConstants.LEFT, false, tooltip);
         parent.add(new PageLabel(title, field));
         parent.add(field);
-        return field;
-    }
-
-    /**
-     * @param parent    The parent to use.
-     * @param sheet     The {@link CharacterSheet} to use.
-     * @param key       The notification ID to use.
-     * @param tooltip   The tooltip to use.
-     * @param alignment The horizontal field alignment to use.
-     * @return The newly created field.
-     */
-    @SuppressWarnings("static-method")
-    protected PageField createField(Container parent, CharacterSheet sheet, String key, String tooltip, int alignment) {
-        PageField field = new PageField(sheet, key, alignment, true, tooltip);
-        parent.add(field);
-        return field;
-    }
-
-    /**
-     * @param parent    The parent to use.
-     * @param sheet     The {@link CharacterSheet} to use.
-     * @param key       The notification ID to use.
-     * @param tooltip   The tooltip to use.
-     * @param alignment The horizontal field alignment to use.
-     * @return The newly created field.
-     */
-    @SuppressWarnings("static-method")
-    protected PageField createDisabledField(Container parent, CharacterSheet sheet, String key, String tooltip, int alignment) {
-        PageField field = new PageField(sheet, key, alignment, false, tooltip);
-        parent.add(field);
-        return field;
     }
 
     /**

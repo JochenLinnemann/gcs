@@ -21,10 +21,8 @@ import com.trollworks.gcs.utility.Fixed6;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
-import com.trollworks.gcs.utility.text.Enums;
 import com.trollworks.gcs.utility.units.WeightUnits;
 import com.trollworks.gcs.utility.units.WeightValue;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -32,9 +30,8 @@ import java.text.MessageFormat;
 /** An equipment contained weight prerequisite. */
 public class ContainedWeightPrereq extends HasPrereq {
     /** The XML tag for this class. */
-    public static final  String         TAG_ROOT          = "contained_weight_prereq";
-    private static final String         ATTRIBUTE_COMPARE = "compare";
-    private static final String         KEY_QUALIFIER     = "qualifier";
+    public static final  String         TAG_ROOT      = "contained_weight_prereq";
+    private static final String         KEY_QUALIFIER = "qualifier";
     private              WeightCriteria mWeightCompare;
 
     /**
@@ -56,19 +53,6 @@ public class ContainedWeightPrereq extends HasPrereq {
     public ContainedWeightPrereq(PrereqList parent, WeightUnits defUnits, JsonMap m) throws IOException {
         this(parent, defUnits);
         loadSelf(m, new LoadState());
-    }
-
-    /**
-     * Loads a prerequisite.
-     *
-     * @param parent The owning prerequisite list, if any.
-     * @param reader The XML reader to load from.
-     */
-    public ContainedWeightPrereq(PrereqList parent, WeightUnits defUnits, XMLReader reader) throws IOException {
-        this(parent, defUnits);
-        loadHasAttribute(reader);
-        mWeightCompare.setType(Enums.extract(reader.getAttribute(ATTRIBUTE_COMPARE), NumericCompareType.values(), NumericCompareType.AT_LEAST));
-        mWeightCompare.setQualifier(WeightValue.extract(reader.readText(), false));
     }
 
     /**
@@ -94,17 +78,7 @@ public class ContainedWeightPrereq extends HasPrereq {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
     public String getJSONTypeName() {
-        return TAG_ROOT;
-    }
-
-    @Override
-    public String getXMLTag() {
         return TAG_ROOT;
     }
 
@@ -137,8 +111,8 @@ public class ContainedWeightPrereq extends HasPrereq {
             Equipment equipment = (Equipment) exclude;
             satisfied = !equipment.canHaveChildren();
             if (!satisfied) {
-                WeightValue weight = new WeightValue(equipment.getExtendedWeight());
-                weight.subtract(equipment.getAdjustedWeight());
+                WeightValue weight = new WeightValue(equipment.getExtendedWeight(false));
+                weight.subtract(equipment.getAdjustedWeight(false));
                 satisfied = mWeightCompare.matches(weight);
             }
         }

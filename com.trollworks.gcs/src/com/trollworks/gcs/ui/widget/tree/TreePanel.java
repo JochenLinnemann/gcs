@@ -19,6 +19,7 @@ import com.trollworks.gcs.ui.Fonts;
 import com.trollworks.gcs.ui.GraphicsUtilities;
 import com.trollworks.gcs.ui.RetinaIcon;
 import com.trollworks.gcs.ui.TextDrawing;
+import com.trollworks.gcs.ui.ThemeColor;
 import com.trollworks.gcs.ui.UIUtilities;
 import com.trollworks.gcs.ui.image.Images;
 import com.trollworks.gcs.ui.image.Img;
@@ -1183,7 +1184,7 @@ public class TreePanel extends DirectScrollPanel implements Runnable, Openable, 
         if (selected) {
             return Colors.getListBackground(true, active);
         }
-        return mUseBanding ? Colors.getBanding(position % 2 == 0) : Color.WHITE;
+        return (mUseBanding && (position % 2 != 0)) ? ThemeColor.BANDING : Color.WHITE;
     }
 
     /** @return {@code true} if background banding is enabled. */
@@ -1733,7 +1734,23 @@ public class TreePanel extends DirectScrollPanel implements Runnable, Openable, 
         if (!event.isConsumed() && (event.getModifiersEx() & getToolkit().getMenuShortcutKeyMaskEx()) == 0) {
             switch (event.getKeyCode()) {
             case KeyEvent.VK_LEFT:
-                setOpen(false, getTreeContainerRows(mSelectedRows, event.isAltDown()));
+                if (mSelectedRows.size() == 1) {
+                    TreeRow row = mSelectedRows.iterator().next();
+                    if (row instanceof TreeContainerRow) {
+                        TreeContainerRow cRow = (TreeContainerRow)row;
+                        if (isOpen(cRow)) {
+                            setOpen(false, cRow);
+                            break;
+                        }
+                    }
+                    TreeContainerRow parentRow = row.getParent();
+                    if (parentRow != null && parentRow != getRoot()) {
+                        select(parentRow, false);
+                        keyScroll(parentRow);
+                    }
+                } else {
+                    setOpen(false, getTreeContainerRows(mSelectedRows, event.isAltDown()));
+                }
                 break;
             case KeyEvent.VK_RIGHT:
                 setOpen(true, getTreeContainerRows(mSelectedRows, event.isAltDown()));
