@@ -21,6 +21,7 @@ import com.trollworks.gcs.preferences.Preferences;
 import com.trollworks.gcs.ui.widget.WindowUtils;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.Log;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonWriter;
 
 import java.awt.Color;
@@ -45,6 +46,7 @@ import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -53,7 +55,8 @@ import javax.swing.event.HyperlinkEvent;
 
 public class ExportToGURPSCalculatorCommand extends Command {
     /** The singleton {@link ExportToGURPSCalculatorCommand}. */
-    public static final ExportToGURPSCalculatorCommand INSTANCE = new ExportToGURPSCalculatorCommand();
+    public static final  ExportToGURPSCalculatorCommand INSTANCE     = new ExportToGURPSCalculatorCommand();
+    private static final Pattern                        UUID_PATTERN = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}");
 
     private ExportToGURPSCalculatorCommand() {
         super(I18n.Text("Export to GURPS Calculator…"), "ExportToGURPSCalculator", KeyEvent.VK_L);
@@ -71,11 +74,11 @@ public class ExportToGURPSCalculatorCommand extends Command {
             GURPSCharacter character = sheet.getCharacter();
             try {
                 String key = Preferences.getInstance().getGURPSCalculatorKey();
-                if ("true".equals(get(String.format("api/GetCharacterExists/%s/%s", character.getId(), key)))) {
+                if ("true".equals(get(String.format("api/GetCharacterExists/%s/%s", character.getID(), key)))) {
                     String cancel = I18n.Text("Cancel");
                     switch (JOptionPane.showOptionDialog(KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner(), I18n.Text("This character already exists in GURPS Calculator.\nWould you like to replace it?\n\nIf you choose 'Create New', you should save your\ncharacter afterwards."), I18n.Text("Character Exists"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{I18n.Text("Replace"), I18n.Text("Create New"), cancel}, cancel)) {
                     case JOptionPane.NO_OPTION:
-                        character.generateNewId();
+                        character.generateNewID();
                         character.setModified(true);
                         break;
                     case JOptionPane.CANCEL_OPTION:
@@ -98,7 +101,7 @@ public class ExportToGURPSCalculatorCommand extends Command {
                             } catch (FileNotFoundException exception) {
                                 Log.error(exception);
                             }
-                            UUID   id   = character.getId();
+                            UUID   id   = character.getID();
                             String path = String.format("api/SaveCharacter/%s/%s", id, key);
                             result = post(path, result);
                             if (!result.isEmpty()) {
@@ -117,7 +120,7 @@ public class ExportToGURPSCalculatorCommand extends Command {
                             }
                             try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
                                 try (JsonWriter w = new JsonWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8), "\t")) {
-                                    character.save(w, true, false);
+                                    character.save(w, SaveType.NORMAL, false);
                                 }
                                 path = String.format("api/SaveCharacterRawFileGCS/%s/%s", id, key);
                                 result = post(path, out.toByteArray());
@@ -145,7 +148,7 @@ public class ExportToGURPSCalculatorCommand extends Command {
     private void showResult(boolean success) {
         String message = success ? I18n.Text("Export to GURPS Calculator was successful.") : I18n.Text("There was an error exporting to GURPS Calculator. Please try again later.");
         String key     = Preferences.getInstance().getGURPSCalculatorKey();
-        if (key == null || !key.matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}")) {
+        if (key == null || !UUID_PATTERN.matcher(key).matches()) {
             message = String.format(I18n.Text("You need to set a valid GURPS Calculator Key in sheet preferences.<br><a href='%s'>Click here</a> for more information."), OutputPreferences.GURPS_CALCULATOR_URL);
         }
         JLabel      styleLabel  = new JLabel();

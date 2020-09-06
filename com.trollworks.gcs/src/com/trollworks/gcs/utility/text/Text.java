@@ -12,11 +12,16 @@
 package com.trollworks.gcs.utility.text;
 
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import javax.swing.SwingConstants;
 
 /** Provides text manipulation. */
-public class Text {
-    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+public final class Text {
+    public static final  char[]  HEX_DIGITS        = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    private static final Pattern LINE_FEED_PATTERN = Pattern.compile("\n");
+
+    private Text() {
+    }
 
     /**
      * @param ch the digit to convert.
@@ -45,7 +50,7 @@ public class Text {
      *                         {@link SwingConstants#RIGHT}.
      * @return The adjusted text.
      */
-    public static final String truncateIfNecessary(String text, int count, int truncationPolicy) {
+    public static String truncateIfNecessary(String text, int count, int truncationPolicy) {
         int tCount = text.length();
         count = tCount - count;
         if (count > 0) {
@@ -79,7 +84,7 @@ public class Text {
      * @param data The text to convert.
      * @return The converted text.
      */
-    public static final String standardizeLineEndings(String data) {
+    public static String standardizeLineEndings(String data) {
         int           length   = data.length();
         StringBuilder buffer   = new StringBuilder(length);
         char          ignoreCh = 0;
@@ -164,7 +169,7 @@ public class Text {
 
     public static String wrapPlainTextForToolTip(String text) {
         if (text != null && !text.isEmpty() && !text.startsWith("<html>")) {
-            return "<html><body>" + htmlEscape(wrapToCharacterCount(text, 40)).replaceAll("\n", "<br>") + "</body></html>";
+            return "<html><body>" + LINE_FEED_PATTERN.matcher(htmlEscape(wrapToCharacterCount(text, 40))).replaceAll("<br>") + "</body></html>";
         }
         return text;
     }
@@ -181,26 +186,13 @@ public class Text {
         for (int i = 0; i < length; i++) {
             char ch = str.charAt(i);
             switch (ch) {
-            case '&':
-                buffer.append("&amp;");
-                break;
-            case '<':
-                buffer.append("&lt;");
-                break;
-            case '>':
-                buffer.append("&gt;");
-                break;
-            case '"':
-                buffer.append("&quot;");
-                break;
-            case '\'':
-                buffer.append("&#39;");
-                break;
-            case '/':
-                buffer.append("&#47;");
-                break;
-            default:
-                buffer.append(ch);
+            case '&' -> buffer.append("&amp;");
+            case '<' -> buffer.append("&lt;");
+            case '>' -> buffer.append("&gt;");
+            case '"' -> buffer.append("&quot;");
+            case '\'' -> buffer.append("&#39;");
+            case '/' -> buffer.append("&#47;");
+            default -> buffer.append(ch);
             }
         }
         return buffer.toString();
@@ -239,28 +231,18 @@ public class Text {
                 buffer.append(ch);
             } else {
                 switch (ch) {
-                case '\b':
-                    buffer.append("\\b");
-                    break;
-                case '\f':
-                    buffer.append("\\f");
-                    break;
-                case '\n':
-                    buffer.append("\\n");
-                    break;
-                case '\r':
-                    buffer.append("\\r");
-                    break;
-                case '\t':
-                    buffer.append("\\t");
-                    break;
-                default:
+                case '\b' -> buffer.append("\\b");
+                case '\f' -> buffer.append("\\f");
+                case '\n' -> buffer.append("\\n");
+                case '\r' -> buffer.append("\\r");
+                case '\t' -> buffer.append("\\t");
+                default -> {
                     buffer.append("\\u");
                     buffer.append(HEX_DIGITS[ch >> 12 & 0xF]);
                     buffer.append(HEX_DIGITS[ch >> 8 & 0xF]);
                     buffer.append(HEX_DIGITS[ch >> 4 & 0xF]);
                     buffer.append(HEX_DIGITS[ch & 0xF]);
-                    break;
+                }
                 }
             }
         }
@@ -293,38 +275,35 @@ public class Text {
                 break;
             case 1: // Process escape
                 switch (ch) {
-                case '\\':
-                case '"':
+                case '\\', '"' -> {
                     buffer.append(ch);
                     state = 0;
-                    break;
-                case 'b':
+                }
+                case 'b' -> {
                     buffer.append('\b');
                     state = 0;
-                    break;
-                case 'f':
+                }
+                case 'f' -> {
                     buffer.append('\f');
                     state = 0;
-                    break;
-                case 'n':
+                }
+                case 'n' -> {
                     buffer.append('\n');
                     state = 0;
-                    break;
-                case 'r':
+                }
+                case 'r' -> {
                     buffer.append('\r');
                     state = 0;
-                    break;
-                case 't':
+                }
+                case 't' -> {
                     buffer.append('\t');
                     state = 0;
-                    break;
-                case 'u':
+                }
+                case 'u' -> {
                     value = 0;
                     state = 2;
-                    break;
-                default:
-                    state = 0; // In case bogus input was provided
-                    break;
+                }
+                default -> state = 0; // In case bogus input was provided
                 }
                 break;
             case 2: // Process 4-byte escape, part 1

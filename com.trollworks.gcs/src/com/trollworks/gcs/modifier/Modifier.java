@@ -16,9 +16,9 @@ import com.trollworks.gcs.datafile.LoadState;
 import com.trollworks.gcs.menu.item.HasSourceReference;
 import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.utility.I18n;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.util.Map;
@@ -65,24 +65,6 @@ public abstract class Modifier extends ListRow implements Comparable<Modifier>, 
     }
 
     @Override
-    protected void loadAttributes(XMLReader reader, LoadState state) {
-        super.loadAttributes(reader, state);
-        mEnabled = !reader.hasAttribute(ATTRIBUTE_ENABLED) || reader.isAttributeSet(ATTRIBUTE_ENABLED);
-    }
-
-    @Override
-    protected void loadSubElement(XMLReader reader, LoadState state) throws IOException {
-        String name = reader.getName();
-        if (TAG_NAME.equals(name)) {
-            mName = reader.readText().replace("\n", " ");
-        } else if (TAG_REFERENCE.equals(name)) {
-            mReference = reader.readText().replace("\n", " ");
-        } else {
-            super.loadSubElement(reader, state);
-        }
-    }
-
-    @Override
     protected void loadSelf(JsonMap m, LoadState state) throws IOException {
         mEnabled = !m.getBoolean(KEY_DISABLED);
         mName = m.getString(TAG_NAME);
@@ -90,7 +72,7 @@ public abstract class Modifier extends ListRow implements Comparable<Modifier>, 
     }
 
     @Override
-    protected void saveSelf(JsonWriter w, boolean forUndo) throws IOException {
+    protected void saveSelf(JsonWriter w, SaveType saveType) throws IOException {
         w.keyValueNot(KEY_DISABLED, !mEnabled, false);
         w.keyValue(TAG_NAME, mName);
         w.keyValueNot(TAG_REFERENCE, mReference, "");

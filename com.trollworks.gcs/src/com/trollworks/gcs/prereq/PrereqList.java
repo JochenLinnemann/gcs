@@ -23,8 +23,6 @@ import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Numbers;
 import com.trollworks.gcs.utility.units.WeightUnits;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -40,7 +38,7 @@ public class PrereqList extends Prereq {
     public static final  String          TAG_ROOT      = "prereq_list";
     private static final String          TAG_WHEN_TL   = "when_tl";
     private static final String          ATTRIBUTE_ALL = "all";
-    private static final String          KEY_PREREQS = "prereqs";
+    private static final String          KEY_PREREQS   = "prereqs";
     private              boolean         mAll;
     private              IntegerCriteria mWhenTLCriteria;
     private              List<Prereq>    mPrereqs;
@@ -62,8 +60,8 @@ public class PrereqList extends Prereq {
     /**
      * Loads a prerequisite list.
      *
-     * @param parent The owning prerequisite list, if any.
-     * @param m The {@link JsonMap} to load from.
+     * @param parent         The owning prerequisite list, if any.
+     * @param m              The {@link JsonMap} to load from.
      * @param defWeightUnits The default weight units to use.
      */
     public PrereqList(PrereqList parent, WeightUnits defWeightUnits, JsonMap m) throws IOException {
@@ -71,42 +69,6 @@ public class PrereqList extends Prereq {
         LoadState state = new LoadState();
         state.mDefWeightUnits = defWeightUnits;
         loadSelf(m, state);
-    }
-
-    /**
-     * Loads a prerequisite list.
-     *
-     * @param parent The owning prerequisite list, if any.
-     * @param reader The XML reader to load from.
-     */
-    public PrereqList(PrereqList parent, WeightUnits defWeightUnits, XMLReader reader) throws IOException {
-        this(parent, true);
-        String marker = reader.getMarker();
-        mAll = reader.isAttributeSet(ATTRIBUTE_ALL);
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                if (TAG_WHEN_TL.equals(name)) {
-                    mWhenTLCriteria.load(reader);
-                } else if (TAG_ROOT.equals(name)) {
-                    mPrereqs.add(new PrereqList(this, defWeightUnits, reader));
-                } else if (AdvantagePrereq.TAG_ROOT.equals(name)) {
-                    mPrereqs.add(new AdvantagePrereq(this, reader));
-                } else if (AttributePrereq.TAG_ROOT.equals(name)) {
-                    mPrereqs.add(new AttributePrereq(this, reader));
-                } else if (ContainedWeightPrereq.TAG_ROOT.equals(name)) {
-                    mPrereqs.add(new ContainedWeightPrereq(this, defWeightUnits, reader));
-                } else if (ContainedQuantityPrereq.TAG_ROOT.equals(name)) {
-                    mPrereqs.add(new ContainedQuantityPrereq(this, reader));
-                } else if (SkillPrereq.TAG_ROOT.equals(name)) {
-                    mPrereqs.add(new SkillPrereq(this, reader));
-                } else if (SpellPrereq.TAG_ROOT.equals(name)) {
-                    mPrereqs.add(new SpellPrereq(this, reader));
-                } else {
-                    reader.skipTag(name);
-                }
-            }
-        } while (reader.withinMarker(marker));
     }
 
     /**
@@ -148,43 +110,24 @@ public class PrereqList extends Prereq {
     }
 
     @Override
-    public String getXMLTag() {
-        return TAG_ROOT;
-    }
-
-    @Override
     public void loadSelf(JsonMap m, LoadState state) throws IOException {
         mAll = m.getBoolean(ATTRIBUTE_ALL);
         if (m.has(TAG_WHEN_TL)) {
             mWhenTLCriteria.load(m.getMap(TAG_WHEN_TL));
         }
         if (m.has(KEY_PREREQS)) {
-            JsonArray a = m.getArray(KEY_PREREQS);
-            int count = a.size();
+            JsonArray a     = m.getArray(KEY_PREREQS);
+            int       count = a.size();
             for (int i = 0; i < count; i++) {
                 JsonMap m1 = a.getMap(i);
                 switch (m1.getString(DataFile.KEY_TYPE)) {
-                case TAG_ROOT:
-                    mPrereqs.add(new PrereqList(this, state.mDefWeightUnits, m1));
-                    break;
-                case AdvantagePrereq.TAG_ROOT:
-                    mPrereqs.add(new AdvantagePrereq(this, m1));
-                    break;
-                case AttributePrereq.TAG_ROOT:
-                    mPrereqs.add(new AttributePrereq(this, m1));
-                    break;
-                case ContainedWeightPrereq.TAG_ROOT:
-                    mPrereqs.add(new ContainedWeightPrereq(this, state.mDefWeightUnits, m1));
-                    break;
-                case ContainedQuantityPrereq.TAG_ROOT:
-                    mPrereqs.add(new ContainedQuantityPrereq(this, m1));
-                    break;
-                case SkillPrereq.TAG_ROOT:
-                    mPrereqs.add(new SkillPrereq(this, m1));
-                    break;
-                case SpellPrereq.TAG_ROOT:
-                    mPrereqs.add(new SpellPrereq(this, m1));
-                    break;
+                case TAG_ROOT -> mPrereqs.add(new PrereqList(this, state.mDefWeightUnits, m1));
+                case AdvantagePrereq.TAG_ROOT -> mPrereqs.add(new AdvantagePrereq(this, m1));
+                case AttributePrereq.TAG_ROOT -> mPrereqs.add(new AttributePrereq(this, m1));
+                case ContainedWeightPrereq.TAG_ROOT -> mPrereqs.add(new ContainedWeightPrereq(this, state.mDefWeightUnits, m1));
+                case ContainedQuantityPrereq.TAG_ROOT -> mPrereqs.add(new ContainedQuantityPrereq(this, m1));
+                case SkillPrereq.TAG_ROOT -> mPrereqs.add(new SkillPrereq(this, m1));
+                case SpellPrereq.TAG_ROOT -> mPrereqs.add(new SpellPrereq(this, m1));
                 }
             }
         }
@@ -304,7 +247,7 @@ public class PrereqList extends Prereq {
                 satisfiedCount++;
             }
         }
-        if (localBuilder != null && localBuilder.length() > 0) {
+        if (localBuilder != null && !localBuilder.isEmpty()) {
             localBuilder.insert(0, "<ul>");
             localBuilder.append("</ul>");
         }
@@ -312,7 +255,7 @@ public class PrereqList extends Prereq {
         boolean satisfied = satisfiedCount == total || !requiresAll && satisfiedCount > 0;
         if (!satisfied && localBuilder != null) {
             builder.append(MessageFormat.format(requiresAll ? I18n.Text("{0}Requires all of:\n") : I18n.Text("{0}Requires at least one of:\n"), prefix));
-            builder.append(localBuilder.toString());
+            builder.append(localBuilder);
         }
         return satisfied;
     }

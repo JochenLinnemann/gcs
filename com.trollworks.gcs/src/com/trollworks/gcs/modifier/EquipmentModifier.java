@@ -21,18 +21,17 @@ import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.ui.widget.outline.RowEditor;
 import com.trollworks.gcs.utility.Fixed6;
 import com.trollworks.gcs.utility.Log;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.notification.Notifier;
 import com.trollworks.gcs.utility.text.Enums;
 import com.trollworks.gcs.utility.units.WeightValue;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 
 public class EquipmentModifier extends Modifier {
     private static final int                         CURRENT_JSON_VERSION   = 1;
-    private static final int                         CURRENT_VERSION        = 2;
     /** The root tag. */
     public static final  String                      TAG_MODIFIER           = "eqp_modifier";
     /** The root tag for containers. */
@@ -97,18 +96,6 @@ public class EquipmentModifier extends Modifier {
     /**
      * Creates a new {@link EquipmentModifier}.
      *
-     * @param file   The {@link DataFile} to use.
-     * @param reader The {@link XMLReader} to use.
-     * @param state  The {@link LoadState} to use.
-     */
-    public EquipmentModifier(DataFile file, XMLReader reader, LoadState state) throws IOException {
-        this(file, TAG_MODIFIER_CONTAINER.equals(reader.getName()));
-        load(reader, state);
-    }
-
-    /**
-     * Creates a new {@link EquipmentModifier}.
-     *
      * @param file        The {@link DataFile} to use.
      * @param isContainer Whether or not this row allows children.
      */
@@ -122,7 +109,7 @@ public class EquipmentModifier extends Modifier {
     }
 
     private String getDefaultWeightAmount() {
-        return "+" + new WeightValue(Fixed6.ZERO, getDataFile().defaultWeightUnits()).toString();
+        return "+" + new WeightValue(Fixed6.ZERO, getDataFile().defaultWeightUnits());
     }
 
     @Override
@@ -242,16 +229,6 @@ public class EquipmentModifier extends Modifier {
     }
 
     @Override
-    public String getXMLTagName() {
-        return canHaveChildren() ? TAG_MODIFIER_CONTAINER : TAG_MODIFIER;
-    }
-
-    @Override
-    public int getXMLTagVersion() {
-        return CURRENT_VERSION;
-    }
-
-    @Override
     public Object getData(Column column) {
         return EquipmentModifierColumnID.values()[column.getID()].getData(this);
     }
@@ -269,28 +246,6 @@ public class EquipmentModifier extends Modifier {
         mWeightType = EquipmentModifierWeightType.TO_ORIGINAL_WEIGHT;
         mWeightAmount = getDefaultWeightAmount();
         mTechLevel = "";
-    }
-
-    @Override
-    protected void loadSubElement(XMLReader reader, LoadState state) throws IOException {
-        String name = reader.getName();
-        if (!state.mForUndo && (TAG_MODIFIER.equals(name) || TAG_MODIFIER_CONTAINER.equals(name))) {
-            addChild(new EquipmentModifier(mDataFile, reader, state));
-        } else if (!canHaveChildren()) {
-            if (TAG_COST_ADJ.equals(name)) {
-                mCostType = Enums.extract(reader.getAttribute(ATTRIBUTE_COST_TYPE), EquipmentModifierCostType.values(), EquipmentModifierCostType.TO_ORIGINAL_COST);
-                mCostAmount = mCostType.format(reader.readText(), false);
-            } else if (TAG_WEIGHT_ADJ.equals(name)) {
-                mWeightType = Enums.extract(reader.getAttribute(ATTRIBUTE_WEIGHT_TYPE), EquipmentModifierWeightType.values(), EquipmentModifierWeightType.TO_ORIGINAL_WEIGHT);
-                mWeightAmount = mWeightType.format(reader.readText(), getDataFile().defaultWeightUnits(), false);
-            } else if (TAG_TECH_LEVEL.equals(name)) {
-                mTechLevel = reader.readText().replace("\n", " ");
-            } else {
-                super.loadSubElement(reader, state);
-            }
-        } else {
-            super.loadSubElement(reader, state);
-        }
     }
 
     @Override
@@ -322,8 +277,8 @@ public class EquipmentModifier extends Modifier {
     }
 
     @Override
-    protected void saveSelf(JsonWriter w, boolean forUndo) throws IOException {
-        super.saveSelf(w, forUndo);
+    protected void saveSelf(JsonWriter w, SaveType saveType) throws IOException {
+        super.saveSelf(w, saveType);
         if (!canHaveChildren()) {
             if (mCostType != EquipmentModifierCostType.TO_ORIGINAL_COST || !mCostAmount.equals(DEFAULT_COST_AMOUNT)) {
                 w.keyValue(ATTRIBUTE_COST_TYPE, Enums.toId(mCostType));
@@ -341,7 +296,7 @@ public class EquipmentModifier extends Modifier {
     public String getFullDescription() {
         StringBuilder builder = new StringBuilder();
         String        modNote = getNotes();
-        builder.append(toString());
+        builder.append(this);
         if (!modNote.isEmpty()) {
             builder.append(" (");
             builder.append(modNote);
@@ -387,5 +342,10 @@ public class EquipmentModifier extends Modifier {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String getToolTip(Column column) {
+        return EquipmentModifierColumnID.values()[column.getID()].getToolTip(this);
     }
 }

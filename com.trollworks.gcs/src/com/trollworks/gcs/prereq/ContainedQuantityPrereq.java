@@ -21,8 +21,6 @@ import com.trollworks.gcs.ui.widget.outline.Row;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
-import com.trollworks.gcs.utility.text.Enums;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -30,9 +28,8 @@ import java.text.MessageFormat;
 /** An equipment contained quantity prerequisite. */
 public class ContainedQuantityPrereq extends HasPrereq {
     /** The XML tag for this class. */
-    public static final  String          TAG_ROOT          = "contained_quantity_prereq";
-    private static final String          ATTRIBUTE_COMPARE = "compare";
-    private static final String          KEY_QUALIFIER     = "qualifier";
+    public static final  String          TAG_ROOT      = "contained_quantity_prereq";
+    private static final String          KEY_QUALIFIER = "qualifier";
     private              IntegerCriteria mQuantityCompare;
 
     /**
@@ -54,19 +51,6 @@ public class ContainedQuantityPrereq extends HasPrereq {
     public ContainedQuantityPrereq(PrereqList parent, JsonMap m) throws IOException {
         this(parent);
         loadSelf(m, new LoadState());
-    }
-
-    /**
-     * Loads a prerequisite.
-     *
-     * @param parent The owning prerequisite list, if any.
-     * @param reader The XML reader to load from.
-     */
-    public ContainedQuantityPrereq(PrereqList parent, XMLReader reader) throws IOException {
-        this(parent);
-        loadHasAttribute(reader);
-        mQuantityCompare.setType(Enums.extract(reader.getAttribute(ATTRIBUTE_COMPARE), NumericCompareType.values(), NumericCompareType.AT_LEAST));
-        mQuantityCompare.setQualifier(reader.readInteger(0));
     }
 
     /**
@@ -92,17 +76,7 @@ public class ContainedQuantityPrereq extends HasPrereq {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
     public String getJSONTypeName() {
-        return TAG_ROOT;
-    }
-
-    @Override
-    public String getXMLTag() {
         return TAG_ROOT;
     }
 

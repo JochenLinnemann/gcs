@@ -24,10 +24,10 @@ import com.trollworks.gcs.ui.widget.outline.Row;
 import com.trollworks.gcs.ui.widget.outline.RowEditor;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.Log;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Numbers;
-import com.trollworks.gcs.utility.xml.XMLReader;
 import com.trollworks.gcs.weapon.MeleeWeaponStats;
 import com.trollworks.gcs.weapon.RangedWeaponStats;
 import com.trollworks.gcs.weapon.WeaponStats;
@@ -47,7 +47,6 @@ import javax.swing.ListSelectionModel;
 /** A GURPS Skill. */
 public class Skill extends ListRow implements HasSourceReference {
     private static final int               CURRENT_JSON_VERSION     = 1;
-    private static final int               CURRENT_VERSION          = 4;
     /** The XML tag used for items. */
     public static final  String            TAG_SKILL                = "skill";
     /** The XML tag used for containers. */
@@ -192,18 +191,6 @@ public class Skill extends ListRow implements HasSourceReference {
         load(m, state);
     }
 
-    /**
-     * Loads a skill and associates it with the specified data file.
-     *
-     * @param dataFile The data file to associate it with.
-     * @param reader   The XML reader to load from.
-     * @param state    The {@link LoadState} to use.
-     */
-    public Skill(DataFile dataFile, XMLReader reader, LoadState state) throws IOException {
-        this(dataFile, TAG_SKILL_CONTAINER.equals(reader.getName()));
-        load(reader, state);
-    }
-
     @Override
     public boolean isEquivalentTo(Object obj) {
         if (obj == this) {
@@ -255,16 +242,6 @@ public class Skill extends ListRow implements HasSourceReference {
     }
 
     @Override
-    public String getXMLTagName() {
-        return canHaveChildren() ? TAG_SKILL_CONTAINER : TAG_SKILL;
-    }
-
-    @Override
-    public int getXMLTagVersion() {
-        return CURRENT_VERSION;
-    }
-
-    @Override
     public String getRowType() {
         return I18n.Text("Skill");
     }
@@ -281,48 +258,6 @@ public class Skill extends ListRow implements HasSourceReference {
         mReference = "";
         mEncumbrancePenaltyMultiplier = 0;
         mWeapons = new ArrayList<>();
-    }
-
-    @Override
-    protected void loadSubElement(XMLReader reader, LoadState state) throws IOException {
-        String name = reader.getName();
-        if (TAG_NAME.equals(name)) {
-            mName = reader.readText().replace("\n", " ");
-        } else if (TAG_SPECIALIZATION.equals(name)) {
-            mSpecialization = reader.readText().replace("\n", " ");
-        } else if (TAG_TECH_LEVEL.equals(name)) {
-            mTechLevel = reader.readText().replace("\n", " ");
-            if (!mTechLevel.isEmpty()) {
-                DataFile dataFile = getDataFile();
-                if (dataFile instanceof ListFile) {
-                    mTechLevel = "";
-                }
-            }
-        } else if (TAG_REFERENCE.equals(name)) {
-            mReference = reader.readText().replace("\n", " ");
-        } else if (!state.mForUndo && (TAG_SKILL.equals(name) || TAG_SKILL_CONTAINER.equals(name))) {
-            addChild(new Skill(mDataFile, reader, state));
-        } else if (!state.mForUndo && Technique.TAG_TECHNIQUE.equals(name)) {
-            addChild(new Technique(mDataFile, reader, state));
-        } else if (!canHaveChildren()) {
-            if (TAG_DIFFICULTY.equals(name)) {
-                setDifficultyFromText(reader.readText().replace("\n", " "));
-            } else if (TAG_POINTS.equals(name)) {
-                mPoints = reader.readInteger(1);
-            } else if (TAG_ENCUMBRANCE_PENALTY.equals(name)) {
-                mEncumbrancePenaltyMultiplier = Math.min(Math.max(reader.readInteger(0), 0), 9);
-            } else if (TAG_DEFAULTED_FROM.equals(name)) {
-                mDefaultedFrom = new SkillDefault(reader, true);
-            } else if (MeleeWeaponStats.TAG_ROOT.equals(name)) {
-                mWeapons.add(new MeleeWeaponStats(this, reader));
-            } else if (RangedWeaponStats.TAG_ROOT.equals(name)) {
-                mWeapons.add(new RangedWeaponStats(this, reader));
-            } else {
-                super.loadSubElement(reader, state);
-            }
-        } else {
-            super.loadSubElement(reader, state);
-        }
     }
 
     @Override
@@ -364,7 +299,7 @@ public class Skill extends ListRow implements HasSourceReference {
     }
 
     @Override
-    protected void saveSelf(JsonWriter w, boolean forUndo) throws IOException {
+    protected void saveSelf(JsonWriter w, SaveType saveType) throws IOException {
         w.keyValue(TAG_NAME, mName);
         w.keyValueNot(TAG_REFERENCE, mReference, "");
         if (!canHaveChildren()) {
@@ -488,7 +423,7 @@ public class Skill extends ListRow implements HasSourceReference {
             String        name    = getName();
             character.getSkillPointComparedIntegerBonusFor(ID_POINTS + "*", name, getSpecialization(), getCategories(), tooltip);
             character.getIntegerBonusFor(ID_POINTS + "/" + name.toLowerCase(), tooltip);
-            if (tooltip.length() > 0) {
+            if (!tooltip.isEmpty()) {
                 return I18n.Text("Includes modifiers from") + tooltip;
             }
         }
@@ -729,7 +664,7 @@ public class Skill extends ListRow implements HasSourceReference {
         StringBuilder buffer = new StringBuilder(super.getModifierNotes());
         Skill         skill  = getDefaultSkill();
         if (skill != null && mDefaultedFrom != null) {
-            if (buffer.length() > 0) {
+            if (!buffer.isEmpty()) {
                 buffer.append(' ');
             }
             buffer.append(I18n.Text("Default: "));
@@ -800,7 +735,7 @@ public class Skill extends ListRow implements HasSourceReference {
                     bonus = character.getIntegerBonusFor(ID_NAME + "/" + name.toLowerCase(), toolTip);
                     level += bonus;
                     relativeLevel += bonus;
-                    bonus = character.getEncumbranceLevel().getEncumbrancePenalty() * encPenaltyMult;
+                    bonus = character.getEncumbranceLevel(true).getEncumbrancePenalty() * encPenaltyMult;
                     level += bonus;
                     if (bonus != 0) {
                         toolTip.append(String.format(I18n.Text("\nEncumbrance [%d]"), Integer.valueOf(bonus)));
@@ -811,20 +746,11 @@ public class Skill extends ListRow implements HasSourceReference {
         return new SkillLevel(level, relativeLevel, toolTip);
     }
 
-    /**
-     * Tries to switch defaults with its current default keeping skill level, by adding and freeing
-     * points as necessary. Freed points are kept in former default skill, added points are taken
-     * from unspent points.
-     *
-     * @return extra points spent to keep minimum levels.
-     */
-    public int swapDefault() {
-        int   extraPointsSpent = 0;
-        Skill baseSkill        = getDefaultSkill();
+    /** Swaps the default to an alternate, if possible. */
+    public void swapDefault() {
+        Skill baseSkill = getDefaultSkill();
         if (baseSkill != null) {
-            // Find alternative default
             mDefaultedFrom = getBestDefaultWithPoints(mDefaultedFrom);
-
             startNotify();
             baseSkill.updateLevel(true);
             updateLevel(true);
@@ -832,7 +758,6 @@ public class Skill extends ListRow implements HasSourceReference {
             baseSkill.notify(ID_NAME, baseSkill);
             endNotify();
         }
-        return extraPointsSpent;
     }
 
     /**
@@ -918,7 +843,7 @@ public class Skill extends ListRow implements HasSourceReference {
                     // For skill-based defaults, prune out any that already use a default that we
                     // are involved with
                     if (!skillDefault.equals(excludedDefault) && !isInDefaultChain(this, skillDefault, new HashSet<>())) {
-                        int level = skillDefault.getType().getSkillLevel(character, skillDefault, true, excludes);
+                        int level = skillDefault.getType().getSkillLevel(character, skillDefault, true, excludes, !(this instanceof Technique));
                         if (skillDefault.getType().isSkillBased()) {
                             String name  = skillDefault.getName();
                             Skill  skill = character.getBestSkillNamed(name, skillDefault.getSpecialization(), true, excludes);

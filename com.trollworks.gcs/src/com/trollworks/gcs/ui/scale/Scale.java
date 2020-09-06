@@ -64,7 +64,7 @@ public class Scale {
         if (mScale == 1) {
             return font;
         }
-        return font.deriveFont((float) (font.getSize() * mScale));
+        return font.deriveFont((float) Math.floor(font.getSize() * mScale));
     }
 
     /**
@@ -75,7 +75,7 @@ public class Scale {
         if (mScale == 1) {
             return insets;
         }
-        return new Insets((int) (insets.top * mScale), (int) (insets.left * mScale), (int) (insets.bottom * mScale), (int) (insets.right * mScale));
+        return new Insets(scale(insets.top), scale(insets.left), scale(insets.bottom), scale(insets.right));
     }
 
     /**
@@ -89,7 +89,7 @@ public class Scale {
         int      length = values.length;
         double[] scaled = new double[length];
         for (int i = 0; i < length; i++) {
-            scaled[i] = values[i] * mScale;
+            scaled[i] = scale(values[i]);
         }
         return scaled;
     }
@@ -100,14 +100,6 @@ public class Scale {
      */
     public int scale(int value) {
         return (int) (value * mScale);
-    }
-
-    /**
-     * @param value The value to scale.
-     * @return The scaled value.
-     */
-    public float scale(float value) {
-        return (float) (value * mScale);
     }
 
     /**

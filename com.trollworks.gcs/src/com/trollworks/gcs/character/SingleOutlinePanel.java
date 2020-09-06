@@ -13,11 +13,8 @@ package com.trollworks.gcs.character;
 
 import com.trollworks.gcs.page.DropPanel;
 import com.trollworks.gcs.ui.scale.Scale;
-import com.trollworks.gcs.ui.widget.outline.Column;
-import com.trollworks.gcs.ui.widget.outline.ColumnUtils;
 import com.trollworks.gcs.ui.widget.outline.Outline;
 import com.trollworks.gcs.ui.widget.outline.OutlineHeader;
-import com.trollworks.gcs.ui.widget.outline.OutlineModel;
 import com.trollworks.gcs.ui.widget.outline.OutlineProxy;
 
 import java.awt.Component;
@@ -44,7 +41,7 @@ public class SingleOutlinePanel extends DropPanel implements LayoutManager2 {
         super(null);
         mOutline = useProxy ? new OutlineProxy(outline) : outline;
         mHeader = mOutline.getHeaderPanel();
-        CharacterSheet.prepOutline(mOutline);
+        CollectedOutlines.prepOutline(mOutline);
         add(mHeader);
         add(mOutline);
         setBorder(getTitledBorder());
@@ -62,22 +59,6 @@ public class SingleOutlinePanel extends DropPanel implements LayoutManager2 {
         mOutline.setLastRowToDisplay(last);
     }
 
-    /** @return The preferred width. */
-    public int getPreferredWidth() {
-        Insets       insets       = getInsets();
-        int          width        = insets.left + insets.right;
-        OutlineModel outlineModel = mOutline.getModel();
-        int          count        = outlineModel.getColumnCount();
-        if (mOutline.shouldDrawColumnDividers()) {
-            width += (count - 1) * Scale.get(this).scale(1);
-        }
-        for (int i = 0; i < count; i++) {
-            Column column = outlineModel.getColumnAtIndex(i);
-            width += column.getPreferredWidth(mOutline);
-        }
-        return width;
-    }
-
     @Override
     public void layoutContainer(Container parent) {
         Insets    insets = getInsets();
@@ -87,7 +68,6 @@ public class SingleOutlinePanel extends DropPanel implements LayoutManager2 {
         bounds.y += height;
         bounds.height -= height;
         mOutline.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-        ColumnUtils.pack(mOutline, bounds.width);
     }
 
     @Override

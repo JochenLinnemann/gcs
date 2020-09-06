@@ -14,6 +14,7 @@ package com.trollworks.gcs.ui.widget.outline;
 import com.trollworks.gcs.character.GURPSCharacter;
 import com.trollworks.gcs.datafile.DataFile;
 import com.trollworks.gcs.datafile.LoadState;
+import com.trollworks.gcs.datafile.Updatable;
 import com.trollworks.gcs.feature.AttributeBonus;
 import com.trollworks.gcs.feature.ContainedWeightReduction;
 import com.trollworks.gcs.feature.CostReduction;
@@ -32,35 +33,45 @@ import com.trollworks.gcs.template.Template;
 import com.trollworks.gcs.ui.RetinaIcon;
 import com.trollworks.gcs.utility.FilteredList;
 import com.trollworks.gcs.utility.Log;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.VersionException;
 import com.trollworks.gcs.utility.json.JsonArray;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 /** A common row super-class for the model. */
-public abstract class ListRow extends Row {
-    private static final String             ATTRIBUTE_OPEN = "open";
-    private static final String             TAG_NOTES      = "notes";
-    private static final String             TAG_CATEGORIES = "categories";
-    private static final String             TAG_CATEGORY   = "category";
-    private static final String             KEY_FEATURES   = "features";
-    private static final String             KEY_DEFAULTS   = "defaults";
-    private static final String             KEY_CHILDREN   = "children";
-    private static final String             KEY_PREREQS    = "prereqs";
+public abstract class ListRow extends Row implements Updatable {
+    private static final String             ATTRIBUTE_OPEN    = "open";
+    private static final String             TAG_NOTES         = "notes";
+    private static final String             TAG_CATEGORIES    = "categories";
+    private static final String             KEY_ID            = "id";
+    private static final String             KEY_BASED_ON_ID   = "based_on_id";
+    private static final String             KEY_BASED_ON_HASH = "based_on_hash";
+    private static final String             KEY_FEATURES      = "features";
+    private static final String             KEY_DEFAULTS      = "defaults";
+    private static final String             KEY_CHILDREN      = "children";
+    private static final String             KEY_PREREQS       = "prereqs";
     /** The data file the row is associated with. */
     protected            DataFile           mDataFile;
+    private              UUID               mID;
+    private              UUID               mBasedOnID;
+    private              String             mBasedOnHash;
     private              List<Feature>      mFeatures;
     private              PrereqList         mPrereqList;
     private              List<SkillDefault> mDefaults;
@@ -69,13 +80,13 @@ public abstract class ListRow extends Row {
     private              String             mNotes;
     private              TreeSet<String>    mCategories;
 
-    public static void saveList(JsonWriter w, String key, List<?> list, boolean forUndo) throws IOException {
+    public static void saveList(JsonWriter w, String key, List<?> list, SaveType saveType) throws IOException {
         FilteredList<ListRow> rows = new FilteredList<>(list, ListRow.class, true);
         if (!rows.isEmpty()) {
             w.key(key);
             w.startArray();
             for (ListRow row : rows) {
-                row.save(w, forUndo);
+                row.save(w, saveType);
             }
             w.endArray();
         }
@@ -151,6 +162,7 @@ public abstract class ListRow extends Row {
         setCanHaveChildren(isContainer);
         setOpen(isContainer);
         mDataFile = dataFile;
+        mID = UUID.randomUUID();
         mFeatures = new ArrayList<>();
         mPrereqList = new PrereqList(null, true);
         mDefaults = new ArrayList<>();
@@ -169,7 +181,6 @@ public abstract class ListRow extends Row {
         this(dataFile, rowToClone.canHaveChildren());
         setOpen(rowToClone.isOpen());
         mNotes = rowToClone.mNotes;
-
         for (Feature feature : rowToClone.mFeatures) {
             mFeatures.add(feature.cloneFeature());
         }
@@ -179,6 +190,24 @@ public abstract class ListRow extends Row {
             mDefaults.add(new SkillDefault(skillDefault));
         }
         mCategories = new TreeSet<>(rowToClone.mCategories);
+        try {
+            MessageDigest         digest = MessageDigest.getInstance("SHA3-256");
+            ByteArrayOutputStream baos   = new ByteArrayOutputStream();
+            try (JsonWriter w = new JsonWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8), "")) {
+                rowToClone.save(w, SaveType.HASH);
+            }
+            mBasedOnHash = Base64.getEncoder().withoutPadding().encodeToString(digest.digest(baos.toByteArray()));
+            mBasedOnID = rowToClone.mID;
+        } catch (Exception exception) {
+            mBasedOnID = null;
+            mBasedOnHash = null;
+            Log.warn(exception);
+        }
+    }
+
+    @Override
+    public UUID getID() {
+        return mID;
     }
 
     /**
@@ -236,12 +265,6 @@ public abstract class ListRow extends Row {
     /** @return The type name to use for this data. */
     public abstract String getJSONTypeName();
 
-    /** @return The XML root container tag name for this particular row. */
-    public abstract String getXMLTagName();
-
-    /** @return The most recent version of the XML tag this object knows how to load. */
-    public abstract int getXMLTagVersion();
-
     /** @return The type of row. */
     public abstract String getRowType();
 
@@ -275,6 +298,22 @@ public abstract class ListRow extends Row {
      * @param state The {@link LoadState} to use.
      */
     public final void load(JsonMap m, LoadState state) throws IOException {
+        if (m.has(KEY_ID)) {
+            try {
+                mID = UUID.fromString(m.getString(KEY_ID));
+            } catch (Exception exception) {
+                mID = UUID.randomUUID();
+            }
+        }
+        if (m.has(KEY_BASED_ON_ID)) {
+            try {
+                mBasedOnID = UUID.fromString(m.getString(KEY_BASED_ON_ID));
+                mBasedOnHash = m.getString(KEY_BASED_ON_HASH);
+            } catch (Exception exception) {
+                mBasedOnID = null;
+                mBasedOnHash = null;
+            }
+        }
         state.mDataItemVersion = m.getInt(LoadState.ATTRIBUTE_VERSION);
         if (state.mDataItemVersion > getJSONVersion()) {
             throw VersionException.createTooNew();
@@ -301,39 +340,17 @@ public abstract class ListRow extends Row {
                 JsonMap m1   = a.getMap(i);
                 String  type = m1.getString(DataFile.KEY_TYPE);
                 switch (type) {
-                case AttributeBonus.TAG_ROOT:
-                    mFeatures.add(new AttributeBonus(m1));
-                    break;
-                case DRBonus.TAG_ROOT:
-                    mFeatures.add(new DRBonus(m1));
-                    break;
-                case ReactionBonus.TAG_ROOT:
-                    mFeatures.add(new ReactionBonus(m1));
-                    break;
-                case SkillBonus.TAG_ROOT:
-                    mFeatures.add(new SkillBonus(m1));
-                    break;
-                case SkillPointBonus.TAG_ROOT:
-                    mFeatures.add(new SkillPointBonus(m1));
-                    break;
-                case SpellBonus.TAG_ROOT:
-                    mFeatures.add(new SpellBonus(m1));
-                    break;
-                case SpellPointBonus.TAG_ROOT:
-                    mFeatures.add(new SpellPointBonus(m1));
-                    break;
-                case WeaponBonus.TAG_ROOT:
-                    mFeatures.add(new WeaponBonus(m1));
-                    break;
-                case CostReduction.TAG_ROOT:
-                    mFeatures.add(new CostReduction(m1));
-                    break;
-                case ContainedWeightReduction.TAG_ROOT:
-                    mFeatures.add(new ContainedWeightReduction(m1));
-                    break;
-                default:
-                    Log.warn("unknown feature type: " + type);
-                    break;
+                case AttributeBonus.TAG_ROOT -> mFeatures.add(new AttributeBonus(m1));
+                case DRBonus.TAG_ROOT -> mFeatures.add(new DRBonus(m1));
+                case ReactionBonus.TAG_ROOT -> mFeatures.add(new ReactionBonus(m1));
+                case SkillBonus.TAG_ROOT -> mFeatures.add(new SkillBonus(m1));
+                case SkillPointBonus.TAG_ROOT -> mFeatures.add(new SkillPointBonus(m1));
+                case SpellBonus.TAG_ROOT -> mFeatures.add(new SpellBonus(m1));
+                case SpellPointBonus.TAG_ROOT -> mFeatures.add(new SpellPointBonus(m1));
+                case WeaponBonus.TAG_ROOT -> mFeatures.add(new WeaponBonus(m1));
+                case CostReduction.TAG_ROOT -> mFeatures.add(new CostReduction(m1));
+                case ContainedWeightReduction.TAG_ROOT -> mFeatures.add(new ContainedWeightReduction(m1));
+                default -> Log.warn("unknown feature type: " + type);
                 }
             }
         }
@@ -363,68 +380,6 @@ public abstract class ListRow extends Row {
     protected abstract void loadChild(JsonMap m, LoadState state) throws IOException;
 
     /**
-     * Loads this row's contents.
-     *
-     * @param reader The XML reader to load from.
-     * @param state  The {@link LoadState} to use.
-     */
-    public final void load(XMLReader reader, LoadState state) throws IOException {
-        String marker = reader.getMarker();
-        state.mDataItemVersion = reader.getAttributeAsInteger(LoadState.ATTRIBUTE_VERSION, 0);
-        if (state.mDataItemVersion > getXMLTagVersion()) {
-            throw VersionException.createTooNew();
-        }
-        boolean isContainer = reader.getName().endsWith("_container");
-        setCanHaveChildren(isContainer);
-        setOpen(isContainer);
-        prepareForLoad(state);
-        loadAttributes(reader, state);
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                if (AttributeBonus.TAG_ROOT.equals(name)) {
-                    mFeatures.add(new AttributeBonus(reader));
-                } else if (DRBonus.TAG_ROOT.equals(name)) {
-                    mFeatures.add(new DRBonus(reader));
-                } else if (ReactionBonus.TAG_ROOT.equals(name)) {
-                    mFeatures.add(new ReactionBonus(reader));
-                } else if (SkillBonus.TAG_ROOT.equals(name)) {
-                    mFeatures.add(new SkillBonus(reader));
-                } else if (SpellBonus.TAG_ROOT.equals(name)) {
-                    mFeatures.add(new SpellBonus(reader));
-                } else if (WeaponBonus.TAG_ROOT.equals(name)) {
-                    mFeatures.add(new WeaponBonus(reader));
-                } else if (CostReduction.TAG_ROOT.equals(name)) {
-                    mFeatures.add(new CostReduction(reader));
-                } else if (ContainedWeightReduction.TAG_ROOT.equals(name)) {
-                    mFeatures.add(new ContainedWeightReduction(reader));
-                } else if (PrereqList.TAG_ROOT.equals(name)) {
-                    mPrereqList = new PrereqList(null, mDataFile.defaultWeightUnits(), reader);
-                } else if (!(this instanceof Technique) && SkillDefault.TAG_ROOT.equals(name)) {
-                    mDefaults.add(new SkillDefault(reader));
-                } else if (TAG_NOTES.equals(name)) {
-                    mNotes = reader.readText();
-                } else if (TAG_CATEGORIES.equals(name)) {
-                    String subMarker = reader.getMarker();
-                    do {
-                        if (reader.next() == XMLNodeType.START_TAG) {
-                            name = reader.getName();
-                            if (TAG_CATEGORY.equals(name)) {
-                                mCategories.add(reader.readText());
-                            } else {
-                                reader.skipTag(name);
-                            }
-                        }
-                    } while (reader.withinMarker(subMarker));
-                } else {
-                    loadSubElement(reader, state);
-                }
-            }
-        } while (reader.withinMarker(marker));
-        finishedLoading(state);
-    }
-
-    /**
      * Called to prepare the row for loading.
      *
      * @param state The {@link LoadState} to use.
@@ -435,29 +390,6 @@ public abstract class ListRow extends Row {
         mDefaults.clear();
         mPrereqList = new PrereqList(null, true);
         mCategories.clear();
-    }
-
-    /**
-     * Loads this row's custom attributes from the specified element.
-     *
-     * @param reader The XML reader to load from.
-     * @param state  The {@link LoadState} to use.
-     */
-    protected void loadAttributes(XMLReader reader, LoadState state) {
-        if (canHaveChildren()) {
-            setOpen(reader.isAttributeSet(ATTRIBUTE_OPEN));
-        }
-    }
-
-    /**
-     * Loads this row's custom data from the specified element.
-     *
-     * @param reader The XML reader to load from.
-     * @param state  The {@link LoadState} to use.
-     */
-    @SuppressWarnings("static-method")
-    protected void loadSubElement(XMLReader reader, LoadState state) throws IOException {
-        reader.skipTag(reader.getName());
     }
 
     /**
@@ -472,14 +404,19 @@ public abstract class ListRow extends Row {
     /**
      * Saves the row.
      *
-     * @param w       The {@link JsonWriter} to use.
-     * @param forUndo Whether this is being called to save undo state.
+     * @param w        The {@link JsonWriter} to use.
+     * @param saveType The type of save being performed.
      */
-    public void save(JsonWriter w, boolean forUndo) throws IOException {
+    public void save(JsonWriter w, SaveType saveType) throws IOException {
         w.startMap();
         w.keyValue(DataFile.KEY_TYPE, getJSONTypeName());
         w.keyValue(LoadState.ATTRIBUTE_VERSION, getJSONVersion());
-        saveSelf(w, forUndo);
+        w.keyValue(KEY_ID, mID.toString());
+        if (mBasedOnID != null) {
+            w.keyValue(KEY_BASED_ON_ID, mBasedOnID.toString());
+            w.keyValue(KEY_BASED_ON_HASH, mBasedOnHash);
+        }
+        saveSelf(w, saveType);
         if (!mPrereqList.isEmpty()) {
             w.key(KEY_PREREQS);
             mPrereqList.save(w);
@@ -510,9 +447,11 @@ public abstract class ListRow extends Row {
             w.endArray();
         }
         if (canHaveChildren()) {
-            w.keyValue(ATTRIBUTE_OPEN, isOpen());
-            if (!forUndo) {
-                saveList(w, KEY_CHILDREN, getChildren(), false);
+            if (saveType != SaveType.HASH) {
+                w.keyValue(ATTRIBUTE_OPEN, isOpen());
+            }
+            if (saveType != SaveType.UNDO) {
+                saveList(w, KEY_CHILDREN, getChildren(), saveType);
             }
         }
         w.endMap();
@@ -521,10 +460,10 @@ public abstract class ListRow extends Row {
     /**
      * Saves the row.
      *
-     * @param w       The {@link JsonWriter} to use.
-     * @param forUndo Whether this is being called to save undo state.
+     * @param w        The {@link JsonWriter} to use.
+     * @param saveType The type of save being performed.
      */
-    protected abstract void saveSelf(JsonWriter w, boolean forUndo) throws IOException;
+    protected abstract void saveSelf(JsonWriter w, SaveType saveType) throws IOException;
 
     /**
      * Starts the notification process. Should be called before calling {@link #notify(String,
@@ -596,7 +535,7 @@ public abstract class ListRow extends Row {
         if (df.notesDisplay().inline()) {
             String txt = getNotes();
             if (!txt.isBlank()) {
-                if (builder.length() > 0) {
+                if (!builder.isEmpty()) {
                     builder.append('\n');
                 }
                 builder.append(txt);
@@ -636,7 +575,7 @@ public abstract class ListRow extends Row {
     public String getCategoriesAsString() {
         StringBuilder buffer = new StringBuilder();
         for (String category : mCategories) {
-            if (buffer.length() > 0) {
+            if (!buffer.isEmpty()) {
                 buffer.append(",");
                 buffer.append(" ");
             }
@@ -820,5 +759,18 @@ public abstract class ListRow extends Row {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void getContainedUpdatables(Map<UUID, Updatable> updatables) {
+        if (canHaveChildren()) {
+            for (Row one : getChildren()) {
+                if (one instanceof Updatable) {
+                    Updatable u = (Updatable) one;
+                    updatables.put(u.getID(), u);
+                    u.getContainedUpdatables(updatables);
+                }
+            }
+        }
     }
 }

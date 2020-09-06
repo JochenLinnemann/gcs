@@ -15,7 +15,6 @@ import com.trollworks.gcs.character.GURPSCharacter;
 import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.util.Map;
@@ -42,11 +41,6 @@ public class ReactionBonus extends Bonus {
         loadSelf(m);
     }
 
-    public ReactionBonus(XMLReader reader) throws IOException {
-        this();
-        load(reader);
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -64,11 +58,6 @@ public class ReactionBonus extends Bonus {
     }
 
     @Override
-    public String getXMLTag() {
-        return TAG_ROOT;
-    }
-
-    @Override
     public String getKey() {
         return REACTION_KEY;
     }
@@ -76,15 +65,6 @@ public class ReactionBonus extends Bonus {
     @Override
     public Feature cloneFeature() {
         return new ReactionBonus(this);
-    }
-
-    @Override
-    protected void loadSelf(XMLReader reader) throws IOException {
-        if (TAG_SITUATION.equals(reader.getName())) {
-            setSituation(reader.readText());
-        } else {
-            super.loadSelf(reader);
-        }
     }
 
     @Override

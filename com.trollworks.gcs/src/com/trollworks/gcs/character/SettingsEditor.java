@@ -25,7 +25,6 @@ import com.trollworks.gcs.utility.units.LengthUnits;
 import com.trollworks.gcs.utility.units.WeightUnits;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -96,7 +95,6 @@ public class SettingsEditor extends BaseWindow implements ActionListener, Docume
         super(createTitle(character));
         mCharacter = character;
         mSettings = character.getSettings();
-        Container content = getContentPane();
         addTopPanel();
         addResetPanel();
         adjustResetButton();
@@ -155,11 +153,10 @@ public class SettingsEditor extends BaseWindow implements ActionListener, Docume
         getContentPane().add(panel, BorderLayout.SOUTH);
     }
 
-    private JLabel addLabel(JPanel panel, String title) {
+    private void addLabel(JPanel panel, String title) {
         JLabel label = new JLabel(title, SwingConstants.RIGHT);
         label.setOpaque(false);
         panel.add(label, new PrecisionLayoutData().setFillHorizontalAlignment());
-        return label;
     }
 
     private <E> JComboBox<E> addCombo(JPanel panel, E[] values, E choice, String tooltip) {

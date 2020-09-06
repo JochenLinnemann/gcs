@@ -24,8 +24,6 @@ import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Enums;
 import com.trollworks.gcs.utility.text.Numbers;
 import com.trollworks.gcs.utility.units.LengthUnits;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
@@ -121,16 +119,6 @@ public class PrintManager {
         setPageMargins(margins, units);
     }
 
-    /**
-     * Creates a new {@link PrintManager} object.
-     *
-     * @param reader The XML reader to load from.
-     */
-    public PrintManager(XMLReader reader) throws IOException {
-        this();
-        load(reader);
-    }
-
     public PrintManager(JsonMap m) {
         this();
         double[]    size    = {8.5, 11.0};
@@ -177,71 +165,16 @@ public class PrintManager {
     }
 
     /**
-     * @param reader The XML reader to load from.
-     */
-    public void load(XMLReader reader) throws IOException {
-        String      marker  = reader.getMarker();
-        LengthUnits units   = Enums.extract(reader.getAttribute(ATTRIBUTE_UNITS), LengthUnits.values(), LengthUnits.IN);
-        double[]    size    = {8.5, 11.0};
-        double[]    margins = {0, 0, 0, 0};
-        setPrintServiceForPrinter(reader.getAttribute(ATTRIBUTE_PRINTER));
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                try {
-                    if (TAG_ORIENTATION.equals(name)) {
-                        setPageOrientation(Enums.extract(reader.readText(), PageOrientation.values(), PageOrientation.PORTRAIT));
-                    } else if (TAG_WIDTH.equals(name)) {
-                        size[0] = getNumber(reader, units, 8.5);
-                    } else if (TAG_HEIGHT.equals(name)) {
-                        size[1] = getNumber(reader, units, 11.0);
-                    } else if (TAG_TOP_MARGIN.equals(name)) {
-                        margins[0] = getNumber(reader, units, 0.0);
-                    } else if (TAG_LEFT_MARGIN.equals(name)) {
-                        margins[1] = getNumber(reader, units, 0.0);
-                    } else if (TAG_BOTTOM_MARGIN.equals(name)) {
-                        margins[2] = getNumber(reader, units, 0.0);
-                    } else if (TAG_RIGHT_MARGIN.equals(name)) {
-                        margins[3] = getNumber(reader, units, 0.0);
-                    } else if (TAG_CHROMATICITY.equals(name)) {
-                        setChromaticity(Enums.extract(reader.readText(), InkChromaticity.values(), InkChromaticity.COLOR));
-                    } else if (TAG_SIDES.equals(name)) {
-                        setSides(Enums.extract(reader.readText(), PageSides.values(), PageSides.SINGLE));
-                    } else if (TAG_NUMBER_UP.equals(name)) {
-                        setNumberUp(reader.readInteger(1));
-                    } else if (TAG_QUALITY.equals(name)) {
-                        setPrintQuality(Enums.extract(reader.readText(), Quality.values(), Quality.NORMAL));
-                    } else if (TAG_RESOLUTION.equals(name)) {
-                        setResolution(extractFromResolutionString(reader.readText()));
-                    } else {
-                        reader.skipTag(name);
-                    }
-                } catch (Exception exception) {
-                    Log.warn(exception);
-                }
-            }
-        } while (reader.withinMarker(marker));
-        setPaperSize(size, units);
-        setPaperMargins(margins, units);
-    }
-
-    private static double getNumber(XMLReader reader, LengthUnits units, double defInches) throws IOException {
-        return reader.readDouble(units.convert(LengthUnits.IN, new Fixed6(defInches)).asDouble());
-    }
-
-    /**
      * Presents the page setup dialog and allows the user to change the settings.
      *
      * @param proxy The {@link PrintProxy} representing the information that would be printed.
-     * @return Whether the user canceled (or an error occurred).
      */
-    public boolean pageSetup(PrintProxy proxy) {
+    public void pageSetup(PrintProxy proxy) {
         if (Preferences.getInstance().useNativePrintDialogs()) {
             PageFormat format = mJob.pageDialog(createPageFormat());
             if (format != null) {
                 adjustSettingsToPageFormat(format);
                 proxy.adjustToPageSetupChanges(false);
-                return true;
             }
         } else {
             PageSetupPanel panel = new PageSetupPanel(getPrintService(), mSet);
@@ -252,13 +185,11 @@ public class PrintManager {
                         mJob.setPrintService(service);
                     }
                     proxy.adjustToPageSetupChanges(false);
-                    return true;
                 } catch (PrinterException exception) {
                     WindowUtils.showError(UIUtilities.getComponentForDialog(proxy), I18n.Text("Unable to switch printers!"));
                 }
             }
         }
-        return false;
     }
 
     /**
@@ -268,8 +199,7 @@ public class PrintManager {
      */
     public void print(PrintProxy proxy) {
         if (proxy != null) {
-            PrintService service = getPrintService();
-            if (service != null) {
+            if (getPrintService() != null) {
                 if (Preferences.getInstance().useNativePrintDialogs()) {
                     mJob.setJobName(proxy.getPrintJobTitle());
                     if (mJob.printDialog()) {
@@ -423,10 +353,10 @@ public class PrintManager {
             StringBuilder buffer = new StringBuilder();
             int           x      = res.getCrossFeedResolution(1);
             int           y      = res.getFeedResolution(1);
-            buffer.append(Integer.toString(x));
+            buffer.append(x);
             if (x != y) {
                 buffer.append("x");
-                buffer.append(Integer.toString(y));
+                buffer.append(y);
             }
             return buffer.toString();
         }

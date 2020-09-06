@@ -21,16 +21,12 @@ import com.trollworks.gcs.utility.FileType;
 import com.trollworks.gcs.utility.Log;
 import com.trollworks.gcs.utility.json.JsonArray;
 import com.trollworks.gcs.utility.json.JsonMap;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 
 /** A list of notes. */
 public class NoteList extends ListFile {
     private static final int    CURRENT_JSON_VERSION = 1;
-    /** The current version. */
-    public static final  int    CURRENT_VERSION      = 1;
     /** The XML tag for {@link NoteList}s. */
     public static final  String TAG_ROOT             = "note_list";
 
@@ -41,16 +37,6 @@ public class NoteList extends ListFile {
 
     @Override
     public String getJSONTypeName() {
-        return TAG_ROOT;
-    }
-
-    @Override
-    public int getXMLTagVersion() {
-        return CURRENT_VERSION;
-    }
-
-    @Override
-    public String getXMLTagName() {
         return TAG_ROOT;
     }
 
@@ -80,21 +66,5 @@ public class NoteList extends ListFile {
                 Log.warn("invalid note type: " + type);
             }
         }
-    }
-
-    @Override
-    protected void loadList(XMLReader reader, LoadState state) throws IOException {
-        OutlineModel model  = getModel();
-        String       marker = reader.getMarker();
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                if (Note.TAG_NOTE.equals(name) || Note.TAG_NOTE_CONTAINER.equals(name)) {
-                    model.addRow(new Note(this, reader, state), true);
-                } else {
-                    reader.skipTag(name);
-                }
-            }
-        } while (reader.withinMarker(marker));
     }
 }

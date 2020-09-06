@@ -22,7 +22,10 @@ import java.util.List;
 import javax.swing.JMenu;
 
 /** Provides the standard "File" menu. */
-public class FileMenuProvider {
+public final class FileMenuProvider {
+    private FileMenuProvider() {
+    }
+
     public static List<Command> getModifiableCommands() {
         List<Command> cmds = new ArrayList<>();
         cmds.add(NewCharacterSheetCommand.INSTANCE);
@@ -41,6 +44,7 @@ public class FileMenuProvider {
         cmds.add(ExportToGURPSCalculatorCommand.INSTANCE);
         cmds.add(ExportToPDFCommand.INSTANCE);
         cmds.add(ExportToPNGCommand.INSTANCE);
+        //cmds.add(UpdateCommand.INSTANCE);
         cmds.add(PageSetupCommand.INSTANCE);
         cmds.add(PrintCommand.INSTANCE);
         if (!Platform.isMacintosh()) {
@@ -69,6 +73,8 @@ public class FileMenuProvider {
         menu.add(new DynamicMenuItem(SaveCommand.INSTANCE));
         menu.add(new DynamicMenuItem(SaveAsCommand.INSTANCE));
         menu.add(new ExportMenu());
+        //menu.addSeparator();
+        //menu.add(new DynamicMenuItem(UpdateCommand.INSTANCE));
         menu.addSeparator();
         menu.add(new DynamicMenuItem(PageSetupCommand.INSTANCE));
         menu.add(new DynamicMenuItem(PrintCommand.INSTANCE));

@@ -13,11 +13,8 @@ package com.trollworks.gcs.character;
 
 import com.trollworks.gcs.advantage.Advantage;
 import com.trollworks.gcs.advantage.AdvantageContainerType;
-import com.trollworks.gcs.advantage.AdvantageList;
-import com.trollworks.gcs.datafile.DataFile;
 import com.trollworks.gcs.datafile.LoadState;
 import com.trollworks.gcs.equipment.Equipment;
-import com.trollworks.gcs.equipment.EquipmentList;
 import com.trollworks.gcs.feature.AttributeBonusLimitation;
 import com.trollworks.gcs.feature.Bonus;
 import com.trollworks.gcs.feature.BonusAttributeType;
@@ -33,29 +30,24 @@ import com.trollworks.gcs.feature.WeaponBonus;
 import com.trollworks.gcs.feature.WeaponSelectionType;
 import com.trollworks.gcs.modifier.AdvantageModifier;
 import com.trollworks.gcs.modifier.EquipmentModifier;
-import com.trollworks.gcs.notes.Note;
-import com.trollworks.gcs.notes.NoteList;
 import com.trollworks.gcs.preferences.Preferences;
 import com.trollworks.gcs.skill.Skill;
-import com.trollworks.gcs.skill.SkillList;
 import com.trollworks.gcs.skill.Technique;
 import com.trollworks.gcs.spell.RitualMagicSpell;
 import com.trollworks.gcs.spell.Spell;
-import com.trollworks.gcs.spell.SpellList;
 import com.trollworks.gcs.spell.SplittermondSpell;
 import com.trollworks.gcs.ui.RetinaIcon;
 import com.trollworks.gcs.ui.image.Images;
 import com.trollworks.gcs.ui.print.PrintManager;
 import com.trollworks.gcs.ui.widget.outline.ListRow;
-import com.trollworks.gcs.ui.widget.outline.OutlineModel;
 import com.trollworks.gcs.ui.widget.outline.Row;
-import com.trollworks.gcs.ui.widget.outline.RowIterator;
 import com.trollworks.gcs.utility.Dice;
 import com.trollworks.gcs.utility.FileType;
 import com.trollworks.gcs.utility.FilteredIterator;
 import com.trollworks.gcs.utility.Fixed6;
 import com.trollworks.gcs.utility.I18n;
 import com.trollworks.gcs.utility.Log;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Numbers;
@@ -63,44 +55,25 @@ import com.trollworks.gcs.utility.undo.StdUndoManager;
 import com.trollworks.gcs.utility.units.LengthUnits;
 import com.trollworks.gcs.utility.units.WeightUnits;
 import com.trollworks.gcs.utility.units.WeightValue;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /** A GURPS character. */
-public class GURPSCharacter extends DataFile {
+public class GURPSCharacter extends CollectedModels {
     private static final int                                 CURRENT_JSON_VERSION                 = 1;
-    private static final int                                 CURRENT_VERSION                      = 5;
-    /**
-     * The version where equipment was separated out into different lists based on carried/not
-     * carried status.
-     */
-    public static final  int                                 SEPARATED_EQUIPMENT_VERSION          = 4;
-    /**
-     * The version where HP and FP damage tracking was introduced, rather than a free-form text
-     * field.
-     */
-    public static final  int                                 HP_FP_DAMAGE_TRACKING                = 5;
     private static final String                              TAG_ROOT                             = "character";
     private static final String                              TAG_CREATED_DATE                     = "created_date";
     private static final String                              TAG_MODIFIED_DATE                    = "modified_date";
     private static final String                              TAG_HP_DAMAGE                        = "hp_damage";
     private static final String                              TAG_FP_DAMAGE                        = "fp_damage";
-    private static final String                              TAG_UNSPENT_POINTS                   = "unspent_points";
     private static final String                              TAG_TOTAL_POINTS                     = "total_points";
-    private static final String                              TAG_INCLUDE_PUNCH                    = "include_punch";
-    private static final String                              TAG_INCLUDE_KICK                     = "include_kick";
-    private static final String                              TAG_INCLUDE_BOOTS                    = "include_kick_with_boots";
     private static final String                              KEY_HP_ADJ                           = "HP_adj";
     private static final String                              KEY_FP_ADJ                           = "FP_adj";
     private static final String                              KEY_ST                               = "ST";
@@ -111,12 +84,6 @@ public class GURPSCharacter extends DataFile {
     private static final String                              KEY_PER_ADJ                          = "per_adj";
     private static final String                              KEY_SPEED_ADJ                        = "speed_adj";
     private static final String                              KEY_MOVE_ADJ                         = "move_adj";
-    public static final  String                              KEY_ADVANTAGES                       = "advantages";
-    public static final  String                              KEY_SKILLS                           = "skills";
-    public static final  String                              KEY_SPELLS                           = "spells";
-    public static final  String                              KEY_EQUIPMENT                        = "equipment";
-    public static final  String                              KEY_OTHER_EQUIPMENT                  = "other_equipment";
-    public static final  String                              KEY_NOTES                            = "notes";
     /** The prefix for all character IDs. */
     public static final  String                              CHARACTER_PREFIX                     = "gcs.";
     /** The field ID for last modified date changes. */
@@ -252,6 +219,7 @@ public class GURPSCharacter extends DataFile {
     public static final  String                              ID_UNCONSCIOUS_CHECKS_FATIGUE_POINTS = FATIGUE_POINTS_PREFIX + "UnconsciousChecks";
     /** The field ID for unconscious fatigue point changes. */
     public static final  String                              ID_UNCONSCIOUS_FATIGUE_POINTS        = FATIGUE_POINTS_PREFIX + "Unconscious";
+    private static final Pattern                             UL_PATTERN                           = Pattern.compile("<ul>");
     private              long                                mModifiedOn;
     private              long                                mCreatedOn;
     private              HashMap<String, ArrayList<Feature>> mFeatureMap;
@@ -297,13 +265,8 @@ public class GURPSCharacter extends DataFile {
     private              Settings                            mSettings;
     private              Profile                             mProfile;
     private              Armor                               mArmor;
-    private              OutlineModel                        mAdvantages;
-    private              OutlineModel                        mSkills;
-    private              OutlineModel                        mSpells;
-    private              OutlineModel                        mEquipment;
-    private              OutlineModel                        mOtherEquipment;
-    private              OutlineModel                        mNotes;
     private              WeightValue                         mCachedWeightCarried;
+    private              WeightValue                         mCachedWeightCarriedForSkills;
     private              Fixed6                              mCachedWealthCarried;
     private              Fixed6                              mCachedWealthNotCarried;
     private              int                                 mCachedAttributePoints;
@@ -338,19 +301,13 @@ public class GURPSCharacter extends DataFile {
      *                     sheet.
      */
     public GURPSCharacter(Path path) throws IOException {
+        this();
         load(path);
     }
 
     private void characterInitialize(boolean full) {
         mSettings = new Settings(this);
         mFeatureMap = new HashMap<>();
-        mAdvantages = new OutlineModel();
-        mSkills = new OutlineModel();
-        mSpells = new OutlineModel();
-        mEquipment = new OutlineModel();
-        mOtherEquipment = new OutlineModel();
-        mOtherEquipment.setProperty(EquipmentList.TAG_OTHER_ROOT, Boolean.TRUE);
-        mNotes = new OutlineModel();
         mTotalPoints = Preferences.getInstance().getInitialPoints();
         mStrength = 10;
         mDexterity = 10;
@@ -361,6 +318,7 @@ public class GURPSCharacter extends DataFile {
         mProfile = new Profile(this, full);
         mArmor = new Armor(this);
         mCachedWeightCarried = new WeightValue(Fixed6.ZERO, mSettings.defaultWeightUnits());
+        mCachedWeightCarriedForSkills = new WeightValue(Fixed6.ZERO, mSettings.defaultWeightUnits());
         mPageSettings = Preferences.getInstance().getDefaultPageSettings();
         mPageSettingsString = "{}";
         if (mPageSettings != null) {
@@ -402,225 +360,6 @@ public class GURPSCharacter extends DataFile {
         return TAG_ROOT;
     }
 
-    @Override
-    public int getXMLTagVersion() {
-        return CURRENT_VERSION;
-    }
-
-    @Override
-    public String getXMLTagName() {
-        return TAG_ROOT;
-    }
-
-    @Override
-    protected final void loadSelf(XMLReader reader, LoadState state) throws IOException {
-        String marker        = reader.getMarker();
-        int    unspentPoints = 0;
-        int    currentHP     = Integer.MIN_VALUE;
-        int    currentFP     = Integer.MIN_VALUE;
-        characterInitialize(false);
-        long modifiedOn = mModifiedOn;
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-
-                if (state.mDataFileVersion == 0) {
-                    if (mProfile.loadTag(reader, name)) {
-                        continue;
-                    }
-                }
-
-                if (state.mDataFileVersion < HP_FP_DAMAGE_TRACKING) {
-                    if ("current_hp".equals(name)) {
-                        currentHP = reader.readInteger(Integer.MIN_VALUE);
-                        continue;
-                    } else if ("current_fp".equals(name)) {
-                        currentFP = reader.readInteger(Integer.MIN_VALUE);
-                        continue;
-                    }
-                }
-
-                if (Settings.TAG_ROOT.equals(name)) {
-                    mSettings.load(reader);
-                } else if (Profile.TAG_ROOT.equals(name)) {
-                    mProfile.load(reader);
-                } else if (TAG_CREATED_DATE.equals(name)) {
-                    mCreatedOn = Numbers.extractDateTime(reader.readText());
-                } else if (TAG_MODIFIED_DATE.equals(name)) {
-                    modifiedOn = Numbers.extractDateTime(reader.readText());
-                } else if (BonusAttributeType.HP.getXMLTag().equals(name)) {
-                    mHitPointsAdj = reader.readInteger(0);
-                } else if (TAG_HP_DAMAGE.equals(name)) {
-                    mHitPointsDamage = reader.readInteger(0);
-                } else if (BonusAttributeType.FP.getXMLTag().equals(name)) {
-                    mFatiguePoints = reader.readInteger(0);
-                } else if (TAG_FP_DAMAGE.equals(name)) {
-                    mFatiguePointsDamage = reader.readInteger(0);
-                } else if (TAG_UNSPENT_POINTS.equals(name)) {
-                    unspentPoints = reader.readInteger(0);
-                } else if (TAG_TOTAL_POINTS.equals(name)) {
-                    mTotalPoints = reader.readInteger(0);
-                } else if (BonusAttributeType.ST.getXMLTag().equals(name)) {
-                    mStrength = reader.readInteger(0);
-                } else if (BonusAttributeType.DX.getXMLTag().equals(name)) {
-                    mDexterity = reader.readInteger(0);
-                } else if (BonusAttributeType.IQ.getXMLTag().equals(name)) {
-                    mIntelligence = reader.readInteger(0);
-                } else if (BonusAttributeType.HT.getXMLTag().equals(name)) {
-                    mHealth = reader.readInteger(0);
-                } else if (BonusAttributeType.WILL.getXMLTag().equals(name)) {
-                    mWillAdj = reader.readInteger(0);
-                } else if (BonusAttributeType.PERCEPTION.getXMLTag().equals(name)) {
-                    mPerAdj = reader.readInteger(0);
-                } else if (BonusAttributeType.SPEED.getXMLTag().equals(name)) {
-                    mSpeedAdj = reader.readDouble(0.0);
-                } else if (BonusAttributeType.MOVE.getXMLTag().equals(name)) {
-                    mMoveAdj = reader.readInteger(0);
-                } else if (AdvantageList.TAG_ROOT.equals(name)) {
-                    loadAdvantageList(reader, state);
-                } else if (SkillList.TAG_ROOT.equals(name)) {
-                    loadSkillList(reader, state);
-                } else if (SpellList.TAG_ROOT.equals(name)) {
-                    loadSpellList(reader, state);
-                } else if (EquipmentList.TAG_CARRIED_ROOT.equals(name)) {
-                    loadEquipmentList(reader, state, mEquipment);
-                } else if (EquipmentList.TAG_OTHER_ROOT.equals(name)) {
-                    loadEquipmentList(reader, state, mOtherEquipment);
-                } else if (NoteList.TAG_ROOT.equals(name)) {
-                    loadNoteList(reader, state);
-                } else if (mPageSettings != null && PrintManager.TAG_ROOT.equals(name)) {
-                    mPageSettings.load(reader);
-                    mPageSettingsString = mPageSettings.toString();
-                } else {
-                    if (!loadSelf_Custom(name, reader, state))
-                        reader.skipTag(name);
-                }
-            }
-        } while (reader.withinMarker(marker));
-
-        // Loop through the skills and update their levels. It is necessary to do this here and not
-        // as they are loaded, since references to defaults won't work until the entire list is
-        // available.
-        for (Skill skill : getSkillsIterator()) {
-            skill.updateLevel(false);
-        }
-
-        calculateAll();
-        if (unspentPoints != 0) {
-            setUnspentPoints(unspentPoints);
-        }
-
-        if (state.mDataFileVersion < HP_FP_DAMAGE_TRACKING) {
-            if (currentHP != Integer.MIN_VALUE) {
-                mHitPointsDamage = -Math.min(currentHP - getHitPointsAdj(), 0);
-            }
-            if (currentFP != Integer.MIN_VALUE) {
-                mFatiguePointsDamage = -Math.min(currentFP - getFatiguePoints(), 0);
-            }
-        }
-        mModifiedOn = modifiedOn;
-    }
-
-    private void loadAdvantageList(XMLReader reader, LoadState state) throws IOException {
-        String marker = reader.getMarker();
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                if (Advantage.TAG_ADVANTAGE.equals(name) || Advantage.TAG_ADVANTAGE_CONTAINER.equals(name)) {
-                    mAdvantages.addRow(new Advantage(this, reader, state), true);
-                } else {
-                    reader.skipTag(name);
-                }
-            }
-        } while (reader.withinMarker(marker));
-    }
-
-    private void loadSkillList(XMLReader reader, LoadState state) throws IOException {
-        String marker = reader.getMarker();
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                if (Skill.TAG_SKILL.equals(name) || Skill.TAG_SKILL_CONTAINER.equals(name)) {
-                    mSkills.addRow(new Skill(this, reader, state), true);
-                } else if (Technique.TAG_TECHNIQUE.equals(name)) {
-                    mSkills.addRow(new Technique(this, reader, state), true);
-                } else {
-                    reader.skipTag(name);
-                }
-            }
-        } while (reader.withinMarker(marker));
-    }
-
-    private void loadSpellList(XMLReader reader, LoadState state) throws IOException {
-        String marker = reader.getMarker();
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                if (Spell.TAG_SPELL.equals(name) || Spell.TAG_SPELL_CONTAINER.equals(name)) {
-                    mSpells.addRow(new Spell(this, reader, state), true);
-                } else if (RitualMagicSpell.TAG_RITUAL_MAGIC_SPELL.equals(name)) {
-                    mSpells.addRow(new RitualMagicSpell(this, reader, state), true);
-                } else if (SplittermondSpell.TAG_SPLITTERMOND_SPELL.equals(name)) {
-                    mSpells.addRow(new SplittermondSpell(this, reader, state), true);
-                } else {
-                    reader.skipTag(name);
-                }
-            }
-        } while (reader.withinMarker(marker));
-    }
-
-    private void loadEquipmentList(XMLReader reader, LoadState state, OutlineModel equipmentList) throws IOException {
-        String marker = reader.getMarker();
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                if (Equipment.TAG_EQUIPMENT.equals(name) || Equipment.TAG_EQUIPMENT_CONTAINER.equals(name)) {
-                    state.mUncarriedEquipment = new HashSet<>();
-                    Equipment equipment = new Equipment(this, reader, state);
-                    if (state.mDataFileVersion < SEPARATED_EQUIPMENT_VERSION && equipmentList == mEquipment && !state.mUncarriedEquipment.isEmpty()) {
-                        if (addToEquipment(state.mUncarriedEquipment, equipment)) {
-                            equipmentList.addRow(equipment, true);
-                        }
-                    } else {
-                        equipmentList.addRow(equipment, true);
-                    }
-                } else {
-                    reader.skipTag(name);
-                }
-            }
-        } while (reader.withinMarker(marker));
-    }
-
-    private boolean addToEquipment(HashSet<Equipment> uncarried, Equipment equipment) {
-        if (uncarried.contains(equipment)) {
-            mOtherEquipment.addRow(equipment, true);
-            return false;
-        }
-        List<Row> children = equipment.getChildren();
-        if (children != null) {
-            for (Row child : new ArrayList<>(children)) {
-                if (!addToEquipment(uncarried, (Equipment) child)) {
-                    equipment.removeChild(child);
-                }
-            }
-        }
-        return true;
-    }
-
-    private void loadNoteList(XMLReader reader, LoadState state) throws IOException {
-        String marker = reader.getMarker();
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                if (Note.TAG_NOTE.equals(name) || Note.TAG_NOTE_CONTAINER.equals(name)) {
-                    mNotes.addRow(new Note(this, reader, state), true);
-                } else {
-                    reader.skipTag(name);
-                }
-            }
-        } while (reader.withinMarker(marker));
-    }
-
     private void calculateAll() {
         calculateAttributePoints();
         calculateAdvantagePoints();
@@ -634,7 +373,7 @@ public class GURPSCharacter extends DataFile {
     protected void loadSelf(JsonMap m, LoadState state) throws IOException {
         characterInitialize(false);
         mSettings.load(m.getMap(Settings.TAG_ROOT));
-        mCreatedOn = Numbers.extractDateTime(m.getString(TAG_CREATED_DATE));
+        mCreatedOn = Numbers.extractDateTime(Numbers.DATE_TIME_STORED_FORMAT, m.getString(TAG_CREATED_DATE));
         mProfile.load(m.getMap(Profile.TAG_ROOT));
         mHitPointsAdj = m.getInt(KEY_HP_ADJ);
         mHitPointsDamage = m.getInt(TAG_HP_DAMAGE);
@@ -652,12 +391,7 @@ public class GURPSCharacter extends DataFile {
 
         loadSelf_Custom(m, state);
 
-        AdvantageList.loadIntoModel(this, m.getArray(KEY_ADVANTAGES), mAdvantages, state);
-        SkillList.loadIntoModel(this, m.getArray(KEY_SKILLS), mSkills, state);
-        SpellList.loadIntoModel(this, m.getArray(KEY_SPELLS), mSpells, state);
-        EquipmentList.loadIntoModel(this, m.getArray(KEY_EQUIPMENT), mEquipment, state);
-        EquipmentList.loadIntoModel(this, m.getArray(KEY_OTHER_EQUIPMENT), mOtherEquipment, state);
-        NoteList.loadIntoModel(this, m.getArray(KEY_NOTES), mNotes, state);
+        loadModels(m, state);
         if (mPageSettings != null && m.has(PrintManager.TAG_ROOT)) {
             mPageSettings = new PrintManager(m.getMap(PrintManager.TAG_ROOT));
             mPageSettingsString = mPageSettings.toString();
@@ -669,14 +403,14 @@ public class GURPSCharacter extends DataFile {
             skill.updateLevel(false);
         }
         calculateAll();
-        mModifiedOn = Numbers.extractDateTime(m.getString(TAG_MODIFIED_DATE)); // Must be last
+        mModifiedOn = Numbers.extractDateTime(Numbers.DATE_TIME_STORED_FORMAT, m.getString(TAG_MODIFIED_DATE)); // Must be last
     }
 
-    protected void saveSelf(JsonWriter w) throws IOException {
+    protected void saveSelf(JsonWriter w, SaveType saveType) throws IOException {
         w.key(Settings.TAG_ROOT);
         mSettings.save(w);
-        w.keyValue(TAG_CREATED_DATE, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date(mCreatedOn)));
-        w.keyValue(TAG_MODIFIED_DATE, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date(mModifiedOn)));
+        w.keyValue(TAG_CREATED_DATE, Numbers.formatDateTime(Numbers.DATE_TIME_STORED_FORMAT, mCreatedOn));
+        w.keyValue(TAG_MODIFIED_DATE, Numbers.formatDateTime(Numbers.DATE_TIME_STORED_FORMAT, mModifiedOn));
         w.key(Profile.TAG_ROOT);
         mProfile.save(w);
         w.keyValueNot(KEY_HP_ADJ, mHitPointsAdj, 0);
@@ -692,13 +426,8 @@ public class GURPSCharacter extends DataFile {
         w.keyValueNot(KEY_PER_ADJ, mPerAdj, 0);
         w.keyValueNot(KEY_SPEED_ADJ, mSpeedAdj, 0);
         w.keyValueNot(KEY_MOVE_ADJ, mMoveAdj, 0);
-        ListRow.saveList(w, KEY_ADVANTAGES, mAdvantages.getTopLevelRows(), false);
-        ListRow.saveList(w, KEY_SKILLS, mSkills.getTopLevelRows(), false);
-        ListRow.saveList(w, KEY_SPELLS, mSpells.getTopLevelRows(), false);
-        ListRow.saveList(w, KEY_EQUIPMENT, mEquipment.getTopLevelRows(), false);
-        ListRow.saveList(w, KEY_OTHER_EQUIPMENT, mOtherEquipment.getTopLevelRows(), false);
-        ListRow.saveList(w, KEY_NOTES, mNotes.getTopLevelRows(), false);
-        if (mPageSettings != null) {
+        saveModels(w, saveType);
+        if (saveType != SaveType.HASH && mPageSettings != null) {
             w.key(PrintManager.TAG_ROOT);
             mPageSettings.save(w, LengthUnits.IN);
             mPageSettingsString = mPageSettings.toString();
@@ -998,7 +727,7 @@ public class GURPSCharacter extends DataFile {
         }
     }
 
-    private void updateSkills() {
+    public void updateSkills() {
         for (Skill skill : getSkillsIterator()) {
             skill.updateLevel(true);
         }
@@ -1570,8 +1299,8 @@ public class GURPSCharacter extends DataFile {
     }
 
     /** @return The current encumbrance level. */
-    public Encumbrance getEncumbranceLevel() {
-        Fixed6 carried = getWeightCarried().getNormalizedValue();
+    public Encumbrance getEncumbranceLevel(boolean forSkills) {
+        Fixed6 carried = getWeightCarried(forSkills).getNormalizedValue();
         for (Encumbrance encumbrance : Encumbrance.values()) {
             if (carried.lessThanOrEqual(getMaximumCarry(encumbrance).getNormalizedValue())) {
                 return encumbrance;
@@ -1584,13 +1313,13 @@ public class GURPSCharacter extends DataFile {
      * @return {@code true} if the carried weight is greater than the maximum allowed for an
      *         extra-heavy load.
      */
-    public boolean isCarryingGreaterThanMaxLoad() {
-        return getWeightCarried().getNormalizedValue().greaterThan(getMaximumCarry(Encumbrance.EXTRA_HEAVY).getNormalizedValue());
+    public boolean isCarryingGreaterThanMaxLoad(boolean forSkills) {
+        return getWeightCarried(forSkills).getNormalizedValue().greaterThan(getMaximumCarry(Encumbrance.EXTRA_HEAVY).getNormalizedValue());
     }
 
     /** @return The current weight being carried. */
-    public WeightValue getWeightCarried() {
-        return mCachedWeightCarried;
+    public WeightValue getWeightCarried(boolean forSkills) {
+        return forSkills ? mCachedWeightCarriedForSkills : mCachedWeightCarried;
     }
 
     /** @return The current wealth being carried. */
@@ -1611,17 +1340,13 @@ public class GURPSCharacter extends DataFile {
      * @return The converted imperial {@link WeightValue}.
      */
     public static WeightValue convertFromGurpsMetric(WeightValue value) {
-        switch (value.getUnits()) {
-        case G:
-            return new WeightValue(value.getValue().div(new Fixed6(30)), WeightUnits.OZ);
-        case KG:
-            return new WeightValue(value.getValue().mul(new Fixed6(2)), WeightUnits.LB);
-        case T:
-            return new WeightValue(value.getValue(), WeightUnits.LT);
-        default:
-            return value;
+        return switch (value.getUnits()) {
+            case G -> new WeightValue(value.getValue().div(new Fixed6(30)), WeightUnits.OZ);
+            case KG -> new WeightValue(value.getValue().mul(new Fixed6(2)), WeightUnits.LB);
+            case T -> new WeightValue(value.getValue(), WeightUnits.LT);
+            default -> value;
+        };
         }
-    }
 
     /**
      * Convert an imperial {@link WeightValue} by GURPS Metric rules into a metric one. If a metric
@@ -1631,18 +1356,13 @@ public class GURPSCharacter extends DataFile {
      * @return The converted metric {@link WeightValue}.
      */
     public static WeightValue convertToGurpsMetric(WeightValue value) {
-        switch (value.getUnits()) {
-        case LB:
-            return new WeightValue(value.getValue().div(new Fixed6(2)), WeightUnits.KG);
-        case LT:
-        case TN:
-            return new WeightValue(value.getValue(), WeightUnits.T);
-        case OZ:
-            return new WeightValue(value.getValue().mul(new Fixed6(30)), WeightUnits.G);
-        default:
-            return value;
+        return switch (value.getUnits()) {
+            case LB -> new WeightValue(value.getValue().div(new Fixed6(2)), WeightUnits.KG);
+            case LT, TN -> new WeightValue(value.getValue(), WeightUnits.T);
+            case OZ -> new WeightValue(value.getValue().mul(new Fixed6(30)), WeightUnits.G);
+            default -> value;
+        };
         }
-    }
 
     /**
      * Calculate the total weight and wealth carried.
@@ -1652,20 +1372,28 @@ public class GURPSCharacter extends DataFile {
      */
     public void calculateWeightAndWealthCarried(boolean notify) {
         WeightValue savedWeight = new WeightValue(mCachedWeightCarried);
+        WeightValue savedWeightForSkills = new WeightValue(mCachedWeightCarriedForSkills);
         Fixed6      savedWealth = mCachedWealthCarried;
         mCachedWeightCarried = new WeightValue(Fixed6.ZERO, defaultWeightUnits());
+        mCachedWeightCarriedForSkills = new WeightValue(Fixed6.ZERO, defaultWeightUnits());
         mCachedWealthCarried = Fixed6.ZERO;
-        for (Row one : mEquipment.getTopLevelRows()) {
+        for (Row one : getEquipmentModel().getTopLevelRows()) {
             Equipment   equipment = (Equipment) one;
-            WeightValue weight    = new WeightValue(equipment.getExtendedWeight());
+            WeightValue weight    = new WeightValue(equipment.getExtendedWeight(false));
             if (useSimpleMetricConversions()) {
                 weight = defaultWeightUnits().isMetric() ? convertToGurpsMetric(weight) : convertFromGurpsMetric(weight);
             }
             mCachedWeightCarried.add(weight);
             mCachedWealthCarried = mCachedWealthCarried.add(equipment.getExtendedValue());
+
+            weight = new WeightValue(equipment.getExtendedWeight(true));
+            if (useSimpleMetricConversions()) {
+                weight = defaultWeightUnits().isMetric() ? convertToGurpsMetric(weight) : convertFromGurpsMetric(weight);
+        }
+            mCachedWeightCarriedForSkills.add(weight);
         }
         if (notify) {
-            if (!savedWeight.equals(mCachedWeightCarried)) {
+            if (!savedWeight.equals(mCachedWeightCarried) || !savedWeightForSkills.equals(mCachedWeightCarriedForSkills)) {
                 notify(ID_CARRIED_WEIGHT, mCachedWeightCarried);
             }
             if (!mCachedWealthCarried.equals(savedWealth)) {
@@ -1683,7 +1411,7 @@ public class GURPSCharacter extends DataFile {
     public void calculateWealthNotCarried(boolean notify) {
         Fixed6 savedWealth = mCachedWealthNotCarried;
         mCachedWealthNotCarried = Fixed6.ZERO;
-        for (Row one : mOtherEquipment.getTopLevelRows()) {
+        for (Row one : getOtherEquipmentModel().getTopLevelRows()) {
             mCachedWealthNotCarried = mCachedWealthNotCarried.add(((Equipment) one).getExtendedValue());
         }
         if (notify) {
@@ -2012,7 +1740,7 @@ public class GURPSCharacter extends DataFile {
         mCachedDisadvantagePoints = 0;
         mCachedRacePoints = 0;
         mCachedQuirkPoints = 0;
-        for (Advantage advantage : new FilteredIterator<>(mAdvantages.getTopLevelRows(), Advantage.class)) {
+        for (Advantage advantage : new FilteredIterator<>(getAdvantagesModel().getTopLevelRows(), Advantage.class)) {
             calculateSingleAdvantagePoints(advantage);
         }
     }
@@ -2546,22 +2274,6 @@ public class GURPSCharacter extends DataFile {
         return mArmor;
     }
 
-    /** @return The outline model for the character's advantages. */
-    public OutlineModel getAdvantagesModel() {
-        return mAdvantages;
-    }
-
-    /**
-     * @param includeDisabled {@code true} if disabled entries should be included.
-     * @return A recursive iterator over the character's advantages.
-     */
-    public RowIterator<Advantage> getAdvantagesIterator(boolean includeDisabled) {
-        if (includeDisabled) {
-            return new RowIterator<>(mAdvantages);
-        }
-        return new RowIterator<>(mAdvantages, (row) -> row.isEnabled());
-    }
-
     /**
      * Searches the character's current advantages list for the specified name.
      *
@@ -2585,16 +2297,6 @@ public class GURPSCharacter extends DataFile {
      */
     public boolean hasAdvantageNamed(String name) {
         return getAdvantageNamed(name) != null;
-    }
-
-    /** @return The outline model for the character's skills. */
-    public OutlineModel getSkillsRoot() {
-        return mSkills;
-    }
-
-    /** @return A recursive iterable for the character's skills. */
-    public RowIterator<Skill> getSkillsIterator() {
-        return new RowIterator<>(mSkills);
     }
 
     /**
@@ -2650,46 +2352,6 @@ public class GURPSCharacter extends DataFile {
             }
         }
         return best;
-    }
-
-    /** @return The outline model for the character's spells. */
-    public OutlineModel getSpellsRoot() {
-        return mSpells;
-    }
-
-    /** @return A recursive iterator over the character's spells. */
-    public RowIterator<Spell> getSpellsIterator() {
-        return new RowIterator<>(mSpells);
-    }
-
-    /** @return The outline model for the character's equipment. */
-    public OutlineModel getEquipmentRoot() {
-        return mEquipment;
-    }
-
-    /** @return A recursive iterator over the character's equipment. */
-    public RowIterator<Equipment> getEquipmentIterator() {
-        return new RowIterator<>(mEquipment);
-    }
-
-    /** @return The outline model for the character's other equipment. */
-    public OutlineModel getOtherEquipmentRoot() {
-        return mOtherEquipment;
-    }
-
-    /** @return A recursive iterator over the character's other equipment. */
-    public RowIterator<Equipment> getOtherEquipmentIterator() {
-        return new RowIterator<>(mOtherEquipment);
-    }
-
-    /** @return The outline model for the character's notes. */
-    public OutlineModel getNotesRoot() {
-        return mNotes;
-    }
-
-    /** @return A recursive iterator over the character's notes. */
-    public RowIterator<Note> getNoteIterator() {
-        return new RowIterator<>(mNotes);
     }
 
     public boolean processFeaturesAndPrereqs() {
@@ -2802,7 +2464,7 @@ public class GURPSCharacter extends DataFile {
             if (!satisfied) {
                 builder.insert(0, "<html><body>" + I18n.Text("Reason:") + "<ul>");
                 builder.append("</ul></body></html>");
-                row.setReasonForUnsatisfied(builder.toString().replaceAll("<ul>", "<ul style='margin-top: 0; margin-bottom: 0;'>"));
+                row.setReasonForUnsatisfied(UL_PATTERN.matcher(builder.toString()).replaceAll("<ul style='margin-top: 0; margin-bottom: 0;'>"));
             }
         }
         return needRepaint;
@@ -2912,22 +2574,19 @@ public class GURPSCharacter extends DataFile {
     public List<WeaponBonus> getWeaponComparedBonusesFor(String id, String nameQualifier, String specializationQualifier, Set<String> categoriesQualifier, StringBuilder toolTip) {
         List<WeaponBonus> bonuses = new ArrayList<>();
         int               rsl     = Integer.MIN_VALUE;
-
         for (Skill skill : getSkillNamed(nameQualifier, specializationQualifier, true, null)) {
             int srsl = skill.getRelativeLevel();
-
             if (srsl > rsl) {
                 rsl = srsl;
             }
         }
-
         if (rsl != Integer.MIN_VALUE) {
             List<Feature> list = mFeatureMap.get(id.toLowerCase());
             if (list != null) {
                 for (Feature feature : list) {
                     if (feature instanceof WeaponBonus) {
                         WeaponBonus bonus = (WeaponBonus) feature;
-                        if (bonus.getNameCriteria().matches(nameQualifier) && bonus.getSpecializationCriteria().matches(specializationQualifier) && bonus.getLevelCriteria().matches(rsl) && bonus.matchesCategories(categoriesQualifier)) {
+                        if (bonus.getNameCriteria().matches(nameQualifier) && bonus.getSpecializationCriteria().matches(specializationQualifier) && bonus.getRelativeLevelCriteria().matches(rsl) && bonus.matchesCategories(categoriesQualifier)) {
                             bonuses.add(bonus);
                             bonus.addToToolTip(toolTip);
                         }

@@ -21,16 +21,12 @@ import com.trollworks.gcs.utility.FileType;
 import com.trollworks.gcs.utility.Log;
 import com.trollworks.gcs.utility.json.JsonArray;
 import com.trollworks.gcs.utility.json.JsonMap;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 
 /** A list of spells. */
 public class SpellList extends ListFile {
     private static final int    CURRENT_JSON_VERSION = 1;
-    /** The current version. */
-    public static final  int    CURRENT_VERSION      = 1;
     /** The XML tag for {@link SpellList}s. */
     public static final  String TAG_ROOT             = "spell_list";
 
@@ -41,16 +37,6 @@ public class SpellList extends ListFile {
 
     @Override
     public String getJSONTypeName() {
-        return TAG_ROOT;
-    }
-
-    @Override
-    public int getXMLTagVersion() {
-        return CURRENT_VERSION;
-    }
-
-    @Override
-    public String getXMLTagName() {
         return TAG_ROOT;
     }
 
@@ -85,24 +71,4 @@ public class SpellList extends ListFile {
             }
         }
     }
-
-    @Override
-    protected void loadList(XMLReader reader, LoadState state) throws IOException {
-        OutlineModel model  = getModel();
-        String       marker = reader.getMarker();
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-                if (Spell.TAG_SPELL.equals(name) || Spell.TAG_SPELL_CONTAINER.equals(name)) {
-                    model.addRow(new Spell(this, reader, state), true);
-                } else if (RitualMagicSpell.TAG_RITUAL_MAGIC_SPELL.equals(name)) {
-                    model.addRow(new RitualMagicSpell(this, reader, state), true);
-                } else if (SplittermondSpell.TAG_SPLITTERMOND_SPELL.equals(name)) {
-                    model.addRow(new SplittermondSpell(this, reader, state), true);
-                } else {
-                    reader.skipTag(name);
                 }
-            }
-        } while (reader.withinMarker(marker));
-    }
-}

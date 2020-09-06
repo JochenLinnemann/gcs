@@ -32,8 +32,6 @@ import com.trollworks.gcs.utility.json.JsonArray;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Numbers;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,20 +60,14 @@ public abstract class WeaponStats {
     private              List<SkillDefault> mDefaults;
 
     public static void loadFromJSONArray(ListRow row, JsonArray a, List<WeaponStats> list) throws IOException {
-        int       count = a.size();
+        int count = a.size();
         for (int i = 0; i < count; i++) {
             JsonMap m1   = a.getMap(i);
             String  type = m1.getString(DataFile.KEY_TYPE);
             switch (type) {
-            case MeleeWeaponStats.TAG_ROOT:
-                list.add(new MeleeWeaponStats(row, m1));
-                break;
-            case RangedWeaponStats.TAG_ROOT:
-                list.add(new RangedWeaponStats(row, m1));
-                break;
-            default:
-                Log.warn("unknown weapon type: " + type);
-                break;
+            case MeleeWeaponStats.TAG_ROOT -> list.add(new MeleeWeaponStats(row, m1));
+            case RangedWeaponStats.TAG_ROOT -> list.add(new RangedWeaponStats(row, m1));
+            default -> Log.warn("unknown weapon type: " + type);
             }
         }
     }
@@ -136,22 +128,6 @@ public abstract class WeaponStats {
     }
 
     /**
-     * Creates a weapon.
-     *
-     * @param owner  The owning piece of equipment or advantage.
-     * @param reader The reader to load from.
-     */
-    public WeaponStats(ListRow owner, XMLReader reader) throws IOException {
-        this(owner);
-        String marker = reader.getMarker();
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                loadSelf(reader);
-            }
-        } while (reader.withinMarker(marker));
-    }
-
-    /**
      * Creates a clone of this weapon.
      *
      * @param owner The owning piece of equipment or advantage.
@@ -164,26 +140,6 @@ public abstract class WeaponStats {
 
     /** @return The type name to use for this data. */
     public abstract String getJSONTypeName();
-
-    /** @return The root XML tag to use when saving. */
-    protected abstract String getRootTag();
-
-    /** @param reader The reader to load from. */
-    protected void loadSelf(XMLReader reader) throws IOException {
-        String name = reader.getName();
-
-        if (WeaponDamage.TAG_ROOT.equals(name)) {
-            mDamage = new WeaponDamage(reader, this);
-        } else if (TAG_STRENGTH.equals(name)) {
-            mStrength = reader.readText();
-        } else if (TAG_USAGE.equals(name)) {
-            mUsage = reader.readText();
-        } else if (SkillDefault.TAG_ROOT.equals(name)) {
-            mDefaults.add(new SkillDefault(reader));
-        } else {
-            reader.skipTag(name);
-        }
-    }
 
     /** @param m The {@link JsonMap} to load from. */
     protected void loadSelf(JsonMap m) throws IOException {
@@ -235,16 +191,11 @@ public abstract class WeaponStats {
         return Collections.unmodifiableList(mDefaults);
     }
 
-    /**
-     * @param defaults The new defaults for this weapon.
-     * @return Whether there was a change or not.
-     */
-    public boolean setDefaults(List<SkillDefault> defaults) {
+    /** @param defaults The new defaults for this weapon. */
+    public void setDefaults(List<SkillDefault> defaults) {
         if (!mDefaults.equals(defaults)) {
             mDefaults = new ArrayList<>(defaults);
-            return true;
         }
-        return false;
     }
 
     /** @param id The ID to use for notification. */
@@ -321,7 +272,7 @@ public abstract class WeaponStats {
         if (df instanceof GURPSCharacter) {
             getSkillLevel((GURPSCharacter) df, toolTip);
         }
-        return toolTip.length() > 0 ? I18n.Text("Includes modifiers from") + toolTip : I18n.Text("No additional modifiers");
+        return toolTip.isEmpty() ? I18n.Text("No additional modifiers") : I18n.Text("Includes modifiers from") + toolTip;
     }
 
     /** @return The skill level. */
@@ -337,7 +288,7 @@ public abstract class WeaponStats {
         int best = Integer.MIN_VALUE;
         for (SkillDefault skillDefault : getDefaults()) {
             SkillDefaultType type  = skillDefault.getType();
-            int              level = type.getSkillLevelFast(character, skillDefault, false, new HashSet<>());
+            int              level = type.getSkillLevelFast(character, skillDefault, false, new HashSet<>(), true);
             if (level > best) {
                 best = level;
             }
@@ -351,7 +302,7 @@ public abstract class WeaponStats {
             }
             if (this instanceof MeleeWeaponStats) {
                 if (((MeleeWeaponStats) this).getParry().contains("F")) {
-                    best += character.getEncumbranceLevel().getEncumbrancePenalty();
+                    best += character.getEncumbranceLevel(true).getEncumbrancePenalty();
                 }
             }
             if (best < 0) {

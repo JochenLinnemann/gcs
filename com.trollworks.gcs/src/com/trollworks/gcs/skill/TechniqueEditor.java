@@ -12,6 +12,7 @@
 package com.trollworks.gcs.skill;
 
 import com.trollworks.gcs.character.GURPSCharacter;
+import com.trollworks.gcs.datafile.PageRefCell;
 import com.trollworks.gcs.feature.FeaturesPanel;
 import com.trollworks.gcs.prereq.PrereqsPanel;
 import com.trollworks.gcs.ui.UIUtilities;
@@ -90,7 +91,7 @@ public class TechniqueEditor extends RowEditor<Technique> implements ActionListe
         createDefaults(fields);
         createLimits(fields);
         wrapper = createDifficultyPopups(fields);
-        mReferenceField = createField(wrapper, wrapper, I18n.Text("Page Reference"), mRow.getReference(), I18n.Text("A reference to the book and page this technique appears on (e.g. B22 would refer to \"Basic Set\", page 22)"), 6);
+        mReferenceField = createField(wrapper, wrapper, I18n.Text("Page Reference"), mRow.getReference(), PageRefCell.getStdToolTip(I18n.Text("technique")), 6);
         icon.setVerticalAlignment(SwingConstants.TOP);
         icon.setAlignmentY(-1.0f);
         content.add(icon);
@@ -165,7 +166,7 @@ public class TechniqueEditor extends RowEditor<Technique> implements ActionListe
             mDefaultSpecializationField = createField(null, mDefaultPanel, null, def.getSpecialization(), I18n.Text("The specialization of the skill, if any, this technique defaults from"), 0);
             mDefaultPanelLabel.setLink(mDefaultNameField);
         }
-        mDefaultModifierField = createNumberField(null, mDefaultPanel, null, I18n.Text("The amount to adjust the default skill level by"), def.getModifier(), 2);
+        mDefaultModifierField = createNumberField(mDefaultPanel, I18n.Text("The amount to adjust the default skill level by"), def.getModifier());
         if (!skillBased) {
             mDefaultPanel.add(new JPanel());
             mDefaultPanel.add(new JPanel());
@@ -181,7 +182,7 @@ public class TechniqueEditor extends RowEditor<Technique> implements ActionListe
         mLimitCheckbox.addActionListener(this);
         mLimitCheckbox.setEnabled(mIsEditable);
 
-        mLimitField = createNumberField(null, wrapper, null, I18n.Text("The maximum amount above the default skill level that this technique can be raised"), mRow.getLimitModifier(), 2);
+        mLimitField = createNumberField(wrapper, I18n.Text("The maximum amount above the default skill level that this technique can be raised"), mRow.getLimitModifier());
         mLimitField.setEnabled(mIsEditable && mLimitCheckbox.isSelected());
         mLimitField.addActionListener(this);
 
@@ -236,10 +237,9 @@ public class TechniqueEditor extends RowEditor<Technique> implements ActionListe
         return field;
     }
 
-    @SuppressWarnings("unused")
-    private JTextField createNumberField(Container labelParent, Container fieldParent, String title, String tooltip, int value, int maxDigits) {
-        JTextField field = createField(labelParent, fieldParent, title, Numbers.formatWithForcedSign(value), tooltip, maxDigits + 1);
-        new NumberFilter(field, false, true, false, maxDigits);
+    private JTextField createNumberField(Container fieldParent, String tooltip, int value) {
+        JTextField field = createField(null, fieldParent, null, Numbers.formatWithForcedSign(value), tooltip, 3);
+        NumberFilter.apply(field, false, true, false, 2);
         return field;
     }
 
@@ -247,10 +247,9 @@ public class TechniqueEditor extends RowEditor<Technique> implements ActionListe
         return I18n.Text("The skill level and relative skill level to roll against.\n");
     }
 
-    @SuppressWarnings("unused")
     private void createPointsFields(Container parent, boolean forCharacter) {
         mPointsField = createField(parent, parent, I18n.Text("Points"), Integer.toString(mRow.getRawPoints()), I18n.Text("The number of points spent on this technique"), 4);
-        new NumberFilter(mPointsField, false, false, false, 4);
+        NumberFilter.apply(mPointsField, false, false, false, 4);
         mPointsField.addActionListener(this);
 
         if (forCharacter) {

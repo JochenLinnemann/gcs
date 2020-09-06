@@ -42,9 +42,9 @@ public class NewSpellCommand extends Command {
     /** The action command this command will issue. */
     public static final String          CMD_SPLITTERMOND_SPELL = "NewSplittermondSpell";
     /** The "New Spell" command. */
-    public static final NewSpellCommand INSTANCE               = new NewSpellCommand(false, SpellKind.Spell, I18n.Text("New Spell"), CMD_SPELL, KeyEvent.VK_B, COMMAND_MODIFIER);
+    public static final NewSpellCommand INSTANCE               = new NewSpellCommand(false, SpellKind.Spell, I18n.Text("New Spell"), CMD_SPELL, COMMAND_MODIFIER);
     /** The "New Spell Container" command. */
-    public static final NewSpellCommand CONTAINER_INSTANCE     = new NewSpellCommand(true, SpellKind.Spell, I18n.Text("New Spell Container"), CMD_SPELL_CONTAINER, KeyEvent.VK_B, SHIFTED_COMMAND_MODIFIER);
+    public static final NewSpellCommand CONTAINER_INSTANCE     = new NewSpellCommand(true, SpellKind.Spell, I18n.Text("New Spell Container"), CMD_SPELL_CONTAINER, SHIFTED_COMMAND_MODIFIER);
     /** The "New Technique" command. */
     public static final NewSpellCommand RITUAL_MAGIC_INSTANCE  = new NewSpellCommand(false, SpellKind.RitualMagicSpell, I18n.Text("New Ritual Magic Spell"), CMD_RITUAL_MAGIC_SPELL);
     /** The "New Splittermond Spell" command. */
@@ -58,8 +58,8 @@ public class NewSpellCommand extends Command {
         mSpellKind = spellKind;
     }
 
-    private NewSpellCommand(boolean container, SpellKind spellKind, String title, String cmd, int keyCode, int modifiers) {
-        super(title, cmd, keyCode, modifiers);
+    private NewSpellCommand(boolean container, SpellKind spellKind, String title, String cmd, int modifiers) {
+        super(title, cmd, KeyEvent.VK_B, modifiers);
         mContainer = container;
         mSpellKind = spellKind;
     }
@@ -70,8 +70,7 @@ public class NewSpellCommand extends Command {
         if (spells != null) {
             setEnabled(!spells.getOutline().getModel().isLocked());
         } else {
-            SheetDockable sheet = getTarget(SheetDockable.class);
-            if (sheet != null) {
+            if (getTarget(SheetDockable.class) != null) {
                 setEnabled(true);
             } else {
                 setEnabled(getTarget(TemplateDockable.class) != null);

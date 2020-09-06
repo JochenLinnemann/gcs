@@ -12,6 +12,7 @@
 package com.trollworks.gcs.skill;
 
 import com.trollworks.gcs.character.GURPSCharacter;
+import com.trollworks.gcs.datafile.PageRefCell;
 import com.trollworks.gcs.feature.FeaturesPanel;
 import com.trollworks.gcs.prereq.PrereqsPanel;
 import com.trollworks.gcs.ui.UIUtilities;
@@ -97,7 +98,7 @@ public class SkillEditor extends RowEditor<Skill> implements ActionListener, Doc
         mNotesField = createField(fields, fields, I18n.Text("Notes"), skill.getNotes(), I18n.Text("Any notes that you would like to show up in the list along with this skill"), 0);
         mCategoriesField = createField(fields, fields, I18n.Text("Categories"), skill.getCategoriesAsString(), I18n.Text("The category or categories the skill belongs to (separate multiple categories with a comma)"), 0);
         wrapper = notContainer ? createDifficultyPopups(fields) : fields;
-        mReferenceField = createField(wrapper, wrapper, I18n.Text("Page Reference"), mRow.getReference(), I18n.Text("A reference to the book and page this skill appears on (e.g. B22 would refer to \"Basic Set\", page 22)"), 6);
+        mReferenceField = createField(wrapper, wrapper, I18n.Text("Page Reference"), mRow.getReference(), PageRefCell.getStdToolTip(I18n.Text("skill")), 6);
         icon.setVerticalAlignment(SwingConstants.TOP);
         icon.setAlignmentY(-1.0f);
         content.add(icon);
@@ -172,10 +173,9 @@ public class SkillEditor extends RowEditor<Skill> implements ActionListener, Doc
         return I18n.Text("The skill level and relative skill level to roll against.\n");
     }
 
-    @SuppressWarnings("unused")
     private void createPointsFields(Container parent, boolean forCharacter) {
         mPointsField = createField(parent, parent, I18n.Text("Points"), Integer.toString(mRow.getRawPoints()), I18n.Text("The number of points spent on this skill"), 4);
-        new NumberFilter(mPointsField, false, false, false, 4);
+        NumberFilter.apply(mPointsField, false, false, false, 4);
         if (forCharacter) {
             mLevelField = createField(parent, parent, I18n.Text("Level"), Skill.getSkillDisplayLevel(mRow.getLevel(), mRow.getRelativeLevel(), mRow.getAttribute(), mRow.canHaveChildren()), editorLevelTooltip() + mRow.getLevelToolTip(), 8);
             mLevelField.setEnabled(false);

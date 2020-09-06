@@ -19,28 +19,25 @@ import com.trollworks.gcs.ui.image.Images;
 import com.trollworks.gcs.ui.widget.outline.Column;
 import com.trollworks.gcs.ui.widget.outline.RowEditor;
 import com.trollworks.gcs.utility.Log;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.notification.Notifier;
 import com.trollworks.gcs.utility.text.Enums;
 import com.trollworks.gcs.utility.text.Numbers;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 
 /** Model for trait modifiers */
 public class AdvantageModifier extends Modifier {
     private static final int                       CURRENT_JSON_VERSION   = 1;
-    private static final int                       CURRENT_VERSION        = 2;
     /** The root tag. */
     public static final  String                    TAG_MODIFIER           = "modifier";
     /** The root tag for containers. */
     public static final  String                    TAG_MODIFIER_CONTAINER = "modifier_container";
     /** The tag for the base cost. */
     public static final  String                    TAG_COST               = "cost";
-    /** The attribute for the cost type. */
-    public static final  String                    ATTRIBUTE_COST_TYPE    = "type";
-    private static final  String                    KEY_COST_TYPE    = "cost_type";
+    private static final String                    KEY_COST_TYPE          = "cost_type";
     /** The tag for the cost per level. */
     public static final  String                    TAG_LEVELS             = "levels";
     /** The tag for how the cost is affected. */
@@ -85,18 +82,6 @@ public class AdvantageModifier extends Modifier {
     public AdvantageModifier(DataFile file, JsonMap m, LoadState state) throws IOException {
         this(file, TAG_MODIFIER_CONTAINER.equals(m.getString(DataFile.KEY_TYPE)));
         load(m, state);
-    }
-
-    /**
-     * Creates a new {@link AdvantageModifier}.
-     *
-     * @param file   The {@link DataFile} to use.
-     * @param reader The {@link XMLReader} to use.
-     * @param state  The {@link LoadState} to use.
-     */
-    public AdvantageModifier(DataFile file, XMLReader reader, LoadState state) throws IOException {
-        this(file, TAG_MODIFIER_CONTAINER.equals(reader.getName()));
-        load(reader, state);
     }
 
     /**
@@ -242,16 +227,6 @@ public class AdvantageModifier extends Modifier {
     }
 
     @Override
-    public String getXMLTagName() {
-        return canHaveChildren() ? TAG_MODIFIER_CONTAINER : TAG_MODIFIER;
-    }
-
-    @Override
-    public int getXMLTagVersion() {
-        return CURRENT_VERSION;
-    }
-
-    @Override
     protected void prepareForLoad(LoadState state) {
         super.prepareForLoad(state);
         mCostType = AdvantageModifierCostType.PERCENTAGE;
@@ -259,31 +234,6 @@ public class AdvantageModifier extends Modifier {
         mCostMultiplier = 1.0;
         mLevels = 0;
         mAffects = Affects.TOTAL;
-    }
-
-    @Override
-    protected void loadSubElement(XMLReader reader, LoadState state) throws IOException {
-        String name = reader.getName();
-        if (!state.mForUndo && (TAG_MODIFIER.equals(name) || TAG_MODIFIER_CONTAINER.equals(name))) {
-            addChild(new AdvantageModifier(mDataFile, reader, state));
-        } else if (!canHaveChildren()) {
-            if (TAG_COST.equals(name)) {
-                mCostType = Enums.extract(reader.getAttribute(ATTRIBUTE_COST_TYPE), AdvantageModifierCostType.values(), AdvantageModifierCostType.PERCENTAGE);
-                if (mCostType == AdvantageModifierCostType.MULTIPLIER) {
-                    mCostMultiplier = reader.readDouble(1.0);
-                } else {
-                    mCost = reader.readInteger(0);
-                }
-            } else if (TAG_LEVELS.equals(name)) {
-                mLevels = reader.readInteger(0);
-            } else if (TAG_AFFECTS.equals(name)) {
-                mAffects = Enums.extract(reader.readText(), Affects.values(), Affects.TOTAL);
-            } else {
-                super.loadSubElement(reader, state);
-            }
-        } else {
-            super.loadSubElement(reader, state);
-        }
     }
 
     @Override
@@ -314,8 +264,8 @@ public class AdvantageModifier extends Modifier {
     }
 
     @Override
-    protected void saveSelf(JsonWriter w, boolean forUndo) throws IOException {
-        super.saveSelf(w, forUndo);
+    protected void saveSelf(JsonWriter w, SaveType saveType) throws IOException {
+        super.saveSelf(w, saveType);
         if (!canHaveChildren()) {
             w.keyValue(KEY_COST_TYPE, Enums.toId(mCostType));
             if (mCostType == AdvantageModifierCostType.MULTIPLIER) {
@@ -353,7 +303,7 @@ public class AdvantageModifier extends Modifier {
     public String getFullDescription() {
         StringBuilder builder = new StringBuilder();
         String        modNote = getNotes();
-        builder.append(toString());
+        builder.append(this);
         if (!modNote.isEmpty()) {
             builder.append(" (");
             builder.append(modNote);
@@ -366,10 +316,10 @@ public class AdvantageModifier extends Modifier {
     public String getCostDescription() {
         StringBuilder             builder  = new StringBuilder();
         AdvantageModifierCostType costType = getCostType();
-        switch (costType) {
-        case PERCENTAGE:
-        case POINTS:
-        default:
+        if (costType == AdvantageModifierCostType.MULTIPLIER) {
+            builder.append('x');
+            builder.append(Numbers.format(getCostMultiplier()));
+        } else {
             builder.append(Numbers.formatWithForcedSign(getCostModifier()));
             if (costType == AdvantageModifierCostType.PERCENTAGE) {
                 builder.append('%');
@@ -379,11 +329,6 @@ public class AdvantageModifier extends Modifier {
                 builder.append(' ');
                 builder.append(desc);
             }
-            break;
-        case MULTIPLIER:
-            builder.append('x');
-            builder.append(Numbers.format(getCostMultiplier()));
-            break;
         }
         return builder.toString();
     }
@@ -409,5 +354,10 @@ public class AdvantageModifier extends Modifier {
     @Override
     protected String getCategoryID() {
         return ID_CATEGORY;
+    }
+
+    @Override
+    public String getToolTip(Column column) {
+        return AdvantageModifierColumnID.values()[column.getID()].getToolTip(this);
     }
 }

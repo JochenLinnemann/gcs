@@ -18,10 +18,10 @@ import com.trollworks.gcs.template.Template;
 import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.ui.widget.outline.RowEditor;
 import com.trollworks.gcs.utility.I18n;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Numbers;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -92,7 +92,7 @@ public class Technique extends Skill {
             return skill != null ? skill.getLevel() : Integer.MIN_VALUE;
         }
         // Take the modifier back out, as we wanted the base, not the final value.
-        return type.getSkillLevelFast(character, def, true, null) - def.getModifier();
+        return type.getSkillLevelFast(character, def, true, null, false) - def.getModifier();
     }
 
     /**
@@ -149,21 +149,6 @@ public class Technique extends Skill {
         }
     }
 
-    /**
-     * Loads a technique and associates it with the specified data file.
-     *
-     * @param dataFile The data file to associate it with.
-     * @param reader   The XML reader to load from.
-     * @param state    The {@link LoadState} to use.
-     */
-    public Technique(DataFile dataFile, XMLReader reader, LoadState state) throws IOException {
-        this(dataFile);
-        load(reader, state);
-        if (!(dataFile instanceof GURPSCharacter) && !(dataFile instanceof Template)) {
-            mPoints = getDifficulty() == SkillDifficulty.A ? 1 : 2;
-        }
-    }
-
     @Override
     public boolean isEquivalentTo(Object obj) {
         if (obj == this) {
@@ -189,11 +174,6 @@ public class Technique extends Skill {
     }
 
     @Override
-    public String getXMLTagName() {
-        return TAG_TECHNIQUE;
-    }
-
-    @Override
     public String getRowType() {
         return I18n.Text("Technique");
     }
@@ -207,30 +187,6 @@ public class Technique extends Skill {
     }
 
     @Override
-    protected void loadAttributes(XMLReader reader, LoadState state) {
-        String value = reader.getAttribute(ATTRIBUTE_LIMIT);
-        if (value != null && !value.isEmpty()) {
-            mLimited = true;
-            try {
-                mLimitModifier = Integer.parseInt(value);
-            } catch (Exception exception) {
-                mLimited = false;
-                mLimitModifier = 0;
-            }
-        }
-        super.loadAttributes(reader, state);
-    }
-
-    @Override
-    protected void loadSubElement(XMLReader reader, LoadState state) throws IOException {
-        if (SkillDefault.TAG_ROOT.equals(reader.getName())) {
-            mDefault = new SkillDefault(reader);
-        } else {
-            super.loadSubElement(reader, state);
-        }
-    }
-
-    @Override
     protected void loadSelf(JsonMap m, LoadState state) throws IOException {
         super.loadSelf(m, state);
         if (m.has(ATTRIBUTE_LIMIT)) {
@@ -241,8 +197,8 @@ public class Technique extends Skill {
     }
 
     @Override
-    protected void saveSelf(JsonWriter w, boolean forUndo) throws IOException {
-        super.saveSelf(w, forUndo);
+    protected void saveSelf(JsonWriter w, SaveType saveType) throws IOException {
+        super.saveSelf(w, saveType);
         if (mLimited) {
             w.keyValue(ATTRIBUTE_LIMIT, mLimitModifier);
         }
@@ -403,7 +359,7 @@ public class Technique extends Skill {
     @Override
     public String getModifierNotes() {
         StringBuilder buffer = new StringBuilder(super.getModifierNotes());
-        if (buffer.length() > 0) {
+        if (!buffer.isEmpty()) {
             buffer.append(' ');
         }
         buffer.append(I18n.Text("Default: "));
@@ -417,9 +373,8 @@ public class Technique extends Skill {
     }
 
     @Override
-    public int swapDefault() {
+    public void swapDefault() {
         // Do nothing: Default is fixed
-        return 0;
     }
 
     @Override

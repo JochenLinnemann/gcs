@@ -15,8 +15,6 @@ import com.trollworks.gcs.character.GURPSCharacter;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
 import com.trollworks.gcs.utility.text.Enums;
-import com.trollworks.gcs.utility.xml.XMLNodeType;
-import com.trollworks.gcs.utility.xml.XMLReader;
 
 import java.io.IOException;
 import java.util.Map;
@@ -49,19 +47,9 @@ public class CostReduction extends Feature {
         mPercentage = other.mPercentage;
     }
 
-    public CostReduction(JsonMap m) throws IOException {
+    public CostReduction(JsonMap m) {
         this();
         load(m);
-    }
-
-    /**
-     * Loads a {@link CostReduction}.
-     *
-     * @param reader The XML reader to use.
-     */
-    public CostReduction(XMLReader reader) throws IOException {
-        this();
-        load(reader);
     }
 
     @Override
@@ -107,11 +95,6 @@ public class CostReduction extends Feature {
     }
 
     @Override
-    public String getXMLTag() {
-        return TAG_ROOT;
-    }
-
-    @Override
     public String getKey() {
         return GURPSCharacter.ATTRIBUTES_PREFIX + mAttribute.name();
     }
@@ -121,30 +104,7 @@ public class CostReduction extends Feature {
         return new CostReduction(this);
     }
 
-    /**
-     * Loads a cost reduction.
-     *
-     * @param reader The XML reader to use.
-     */
-    protected void load(XMLReader reader) throws IOException {
-        String marker = reader.getMarker();
-
-        do {
-            if (reader.next() == XMLNodeType.START_TAG) {
-                String name = reader.getName();
-
-                if (TAG_ATTRIBUTE.equals(name)) {
-                    setAttribute(Enums.extract(reader.readText(), TYPES, BonusAttributeType.ST));
-                } else if (TAG_PERCENTAGE.equals(name)) {
-                    setPercentage(reader.readInteger(0));
-                } else {
-                    reader.skipTag(name);
-                }
-            }
-        } while (reader.withinMarker(marker));
-    }
-
-    protected void load(JsonMap m) throws IOException {
+    protected void load(JsonMap m) {
         setAttribute(Enums.extract(m.getString(TAG_ATTRIBUTE), TYPES, BonusAttributeType.ST));
         setPercentage(m.getInt(TAG_PERCENTAGE));
     }
