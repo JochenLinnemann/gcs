@@ -34,7 +34,6 @@ import com.trollworks.gcs.utility.text.Text;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -98,9 +97,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     private              int               mColumnStart;
     private              String            mSelectionChangedCommand;
     private              String            mPotentialContentSizeChangeCommand;
-    private              boolean           mAllowColumnContextMenu;
     private              boolean           mAllowColumnResize;
-    private              boolean           mAllowColumnDrag;
     private              boolean           mAllowRowDrag;
     private              boolean           mUseBanding;
     private              List<Column>      mSavedColumns;
@@ -109,7 +106,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     private              int               mDragChildInsertIndex;
     private              boolean           mDragWasAcceptable;
     private              boolean           mDragFocus;
-    private              Column            mSourceDragColumn;
     private              boolean           mDynamicRowHeight;
     private              Set<OutlineProxy> mProxies;
     /** The first row index this outline will display. */
@@ -159,9 +155,7 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
         mModel = model;
         mProxies = new HashSet<>();
         mUserSortable = true;
-        mAllowColumnContextMenu = true;
         mAllowColumnResize = true;
-        mAllowColumnDrag = true;
         mAllowRowDrag = true;
         mDrawRowDividers = true;
         mDrawColumnDividers = true;
@@ -416,20 +410,14 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
 
                     boolean rowSelected = !isPrinting && mModel.isRowSelected(row);
                     if (!mDrawingDragImage || rowSelected) {
-                        Rectangle colBounds      = new Rectangle(bounds);
-                        Composite savedComposite = null;
-                        int       shift          = 0;
+                        Rectangle colBounds = new Rectangle(bounds);
+                        int       shift     = 0;
 
                         for (Column col : mModel.getColumns()) {
                             if (col.isVisible()) {
                                 colBounds.width = col.getWidth();
                                 if (clip.intersects(colBounds)) {
-                                    boolean dragging = mSourceDragColumn == col;
                                     gc.clipRect(colBounds.x, colBounds.y, colBounds.width, colBounds.height);
-                                    if (dragging) {
-                                        savedComposite = ((Graphics2D) gc).getComposite();
-                                        ((Graphics2D) gc).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-                                    }
                                     boolean isHierCol = mModel.isHierarchyColumn(col);
                                     if (showIndent && isHierCol) {
                                         shift = scale.scale(mModel.getIndentWidth(row, col));
@@ -444,9 +432,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
                                     if (showIndent && isHierCol) {
                                         colBounds.x -= shift;
                                         colBounds.width += shift;
-                                    }
-                                    if (dragging) {
-                                        ((Graphics2D) gc).setComposite(savedComposite);
                                     }
                                     gc.setClip(origClip);
                                 }
@@ -1238,22 +1223,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
         return mHeaderPanel;
     }
 
-    /** @return The source column being dragged. */
-    public Column getSourceDragColumn() {
-        return mSourceDragColumn;
-    }
-
-    /** @param column The source column being dragged. */
-    protected void setSourceDragColumn(Column column) {
-        if (mSourceDragColumn != null) {
-            repaintColumn(mSourceDragColumn);
-        }
-        mSourceDragColumn = column;
-        if (mSourceDragColumn != null) {
-            repaintColumn(mSourceDragColumn);
-        }
-    }
-
     /** @param scrollTo The row index to scroll to. */
     protected void keyScroll(int scrollTo) {
         Outline real = getRealOutline();
@@ -1817,16 +1786,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
         mAllowColumnResize = allow;
     }
 
-    /** @return {@code true} if column dragging is allowed. */
-    public boolean allowColumnDrag() {
-        return mAllowColumnDrag;
-    }
-
-    /** @param allow Whether column dragging is on or off. */
-    public void setAllowColumnDrag(boolean allow) {
-        mAllowColumnDrag = allow;
-    }
-
     /** @return {@code true} if row dragging is allowed. */
     public boolean allowRowDrag() {
         return mAllowRowDrag;
@@ -1835,16 +1794,6 @@ public class Outline extends ActionPanel implements OutlineModelListener, Compon
     /** @param allow Whether row dragging is on or off. */
     public void setAllowRowDrag(boolean allow) {
         mAllowRowDrag = allow;
-    }
-
-    /** @return {@code true} if the column context menu is allowed. */
-    public boolean allowColumnContextMenu() {
-        return mAllowColumnContextMenu;
-    }
-
-    /** @param allow Whether the column context menu is on or off. */
-    public void setAllowColumnContextMenu(boolean allow) {
-        mAllowColumnContextMenu = allow;
     }
 
     /** Revalidates the view and header panel if it exists. */

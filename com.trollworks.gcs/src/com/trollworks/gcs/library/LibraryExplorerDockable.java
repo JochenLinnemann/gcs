@@ -101,9 +101,7 @@ public class LibraryExplorerDockable extends Dockable implements SearchTarget, F
         mTreePanel = new TreePanel(root);
         mTreePanel.setShowHeader(false);
         mTreePanel.addColumn(new TextTreeColumn(I18n.Text("Library Explorer"), this, this));
-        mTreePanel.setAllowColumnDrag(false);
         mTreePanel.setAllowColumnResize(false);
-        mTreePanel.setAllowColumnContextMenu(false);
         mTreePanel.setAllowRowDropFromExternal(false);
         mTreePanel.setAllowedRowDragTypes(0); // Turns off row dragging
         mTreePanel.setShowRowDivider(false);
