@@ -78,8 +78,9 @@ public enum SkillDefaultType {
         }
 
         @Override
-        public int getSkillLevelFast(GURPSCharacter character, SkillDefault skillDefault, boolean requirePoints, Set<String> excludes) {
-            return finalLevel(skillDefault, Math.min(SkillAttribute.Myst.getBaseSkillLevel(character), 20));
+        public int getSkillLevelFast(GURPSCharacter character, SkillDefault skillDefault, boolean requirePoints, Set<String> excludes, boolean ruleOf20) {
+            int level = SkillAttribute.Myst.getBaseSkillLevel(character);
+            return finalLevel(skillDefault, ruleOf20 ? Math.min(level, 20) : level);
         }
     },
     /** The type for Will-based defaults. */

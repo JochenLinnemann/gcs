@@ -24,10 +24,9 @@ import com.trollworks.gcs.template.Template;
 import com.trollworks.gcs.ui.widget.outline.ListRow;
 import com.trollworks.gcs.ui.widget.outline.RowEditor;
 import com.trollworks.gcs.utility.I18n;
+import com.trollworks.gcs.utility.SaveType;
 import com.trollworks.gcs.utility.json.JsonMap;
 import com.trollworks.gcs.utility.json.JsonWriter;
-import com.trollworks.gcs.utility.xml.XMLReader;
-import com.trollworks.gcs.utility.xml.XMLWriter;
 
 import java.io.IOException;
 import java.util.Set;
@@ -67,19 +66,6 @@ public class SplittermondSpell extends RitualMagicSpell{
     public SplittermondSpell(DataFile dataFile, JsonMap m, LoadState state) throws IOException {
         this(dataFile);
         load(m, state);
-        updateLevel(true);
-    }
-
-    /**
-     * Loads a Splittermond spell and associates it with the specified data file.
-     *
-     * @param dataFile The data file to associate it with.
-     * @param reader   The XML reader to load from.
-     * @param state    The {@link LoadState} to use.
-     */
-    public SplittermondSpell(DataFile dataFile, XMLReader reader, LoadState state) throws IOException {
-        this(dataFile);
-        load(reader, state);
         updateLevel(true);
     }
 
@@ -160,11 +146,6 @@ public class SplittermondSpell extends RitualMagicSpell{
     }
 
     @Override
-    public String getXMLTagName() {
-        return TAG_SPLITTERMOND_SPELL;
-    }
-
-    @Override
     public String getJSONTypeName() {
         return TAG_SPLITTERMOND_SPELL;
     }
@@ -181,18 +162,8 @@ public class SplittermondSpell extends RitualMagicSpell{
     }
 
     @Override
-    protected void loadSubElement(XMLReader reader, LoadState state) throws IOException {
-        String name = reader.getName();
-        if (TAG_NAME_DE.equals(name)) {
-            mNameDe = reader.readText().replace("\n", " ");
-        } else {
-            super.loadSubElement(reader, state);
-        }
-    }
-
-    @Override
-    protected void saveSelf(JsonWriter w, boolean forUndo) throws IOException {
-        super.saveSelf(w, forUndo);
+    protected void saveSelf(JsonWriter w, SaveType saveType) throws IOException {
+        super.saveSelf(w, saveType);
         w.keyValue(TAG_NAME_DE, mNameDe);
     }
 

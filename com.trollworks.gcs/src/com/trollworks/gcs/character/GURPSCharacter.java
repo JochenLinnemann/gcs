@@ -2892,24 +2892,6 @@ public class GURPSCharacter extends CollectedModels {
         mSplinterPointsDamage = 0;
     }
 
-    private boolean loadSelf_Custom(String name, XMLReader reader, LoadState state) throws IOException {
-        if (BonusAttributeType.MYSTICISM.getXMLTag().equals(name)) {
-            mMysticism = reader.readInteger(0);
-        } else if (BonusAttributeType.FOCUS.getXMLTag().equals(name)) {
-            mFocusPoints = reader.readInteger(0);
-        } else if (TAG_FOCUS_DAMAGE.equals(name)) {
-            mFocusPointsDamage = reader.readInteger(0);
-        } else if (BonusAttributeType.SPLINTER_POINTS.getXMLTag().equals(name)) {
-            mSplinterPoints= reader.readInteger(0);
-        } else if (TAG_SPLINTER_POINTS_DAMAGE.equals(name)) {
-            mSplinterPointsDamage = reader.readInteger(0);
-        } else {
-            return false;
-        }
-
-        return true;
-    }
-
     private void loadSelf_Custom(JsonMap m, LoadState state) {
         mMysticism = m.getInt(KEY_MYST);
         mFocusPoints = m.getInt(KEY_FOCUS_ADJ);

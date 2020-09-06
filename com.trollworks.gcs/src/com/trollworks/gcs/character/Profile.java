@@ -918,24 +918,6 @@ public class Profile {
         mMoonsign = "";
     }
 
-    private boolean loadTag_Custom(XMLReader reader, String tag) throws IOException {
-        if (TAG_RACE.equals(tag)) {
-            mRace = reader.readText();
-        } else if (TAG_CULTURE.equals(tag)) {
-            mCulture = reader.readText();
-        } else if (TAG_ORIGIN.equals(tag)) {
-            mOrigin = reader.readText();
-        } else if (TAG_TRAINING.equals(tag)) {
-            mTraining = reader.readText();
-        } else if (TAG_MOONSIGN.equals(tag)) {
-            mMoonsign = reader.readText();
-        } else {
-            return false;
-        }
-
-        return true;
-    }
-
     private void load_Custom(JsonMap m) {
         mRace = m.getString(TAG_RACE);
         mCulture = m.getString(TAG_CULTURE);

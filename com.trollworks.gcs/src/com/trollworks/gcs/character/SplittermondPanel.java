@@ -36,10 +36,10 @@ public class SplittermondPanel extends DropPanel {
         super(new ColumnLayout(5, 2, 0), I18n.Text("Splintermoon"));
 
         Wrapper wrapper = new Wrapper(new ColumnLayout(2, 2, 0));
-        createLabelAndField(wrapper, sheet, Profile.ID_RACE, I18n.Text("Race:"), null, SwingConstants.LEFT);
-        createLabelAndField(wrapper, sheet, Profile.ID_CULTURE, I18n.Text("Culture:"), null, SwingConstants.LEFT);
-        createLabelAndField(wrapper, sheet, Profile.ID_ORIGIN, I18n.Text("Origin:"), null, SwingConstants.LEFT);
-        createLabelAndField(wrapper, sheet, Profile.ID_TRAINING, I18n.Text("Training:"), null, SwingConstants.LEFT);
+        createLabelAndField(wrapper, sheet, Profile.ID_RACE, I18n.Text("Race:"), null);
+        createLabelAndField(wrapper, sheet, Profile.ID_CULTURE, I18n.Text("Culture:"), null);
+        createLabelAndField(wrapper, sheet, Profile.ID_ORIGIN, I18n.Text("Origin:"), null);
+        createLabelAndField(wrapper, sheet, Profile.ID_TRAINING, I18n.Text("Training:"), null);
         add(wrapper);
 
         createDivider();
